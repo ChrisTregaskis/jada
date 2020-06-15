@@ -54,4 +54,28 @@ exports.log_application = (req, res, next) => {
                 error: err
             })
         });
+};
+
+exports.get_application = (req, res, next) => {
+    const id = req.params.applicationId
+    Application
+        .findById(id)
+        .exec()
+        .then(doc => {
+            if (doc) {
+                res.status(200).json({
+                    _id: doc._id,
+                    jobTitle: doc.jobTitle
+                })
+            } else {
+                res.status(404).json({
+                    message: 'no valid entry found for application id'
+                })
+            }
+        })
+        .catch(err => {
+            res.status(500).json({
+                error: err
+            })
+        })
 }
