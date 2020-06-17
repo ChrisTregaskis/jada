@@ -1,34 +1,14 @@
 const WebDriver = require('selenium-webdriver');
 const driver = new WebDriver.Builder().forBrowser('chrome').build();
 
-async function seleniumGoogleTest() {
-    await driver.get('http://google.com');
-    await driver.findElement({ name: 'q' }).sendKeys('Sherry Espineli');
-    await driver.findElement({ name: 'q' }).sendKeys(WebDriver.Key.ENTER);
-    let firstResult = await driver.wait(WebDriver.until.elementLocated({ xpath: '//*[@id="rso"]/div[1]/div/div[1]/a' }), 2000);
-
-    if (firstResult) {
-        console.log('success')
-        await driver.findElement({ xpath: '//*[@id="rso"]/div[1]/div/div[1]/a' }).click();
-        driver.getTitle().then((title) => { console.log(title) }).catch((err) => { console.log(err) });
-    } else {
-        console.log('failure')
-    }
-}
-
-// seleniumGoogleTest();
-
 async function run_jada(jobTitle, area, radius) {
     const emailLogIn = 'chris.tregaskis.work@gmail.com';
     const passwordLogIn = 'gSpJ2biL$XDHwEQ';
 
-    await driver.get('https://www.totaljobs.com/');
-    console.log('successfully navigated to https://www.totaljobs.com/');
+    await navigate_to_website();
+    let loginOption = await check_login_option_exists();
+    if (!loginOption) { return console.log('SESSION FAILED: Jobseeker xpath text content does not match \'Jobseeker login\'') }
 
-    let jobSeekerLogIn = await driver.findElement({ xpath: '//*[@id="jobseekerList"]/li[1]/a' }).getText();
-    if (jobSeekerLogIn !== 'Jobseeker login') {
-        return console.log('Jobseeker xpath text content does not match \'Jobseeker login\'');
-    }
 
     await driver.findElement({ xpath: '//*[@id="jobseekerList"]/li[1]/a' }).click();
     let loginPage = await driver.wait(WebDriver.until.elementLocated({ id: 'btnLogin' }), 2000);
@@ -63,12 +43,38 @@ async function run_jada(jobTitle, area, radius) {
     } else {
         return console.log('first result not found');
     }
-    
+
+
 
 }
 
+// need to check that radius is only 0, 5, 10, 20, 30
 run_jada('software developer', 'Bath', 20)
 
-// need to check that radius is only 0, 5, 10, 20, 30
-
 // fun fun functions
+
+async function navigate_to_website() {
+    const url = 'https://www.totaljobs.com/';
+    await driver.get(url);
+    driver.getTitle()
+        .then(title => {
+            if (title === 'Jobs | UK Job Search | Find your perfect job - totaljobs') {
+                console.log(`successfully navigated to ${url}`);
+            } else {
+                console.log('page title does not match expected url page title')
+            }
+    })
+        .catch(err => {
+            console.log(err)
+        });
+}
+
+async function check_login_option_exists() {
+    let jobSeekerLogIn = await driver.findElement({ xpath: '//*[@id="jobseekerList"]/li[1]/a' }).getText();
+    if (jobSeekerLogIn !== 'Jobseeker login') {
+        return false;
+    } else {
+        return true;
+    }
+}
+
