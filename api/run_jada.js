@@ -2,34 +2,15 @@ const WebDriver = require('selenium-webdriver');
 const driver = new WebDriver.Builder().forBrowser('chrome').build();
 
 async function run_jada(jobTitle, area, radius) {
-    const emailLogIn = 'chris.tregaskis.work@gmail.com';
-    const passwordLogIn = 'gSpJ2biL$XDHwEQ';
 
     await navigate_to_website();
-    let loginOption = await check_login_option_exists();
-    if (!loginOption) { return console.log('SESSION FAILED: Jobseeker xpath text content does not match \'Jobseeker login\'') }
+    let navigateToLogin = await navigate_to_loginPage();
+    if (!navigateToLogin) { return console.log('SESSION FAILED: navigate to login page failed') }
+
+    let login = await jobSeeker_login();
+    if (!login) { return console.log('SESSION FAILED: logged in user search button not found') }
 
 
-    await driver.findElement({ xpath: '//*[@id="jobseekerList"]/li[1]/a' }).click();
-    let loginPage = await driver.wait(WebDriver.until.elementLocated({ id: 'btnLogin' }), 2000);
-    if (loginPage) {
-        console.log('successfully reached login page');
-    } else {
-        return console.log('login button not found');
-    }
-
-    await driver.findElement({ id: 'Form_Email' }).sendKeys(emailLogIn);
-    await driver.findElement({ id: 'Form_Password' }).sendKeys(passwordLogIn);
-    await driver.findElement({ id: 'Form_RememberMe' }).click();
-    console.log('successfully entered login information');
-    await driver.findElement({ id: 'btnLogin' }).click();
-
-    let searchPage = await driver.wait(WebDriver.until.elementLocated({ id: 'search-button' }), 2000);
-    if (searchPage) {
-        console.log('successfully reached search page');
-    } else {
-        return console.log('search button not found');
-    }
 
     await driver.findElement({ id: 'keywords' }).sendKeys(jobTitle);
     await driver.findElement({ id: 'location' }).sendKeys(area);
@@ -69,12 +50,39 @@ async function navigate_to_website() {
         });
 }
 
-async function check_login_option_exists() {
+async function navigate_to_loginPage() {
     let jobSeekerLogIn = await driver.findElement({ xpath: '//*[@id="jobseekerList"]/li[1]/a' }).getText();
     if (jobSeekerLogIn !== 'Jobseeker login') {
-        return false;
+        console.log('SESSION FAILED: Jobseeker xpath text content does not match \'Jobseeker login\'')
+        return false
+    }
+
+    await driver.findElement({ xpath: '//*[@id="jobseekerList"]/li[1]/a' }).click();
+    let loginPage = await driver.wait(WebDriver.until.elementLocated({ id: 'btnLogin' }), 2000);
+    if (loginPage) {
+        console.log('successfully reached login page');
+        return true
     } else {
-        return true;
+        console.log('SESSION FAILED: navigate to login page failed')
+        return false;
     }
 }
 
+async function jobSeeker_login() {
+    const emailLogIn = 'chris.tregaskis.work@gmail.com';
+    const passwordLogIn = 'gSpJ2biL$XDHwEQ';
+
+    await driver.findElement({ id: 'Form_Email' }).sendKeys(emailLogIn);
+    await driver.findElement({ id: 'Form_Password' }).sendKeys(passwordLogIn);
+    await driver.findElement({ id: 'Form_RememberMe' }).click();
+    console.log('successfully entered login information');
+    await driver.findElement({ id: 'btnLogin' }).click();
+
+    let searchPage = await driver.wait(WebDriver.until.elementLocated({ id: 'search-button' }), 2000);
+    if (searchPage) {
+        console.log('successfully reached search page');
+        return true
+    } else {
+        return false
+    }
+}
