@@ -24,8 +24,8 @@ async function run_jada(jobTitle, area, radius) {
 
     await driver.get('https://www.totaljobs.com/');
     console.log('successfully navigated to https://www.totaljobs.com/');
-    let jobSeekerLogIn = await driver.findElement({ xpath: '//*[@id="jobseekerList"]/li[1]/a' }).getText();
 
+    let jobSeekerLogIn = await driver.findElement({ xpath: '//*[@id="jobseekerList"]/li[1]/a' }).getText();
     if (jobSeekerLogIn !== 'Jobseeker login') {
         return console.log('Jobseeker xpath text content does not match \'Jobseeker login\'');
     }
@@ -38,12 +38,7 @@ async function run_jada(jobTitle, area, radius) {
         return console.log('login button not found');
     }
 
-    let loginPageTitle = await driver.getTitle();
-    if (loginPageTitle !== 'Totaljobs Sign in or Register') {
-        return console.log('Login page title does not match \'Totaljobs Sign in or Register\'');
-    }
-
-    await driver.findElement(WebDriver.By.id('Form_Email')).sendKeys(emailLogIn);
+    await driver.findElement({ id: 'Form_Email' }).sendKeys(emailLogIn);
     await driver.findElement({ id: 'Form_Password' }).sendKeys(passwordLogIn);
     await driver.findElement({ id: 'Form_RememberMe' }).click();
     console.log('successfully entered login information');
@@ -56,10 +51,24 @@ async function run_jada(jobTitle, area, radius) {
         return console.log('search button not found');
     }
 
-    // driver.quit();
+    await driver.findElement({ id: 'keywords' }).sendKeys(jobTitle);
+    await driver.findElement({ id: 'location' }).sendKeys(area);
+    await driver.findElement({ id: 'LocationType' }).sendKeys(radius);
+    console.log('successfully entered job search parameters')
+    await driver.findElement({ id: 'search-button' }).click();
+
+    let resultsPage = await driver.wait(WebDriver.until.elementLocated({ xpath: '//*[@id="90250477"]/div/div/div[1]/a'}), 2000);
+    if (resultsPage) {
+        console.log('successfully reached results page');
+    } else {
+        return console.log('first result not found');
+    }
+    
 
 }
 
-run_jada('software developer', 'Bath', 5)
+run_jada('software developer', 'Bath', 20)
+
+// need to check that radius is only 0, 5, 10, 20, 30
 
 // fun fun functions
