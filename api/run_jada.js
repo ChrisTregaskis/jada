@@ -26,7 +26,15 @@ async function run_jada(jobTitle, area, radius) {
         return console.log('Jobseeker xpath text content does not match \'Jobseeker login\'');
     }
 
-    console.log('passed jobseeker login textcontent test')
+    let loginPage = await driver.findElement({ xpath: '//*[@id="jobseekerList"]/li[1]/a' }).click();
+    let loginPageTitle = await driver.getTitle();
+
+    if (loginPageTitle !== 'Totaljobs Sign in or Register') {
+        return console.log('Login page title does not match \'Totaljobs Sign in or Register\'');
+    }
+
+    console.log('successfully reached login page')
+
 
 }
 
