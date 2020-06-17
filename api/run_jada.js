@@ -16,4 +16,18 @@ async function seleniumGoogleTest() {
     }
 }
 
-seleniumGoogleTest();
+// seleniumGoogleTest();
+
+async function run_jada(jobTitle, area, radius) {
+    await driver.get('https://www.totaljobs.com/');
+    let jobSeekerLogIn = await driver.findElement({ xpath: '//*[@id="jobseekerList"]/li[1]/a' }).getText();
+
+    if (jobSeekerLogIn !== 'Jobseeker login') {
+        return console.log('Jobseeker xpath text content does not match \'Jobseeker login\'');
+    }
+
+    console.log('passed jobseeker login textcontent test')
+
+}
+
+run_jada('software developer', 'Bath', 5)
