@@ -34,9 +34,9 @@ async function run_jada(jobTitle, area, radius) {
     let loginPageActive = await driver.wait(WebDriver.until.elementLocated({ id: 'btnLogin' }), 2000);
 
     if (loginPageActive) {
-        console.log('successfully reached login page')
+        console.log('successfully reached login page');
     } else {
-        return console.log('login button not found')
+        return console.log('login button not found');
     }
 
     let loginPageTitle = await driver.getTitle();
@@ -47,7 +47,8 @@ async function run_jada(jobTitle, area, radius) {
     await driver.findElement(WebDriver.By.id('Form_Email')).sendKeys(emailLogIn);
     await driver.findElement({ id: 'Form_Password' }).sendKeys(passwordLogIn);
     await driver.findElement({ id: 'Form_RememberMe' }).click();
-    console.log('successfully entered login information')
+    console.log('successfully entered login information');
+    await driver.findElement({ id: 'btnLogin' }).click();
 
     // driver.quit();
 
