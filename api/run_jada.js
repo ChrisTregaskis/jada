@@ -31,9 +31,8 @@ async function run_jada(jobTitle, area, radius) {
     }
 
     await driver.findElement({ xpath: '//*[@id="jobseekerList"]/li[1]/a' }).click();
-    let loginPageActive = await driver.wait(WebDriver.until.elementLocated({ id: 'btnLogin' }), 2000);
-
-    if (loginPageActive) {
+    let loginPage = await driver.wait(WebDriver.until.elementLocated({ id: 'btnLogin' }), 2000);
+    if (loginPage) {
         console.log('successfully reached login page');
     } else {
         return console.log('login button not found');
@@ -49,6 +48,13 @@ async function run_jada(jobTitle, area, radius) {
     await driver.findElement({ id: 'Form_RememberMe' }).click();
     console.log('successfully entered login information');
     await driver.findElement({ id: 'btnLogin' }).click();
+
+    let searchPage = await driver.wait(WebDriver.until.elementLocated({ id: 'search-button' }), 2000);
+    if (searchPage) {
+        console.log('successfully reached search page');
+    } else {
+        return console.log('search button not found');
+    }
 
     // driver.quit();
 
