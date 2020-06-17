@@ -19,23 +19,40 @@ async function seleniumGoogleTest() {
 // seleniumGoogleTest();
 
 async function run_jada(jobTitle, area, radius) {
+    const emailLogIn = 'chris.tregaskis.work@gmail.com';
+    const passwordLogIn = 'gSpJ2biL$XDHwEQ';
+
     await driver.get('https://www.totaljobs.com/');
+    console.log('successfully navigated to https://www.totaljobs.com/');
     let jobSeekerLogIn = await driver.findElement({ xpath: '//*[@id="jobseekerList"]/li[1]/a' }).getText();
 
     if (jobSeekerLogIn !== 'Jobseeker login') {
         return console.log('Jobseeker xpath text content does not match \'Jobseeker login\'');
     }
 
-    let loginPage = await driver.findElement({ xpath: '//*[@id="jobseekerList"]/li[1]/a' }).click();
-    let loginPageTitle = await driver.getTitle();
+    await driver.findElement({ xpath: '//*[@id="jobseekerList"]/li[1]/a' }).click();
+    let loginPageActive = await driver.wait(WebDriver.until.elementLocated({ id: 'btnLogin' }), 2000);
 
+    if (loginPageActive) {
+        console.log('successfully reached login page')
+    } else {
+        return console.log('login button not found')
+    }
+
+    let loginPageTitle = await driver.getTitle();
     if (loginPageTitle !== 'Totaljobs Sign in or Register') {
         return console.log('Login page title does not match \'Totaljobs Sign in or Register\'');
     }
 
-    console.log('successfully reached login page')
+    await driver.findElement(WebDriver.By.id('Form_Email')).sendKeys(emailLogIn);
+    await driver.findElement({ id: 'Form_Password' }).sendKeys(passwordLogIn);
+    await driver.findElement({ id: 'Form_RememberMe' }).click();
+    console.log('successfully entered login information')
 
+    // driver.quit();
 
 }
 
 run_jada('software developer', 'Bath', 5)
+
+// fun fun functions
