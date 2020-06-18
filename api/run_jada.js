@@ -1,7 +1,7 @@
 const Jada = require('./jada_functions');
-const dkw = ['software', 'engineer', 'engineering', 'developer', 'full stack', 'Git', 'bash', 'node', 'agile',
-    'backend', 'frontend', 'Php', 'OOP', 'JavaScript', 'JS', 'HTML', 'CSS', 'MySQL', 'mongoDB', 'RESTful', 'API'];
-const udkw = ['Traineeship', '.NET', 'Trainee', 'consultant', 'UX', 'designer', 'sales'];
+const dkw = ['SOFTWARE', 'ENGINEER', 'ENGINEERING', 'DEVELOPER', 'FULL', 'GIT', 'BASH', 'NODE', 'AGILE',
+    'BACKEND', 'FRONTEND', 'PHP', 'OOP', 'JS', 'JAVASCRIPT', 'HTML', 'CSS', 'MYSQL', 'MONGODB', 'RESTFUL', 'API'];
+const udkw = ['TRAINEESHIP', '.NET', 'TRAINEE', 'CONSULTANT', 'UX', 'DESIGNER', 'SALES', 'LEAD', 'WINDOWS'];
 const jobTitle = 'software developer';
 const area = 'Bath';
 const radius = 30;
@@ -12,6 +12,7 @@ async function run_jada(jobTitle, area, radius) {
     const radiusOptions = [0, 5, 10, 20, 30];
     let viewedResults = [];
     let potentialJobsIds = [];
+    let interestedJobIds = [];
     let radiusValid = radiusOptions.includes(radius);
     if (!radiusValid) { return console.log('SESSION FAILED: invalid radius option') }
 
@@ -26,8 +27,13 @@ async function run_jada(jobTitle, area, radius) {
     if (!enteredSearch) { return console.log('SESSION FAILED: first xpath result not found') }
 
     let additionalJobs = await Jada.populate_potential_jobs();
-    potentialJobsIds.push(additionalJobs)
-    console.log(additionalJobs);
+    potentialJobsIds.push(...additionalJobs)
+
+    let isInterested = await Jada.check_interest(potentialJobsIds, viewedResults, dkw, udkw)
+    interestedJobIds.push(...isInterested)
+    console.log('INTERESTED JIds: ---------------- ')
+    console.log(interestedJobIds.length)
+    console.log(interestedJobIds)
 
     // await Jada.test();
 }

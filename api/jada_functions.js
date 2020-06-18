@@ -77,42 +77,55 @@ exports.populate_potential_jobs = async function() {
     for (i = 0; i < jobs.length; i++) {
         let currentJobWebElement = await jobs[i];
         let currentJobId = await currentJobWebElement.getAttribute('id');
-        additionalJobs.push(currentJobId);
+        if (currentJobId.length > 0) {
+            additionalJobs.push(currentJobId);
+        }
     }
     return additionalJobs;
 }
 
-// exports.interested = async function(viewedResults, dkw, udkw) {
-//
-// };
+async function isInterested(jobId, dkw, udkw) {
+    let jobTitle = await driver.findElement({ xpath: '//*[@id="' + jobId + '"]/div/div/div[1]/a/h2'}).getText();
+    let jobTitleWebElement = await driver.findElement({ xpath: '//*[@id="' + jobId + '"]'});
+    let jobTitleClasses = await jobTitleWebElement.getAttribute('class');
+
+    let jobTitleUpperCase = jobTitle.toUpperCase();
+    let explodedJTClasses = jobTitleClasses.split(" ");
+    let explodedJobTitle = jobTitleUpperCase.split(" ");
+
+    let isDesirable = dkw.some(r => explodedJobTitle.indexOf(r) >= 0)
+    let isNotDesirable = udkw.some(r => explodedJobTitle.indexOf(r) >= 0)
+    let alreadyApplied = explodedJTClasses.includes('applied')
+    console.log(`Already applied: ${alreadyApplied}`)
+    console.log(`Includes DKW: ${isDesirable}`)
+    console.log(`Includes UDKW: ${isNotDesirable}`)
+
+    if (isDesirable && !isNotDesirable && !alreadyApplied) {
+        return true
+    } else {
+        return false
+    }
+}
+
+exports.check_interest = async function(potentialJobs, viewedResults, dkw, udkw) {
+    let interestedRoles = [];
+    for (i = 0; i < potentialJobs.length; i++) {
+        let hasBeenViewed = viewedResults.includes(potentialJobs[i]);
+        console.log('-----------------------')
+        console.log(`Current job id: ${potentialJobs[i]}`)
+        console.log(`Has been viewed: ${hasBeenViewed}`)
+        if (!hasBeenViewed) {
+            let interested = await isInterested(potentialJobs[i], dkw, udkw)
+            console.log('/---- Interested: ')
+            console.log(interested)
+            if (interested) {
+                interestedRoles.push(potentialJobs[i])
+            }
+        }
+    }
+    return interestedRoles;
+}
 
 exports.test = async function() {
-    let additionalJobs = [];
-    let resultsPage = await driver.wait(WebDriver.until.elementLocated({ xpath: '//*[@id="scroll-to-top"]'}), 2000);
-    if (resultsPage) {
-        console.log('successfully reached results page');
-    } else {
-        return console.log('SESSION ERROR: scroll top element not found');
-    }
 
-    //all job web elements
-    let jobs = await driver.findElements({ className: 'job' });
-    let job2WE = await jobs[1];
-    let job2Id = await job2WE.getAttribute('id');
-
-    //single job web element
-    let jobWE = await driver.findElement({ css: '.job' });
-    let jobId = await jobWE.getAttribute('id');
-
-    console.log(jobId)
-    console.log(job2Id)
-
-    //take jobs arr length and loop through, grabbing each element and awaiting id attribute to add to additional jobs array
-    for (i = 0; i < jobs.length; i++) {
-        let currentJobWebElement = await jobs[i];
-        let currentJobId = await currentJobWebElement.getAttribute('id');
-        additionalJobs.push(currentJobId);
-    }
-
-    console.log(additionalJobs)
 }
