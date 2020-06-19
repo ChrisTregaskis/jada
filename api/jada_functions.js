@@ -1,21 +1,22 @@
+const mongoose = require('mongoose');
 const WebDriver = require('selenium-webdriver');
 const driver = new WebDriver.Builder().forBrowser('chrome').build();
 
 exports.navigate_to_website = async function() {
-    // driver.get(`https://www.totaljobs.com/jobs/software-engineer/in-bath?radius=20&s=header`)
-    const url = 'https://www.totaljobs.com/';
-    await driver.get(url);
-    driver.getTitle()
-        .then(title => {
-            if (title === 'Jobs | UK Job Search | Find your perfect job - totaljobs') {
-                console.log(`successfully navigated to ${url}`);
-            } else {
-                console.log('page title does not match expected url page title')
-            }
-        })
-        .catch(err => {
-            console.log(err)
-        });
+    driver.get(`https://www.totaljobs.com/jobs/software-engineer/in-bath?radius=20&s=header`)
+    // const url = 'https://www.totaljobs.com/';
+    // await driver.get(url);
+    // driver.getTitle()
+    //     .then(title => {
+    //         if (title === 'Jobs | UK Job Search | Find your perfect job - totaljobs') {
+    //             console.log(`successfully navigated to ${url}`);
+    //         } else {
+    //             console.log('page title does not match expected url page title')
+    //         }
+    //     })
+    //     .catch(err => {
+    //         console.log(err)
+    //     });
 };
 
 exports.navigate_to_loginPage = async function() {
@@ -108,10 +109,11 @@ async function isInterested(jobId, dkw, udkw) {
 }
 
 exports.check_interest = async function(potentialJobs, viewedResults, dkw, udkw) {
+    console.log('-------> checking job initial interest: <-------')
     let interestedRoles = [];
     for (i = 0; i < potentialJobs.length; i++) {
         let hasBeenViewed = viewedResults.includes(potentialJobs[i]);
-        console.log('-----------------------')
+        console.log('------------------------------------------------')
         console.log(`Current job id: ${potentialJobs[i]}`)
         console.log(`Has been viewed: ${hasBeenViewed}`)
         if (!hasBeenViewed) {
@@ -124,6 +126,56 @@ exports.check_interest = async function(potentialJobs, viewedResults, dkw, udkw)
         }
     }
     return interestedRoles;
+}
+
+async function process_jobAdd(jobId, dkw, udkw) {
+    let mainWindow = await driver.getWindowHandle();
+    let jobElement = await driver.findElement({ xpath: '//*[@id="' + jobId + '"]/div/div/div[1]/a'});
+    let jobAddUrl = await jobElement.getAttribute('href');
+    console.log(jobAddUrl)
+
+    await driver.switchTo().newWindow('tab')
+    await driver.get(jobAddUrl)
+    let salary = await driver.findElement({ css: '.salary div' }).getText();
+    let company = await driver.findElement({ css: '.company div a' }).getText();
+    let jobType = await driver.findElement({ css: '.job-type div' }).getText();
+    let jobPosted = await driver.findElement({ css: '.date-posted div span'}).getText();
+
+    let currentApplication = {
+        "totalJobs_id": jobId,
+        "salary": salary,
+        "company": company,
+        "job_type": jobType,
+        "job_posted": jobPosted,
+        "job_url": jobAddUrl,
+        "db_id": mongoose.Types.ObjectId()
+    }
+    console.log(currentApplication)
+
+    await driver.close();
+    await driver.switchTo().window(mainWindow)
+
+    if (jobElement) {
+        return true
+    } else {
+        return false
+    }
+}
+
+exports.process_interested_jobs = async function(interestedJobIds, dkw, udkw) {
+    console.log('--------> processing interested jobs: <--------')
+    let appliedJobs = [];
+    for (i = 0; i < interestedJobIds.length; i++) {
+        console.log('------------------------------------------------')
+        let appliedJob = await process_jobAdd(interestedJobIds[i], dkw, udkw)
+        console.log('/---- applied job: ')
+        console.log(appliedJob)
+        if (appliedJob) {
+            appliedJobs.push(interestedJobIds[i])
+        }
+    }
+
+    return appliedJobs;
 }
 
 exports.test = async function() {
