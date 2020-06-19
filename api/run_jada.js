@@ -38,9 +38,8 @@ async function run_jada(jobTitle, area, radius) {
     let jobsAppliedTo = await Jada.process_interested_jobs(interestedJobIds, dkw, udkw);
     // viewedResults.push(...jobsAppliedTo);
     console.log('APPLIED TO JIds: ----------------- ')
+    console.log(jobsAppliedTo.length)
     console.log(jobsAppliedTo)
-    // console.log(viewedResults.length)
-    // console.log(viewedResults)
 
     // await Jada.test();
 }
