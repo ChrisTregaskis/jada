@@ -95,29 +95,16 @@ async function isInterested(jobId, dkw, udkw, session_id, session_date, session_
     console.log(`Already applied: ${alreadyApplied}`)
 
     let jobTitleUpperCase = jobTitle.toUpperCase();
+    let keyWordFinder = key_word_finder(jobTitleUpperCase);
+
     let jobDesirability = check_desirability(jobTitleUpperCase, dkw, udkw);
     let isDesirable = jobDesirability.is_desirable;
     let isNotDesirable = jobDesirability.is_not_desirable;
 
-    let keyWordFinder = key_word_finder(jobTitleUpperCase)
-    let current_application = {
-        "session_id": session_id,
-        "session_date": session_date,
-        "session_time": session_time,
-        "job_title": jobTitle,
-        "totalJobs_id": jobId,
-        "apply_attempted": false,
-        "interested": false,
-        "db_id": mongoose.Types.ObjectId(),
-        "found_dkw": keyWordFinder.found_dkw,
-        "found_udkw": keyWordFinder.found_udkw,
-        "found_top24": keyWordFinder.found_top24
-    }
-
     if (isDesirable && !isNotDesirable && !alreadyApplied) {
         return true
     } else {
-        console.log(current_application)
+        let logFailedInterest = await log_failed_interest(session_id, session_date, session_time, jobId, jobTitle, keyWordFinder)
         return false
     }
 }
@@ -271,6 +258,24 @@ function check_desirability(upperCaseJobString, dkw, udkw) {
     }
 }
 
+async function log_failed_interest(session_id, session_date, session_time, jobId, jobTitle, keyWordFinder) {
+    let current_application = {
+        "session_id": session_id,
+        "session_date": session_date,
+        "session_time": session_time,
+        "job_title": jobTitle,
+        "totalJobs_id": jobId,
+        "apply_attempted": false,
+        "interested": false,
+        "db_id": mongoose.Types.ObjectId(),
+        "found_dkw": keyWordFinder.found_dkw,
+        "found_udkw": keyWordFinder.found_udkw,
+        "found_top24": keyWordFinder.found_top24
+    }
+    console.log(current_application)
+    // add currentApplication to db
+}
+
 async function log_undesirable_job(session_id, session_date, session_time, jobAdd, keyWordFinder) {
     let currentApplication = {
         "session_id": session_id,
@@ -288,7 +293,7 @@ async function log_undesirable_job(session_id, session_date, session_time, jobAd
     // add currentApplication to db
 }
 
-async function log_desireable_job(session_id, session_date, session_time, jobAdd, keyWordFinder) {
+async function log_desirable_job(session_id, session_date, session_time, jobAdd, keyWordFinder) {
     let currentApplication = {
         "session_id": session_id,
         "session_date": session_date,
@@ -358,7 +363,7 @@ async function process_jobAdd(jobId, previouslyAppliedJobs, dkw, udkw, session_i
     let isNotDesirable = jobDesirability.is_not_desirable;
 
     if (isDesirable && !isNotDesirable) {
-        let logDesirableJob = await log_desireable_job(session_id, session_date, session_time, jobAdd, keyWordFinder)
+        let logDesirableJob = await log_desirable_job(session_id, session_date, session_time, jobAdd, keyWordFinder)
         appliedJob = true
     } else {
         let logUndesirableJob = await log_undesirable_job(session_id, session_date, session_time, jobAdd, keyWordFinder);
