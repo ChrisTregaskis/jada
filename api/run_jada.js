@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const Jada = require('./jada_functions');
 const dkw = ['SOFTWARE', 'ENGINEER', 'ENGINEERING', 'DEVELOPER', 'GIT', 'BASH', 'NODE', 'AGILE', 'NODEJS',
     'BACKEND', 'FRONTEND', 'PHP', 'OOP', 'JS', 'JAVASCRIPT', 'HTML', 'CSS', 'MYSQL', 'MONGODB', 'RESTFUL', 'API',
-    'GULP'];
+    'GULP', 'GRADUATE', 'JUNIOR'];
 const udkw = ['TRAINEESHIP', 'NET', 'TRAINEE', 'CONSULTANT', 'UX', 'DESIGNER', 'SALES', 'LEAD', 'WINDOWS', 'SENIOR', 'PYTHON'];
 const jobTitle = 'software developer';
 const area = 'Bath';

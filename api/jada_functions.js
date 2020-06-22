@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const fetch = require('node-fetch');
 const WebDriver = require('selenium-webdriver');
 const driver = new WebDriver.Builder().forBrowser('chrome').build();
 
@@ -132,7 +133,7 @@ exports.check_interest = async function(potentialJobs, viewedResults, dkw, udkw,
 function check_dkw(item) {
     const dkw = ['SOFTWARE', 'ENGINEER', 'ENGINEERING', 'DEVELOPER', 'GIT', 'BASH', 'NODE', 'AGILE', 'NODEJS',
         'BACKEND', 'FRONTEND', 'PHP', 'OOP', 'JS', 'JAVASCRIPT', 'HTML', 'CSS', 'MYSQL', 'MONGODB', 'RESTFUL', 'API',
-        'GULP'];
+        'GULP', 'GRADUATE', 'JUNIOR'];
 
     let itemCheck = dkw.includes(item)
     if (itemCheck) {
@@ -258,8 +259,38 @@ function check_desirability(upperCaseJobString, dkw, udkw) {
     }
 }
 
+async function add_application_db(application) {
+    return responseData = await handle_fetch(
+        'http://localhost:8080/applications',
+        'POST',
+        application
+    )
+}
+
+async function handle_fetch(url, requestMethod, dataToSend) {
+    let requestData = JSON.stringify(dataToSend);
+    let response = await fetch(url, {
+        method: requestMethod,
+        body: requestData,
+        headers: {
+            "Content-Type" : "application/json"
+        }
+    }).then((res) => {
+        return res.json()
+    })
+    // let responseData = await response.json();
+
+    if (response.status !== 200) {
+        console.log('SESSION ERROR: handle fetch unsuccessful')
+        console.log(`Response status: ${response.status}`)
+        console.log(`Response message: ${response.message}`)
+    }
+
+    return response
+}
+
 async function log_failed_interest(session_id, session_date, session_time, jobId, jobTitle, keyWordFinder) {
-    let current_application = {
+    let currentApplication = {
         "session_id": session_id,
         "session_date": session_date,
         "session_time": session_time,
@@ -267,13 +298,12 @@ async function log_failed_interest(session_id, session_date, session_time, jobId
         "totalJobs_id": jobId,
         "apply_attempted": false,
         "interested": false,
-        "db_id": mongoose.Types.ObjectId(),
         "found_dkw": keyWordFinder.found_dkw,
         "found_udkw": keyWordFinder.found_udkw,
         "found_top24": keyWordFinder.found_top24
     }
-    console.log(current_application)
-    // add currentApplication to db
+    let logApplication = await add_application_db(currentApplication);
+    console.log(logApplication)
 }
 
 async function log_undesirable_job(session_id, session_date, session_time, jobAdd, keyWordFinder) {
@@ -285,12 +315,13 @@ async function log_undesirable_job(session_id, session_date, session_time, jobAd
         "totalJobs_id": jobAdd.totalJobs_id,
         "apply_attempted": false,
         "db_id": mongoose.Types.ObjectId(),
+        "job_url": jobAdd.job_url,
         "found_dkw": keyWordFinder.found_dkw,
         "found_udkw": keyWordFinder.found_udkw,
         "found_top24": keyWordFinder.found_top24
     }
-    console.log(currentApplication)
-    // add currentApplication to db
+    let logApplication = await add_application_db(currentApplication);
+    console.log(logApplication)
 }
 
 async function log_desirable_job(session_id, session_date, session_time, jobAdd, keyWordFinder) {
@@ -314,8 +345,8 @@ async function log_desirable_job(session_id, session_date, session_time, jobAdd,
         "found_udkw": keyWordFinder.found_udkw,
         "found_top24": keyWordFinder.found_top24
     }
-    console.log(currentApplication)
-    // add currentApplication to db
+    let logApplication = await add_application_db(currentApplication);
+    console.log(logApplication)
 }
 
 async function process_jobAdd(jobId, previouslyAppliedJobs, dkw, udkw, session_id, session_date, session_time) {
@@ -323,7 +354,7 @@ async function process_jobAdd(jobId, previouslyAppliedJobs, dkw, udkw, session_i
     let mainWindow = await driver.getWindowHandle();
     let appliedJob = false;
 
-    // make sure jobId exists on page. Return false if so or grab url and continue
+    // make sure jobId exists on page.
     let jobIdElement = await driver.findElements({ xpath: '//*[@id="' + jobId + '"]/div/div/div[1]/a' });
     if (jobIdElement.length <= 0) {
         console.log('SESSION ERROR: jobId not located');
