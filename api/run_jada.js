@@ -1,8 +1,9 @@
+const mongoose = require('mongoose');
 const Jada = require('./jada_functions');
 const dkw = ['SOFTWARE', 'ENGINEER', 'ENGINEERING', 'DEVELOPER', 'GIT', 'BASH', 'NODE', 'AGILE', 'NODEJS',
     'BACKEND', 'FRONTEND', 'PHP', 'OOP', 'JS', 'JAVASCRIPT', 'HTML', 'CSS', 'MYSQL', 'MONGODB', 'RESTFUL', 'API',
     'GULP'];
-const udkw = ['TRAINEESHIP', 'NET', 'TRAINEE', 'CONSULTANT', 'UX', 'DESIGNER', 'SALES', 'LEAD', 'WINDOWS'];
+const udkw = ['TRAINEESHIP', 'NET', 'TRAINEE', 'CONSULTANT', 'UX', 'DESIGNER', 'SALES', 'LEAD', 'WINDOWS', 'SENIOR', 'PYTHON'];
 const jobTitle = 'software developer';
 const area = 'Bath';
 const radius = 30;
@@ -11,6 +12,9 @@ run_jada(jobTitle, area, radius);
 
 async function run_jada(jobTitle, area, radius) {
     const radiusOptions = [0, 5, 10, 20, 30];
+    let session_date = Jada.getDate('-')
+    let session_id = Jada.getDate('') + mongoose.Types.ObjectId();
+    let session_time = Jada.getTime();
     let viewedResults = [];
     let potentialJobsIds = [];
     let interestedJobIds = [];
@@ -30,13 +34,13 @@ async function run_jada(jobTitle, area, radius) {
     let additionalJobs = await Jada.populate_potential_jobs();
     potentialJobsIds.push(...additionalJobs);
 
-    let isInterested = await Jada.check_interest(potentialJobsIds, viewedResults, dkw, udkw);
+    let isInterested = await Jada.check_interest(potentialJobsIds, viewedResults, dkw, udkw, session_id, session_date, session_time);
     interestedJobIds.push(...isInterested);
     console.log('INTERESTED JIds: ---------------- ')
     console.log(interestedJobIds.length)
     console.log(interestedJobIds)
 
-    let jobsAppliedTo = await Jada.process_interested_jobs(interestedJobIds, dkw, udkw);
+    let jobsAppliedTo = await Jada.process_interested_jobs(interestedJobIds, dkw, udkw, session_id, session_date, session_time);
     // viewedResults.push(...jobsAppliedTo);
     console.log('APPLIED TO JIds: ----------------- ')
     console.log(jobsAppliedTo.length)
