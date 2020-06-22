@@ -85,45 +85,33 @@ exports.populate_potential_jobs = async function() {
     return additionalJobs;
 }
 
-async function isInterested(jobId, dkw, udkw) {
+async function isInterested(jobId, dkw, udkw, session_id, session_date, session_time) {
     let jobTitle = await driver.findElement({ xpath: '//*[@id="' + jobId + '"]/div/div/div[1]/a/h2'}).getText();
     let jobTitleWebElement = await driver.findElement({ xpath: '//*[@id="' + jobId + '"]'});
     let jobTitleClasses = await jobTitleWebElement.getAttribute('class');
 
-    let jobTitleUpperCase = jobTitle.toUpperCase();
     let explodedJTClasses = jobTitleClasses.split(" ");
-    let explodedJobTitle = jobTitleUpperCase.split(/[^a-zA-Z\d\#\++:]/);
-
-    let isDesirable = dkw.some(r => explodedJobTitle.indexOf(r) >= 0)
-    let isNotDesirable = udkw.some(r => explodedJobTitle.indexOf(r) >= 0)
     let alreadyApplied = explodedJTClasses.includes('applied')
     console.log(`Already applied: ${alreadyApplied}`)
-    console.log(`Includes DKW: ${isDesirable}`)
-    console.log(`Includes UDKW: ${isNotDesirable}`)
 
-    // populate found_dkw, found_udkw, found_top24 in current_application obj
-    let explodedJD_top24 = jobTitleUpperCase.split(/[^a-zA-Z\d\#\++:]/);
-    let top24FoundAll = explodedJD_top24.filter(check_top24);
-    let top24FoundUnique = top24FoundAll.reduce((unique, item) =>
-        unique.includes(item) ? unique : [...unique, item],[]);
-    let explodedJD_dkw = jobTitleUpperCase.split(/[^a-zA-Z\d\#\++:]/);
-    let explodedJD_udkw = jobTitleUpperCase.split(/[^a-zA-Z\d\#\++:]/);
-    let dkwFoundAll = explodedJD_dkw.filter(check_dkw);
-    let dkwFoundUnique = dkwFoundAll.reduce((unique, item) =>
-        unique.includes(item) ? unique : [...unique, item],[]);
-    let udkwFoundAll = explodedJD_udkw.filter(check_udkw);
-    let udkwFoundUnique = udkwFoundAll.reduce((unique, item) =>
-        unique.includes(item) ? unique : [...unique, item], []);
+    let jobTitleUpperCase = jobTitle.toUpperCase();
+    let jobDesirability = check_desirability(jobTitleUpperCase, dkw, udkw);
+    let isDesirable = jobDesirability.is_desirable;
+    let isNotDesirable = jobDesirability.is_not_desirable;
 
+    let keyWordFinder = key_word_finder(jobTitleUpperCase)
     let current_application = {
+        "session_id": session_id,
+        "session_date": session_date,
+        "session_time": session_time,
         "job_title": jobTitle,
         "totalJobs_id": jobId,
         "apply_attempted": false,
         "interested": false,
         "db_id": mongoose.Types.ObjectId(),
-        "found_dkw": dkwFoundUnique,
-        "found_udkw": udkwFoundUnique,
-        "found_top24": top24FoundUnique
+        "found_dkw": keyWordFinder.found_dkw,
+        "found_udkw": keyWordFinder.found_udkw,
+        "found_top24": keyWordFinder.found_top24
     }
 
     if (isDesirable && !isNotDesirable && !alreadyApplied) {
@@ -134,7 +122,7 @@ async function isInterested(jobId, dkw, udkw) {
     }
 }
 
-exports.check_interest = async function(potentialJobs, viewedResults, dkw, udkw) {
+exports.check_interest = async function(potentialJobs, viewedResults, dkw, udkw, session_id, session_date, session_time) {
     console.log('-------> checking job initial interest: <-------')
     let interestedRoles = [];
     for (i = 0; i < potentialJobs.length; i++) {
@@ -143,7 +131,7 @@ exports.check_interest = async function(potentialJobs, viewedResults, dkw, udkw)
         console.log(`Current job id: ${potentialJobs[i]}`)
         console.log(`Has been viewed: ${hasBeenViewed}`)
         if (!hasBeenViewed) {
-            let interested = await isInterested(potentialJobs[i], dkw, udkw)
+            let interested = await isInterested(potentialJobs[i], dkw, udkw, session_id, session_date, session_time)
             console.log('/---- Interested: ')
             console.log(interested)
             if (interested) {
@@ -166,7 +154,7 @@ function check_dkw(item) {
 }
 
 function check_udkw(item) {
-    const udkw = ['TRAINEESHIP', 'NET', 'TRAINEE', 'CONSULTANT', 'UX', 'DESIGNER', 'SALES', 'LEAD', 'WINDOWS'];
+    const udkw = ['TRAINEESHIP', 'NET', 'TRAINEE', 'CONSULTANT', 'UX', 'DESIGNER', 'SALES', 'LEAD', 'WINDOWS', 'SENIOR', 'PYTHON'];
 
     let itemCheck = udkw.includes(item)
     if (itemCheck) {
@@ -185,84 +173,27 @@ function check_top24(item) {
     }
 }
 
-async function process_jobAdd(jobId, previouslyAppliedJobs, dkw, udkw) {
-    console.log('************************************************')
-    let mainWindow = await driver.getWindowHandle();
-
-    // make sure jobId exists on page
-    let jobIdElement = await driver.findElements({ xpath: '//*[@id="' + jobId + '"]/div/div/div[1]/a' });
-    if (jobIdElement.length <= 0) {
-        console.log('SESSION ERROR: jobId not located')
-        return false
-    }
-
-    let jobElement = await driver.findElement({ xpath: '//*[@id="' + jobId + '"]/div/div/div[1]/a'});
-    let jobAddUrl = await jobElement.getAttribute('href');
-    console.log(jobAddUrl)
-
-    // open a new tab and go to current id job post
+async function open_result(url) {
     await driver.switchTo().newWindow('tab')
-    await driver.get(jobAddUrl)
-    let resultPage = await driver.wait(WebDriver.until.elementLocated({ css: '.salary div'}), 2000);
+    await driver.get(url)
+    let resultPage = await driver.wait(WebDriver.until.elementLocated({ css: '.salary div'}), 4000);
     if (!resultPage) {
-        console.log('SESSION ERROR: result page not loaded, salary information not found');
-        await driver.close();
-        let backToMainWindow = await driver.switchTo().window(mainWindow)
         return false;
+    } else {
+        return true
     }
+}
 
-    // check jobId against previously applied
+async function check_already_applied(previouslyAppliedJobs, jobId) {
     let alreadyApplied = previouslyAppliedJobs.includes(jobId)
     if (alreadyApplied) {
-        console.log(`Already applied: ${alreadyApplied}`)
-        await driver.close();
-        let backToMainWindow = await driver.switchTo().window(mainWindow)
-        return false;
-    }
-
-    // check DKW, UDKW and top24ProgLang.
-    let jobTitle = await driver.findElement({ css: '.job-content-top h1' }).getText();
-    let jobDescription = await driver.findElement({ className: 'job-description' }).getText();
-    let toUpperCaseJD =jobDescription.toUpperCase();
-    let explodedJD = toUpperCaseJD.split(/[^a-zA-Z\d\#\++:]/);
-    let isDesirable = dkw.some(r => explodedJD.indexOf(r) >= 0);
-    let isNotDesirable = udkw.some(r => explodedJD.indexOf(r) >= 0);
-    console.log(`Includes DKW: ${isDesirable}`)
-    console.log(`Includes UDKW: ${isNotDesirable}`)
-
-    let explodedJD_top24 = toUpperCaseJD.split(/[^a-zA-Z\d\#\++:]/);
-    let top24FoundAll = explodedJD_top24.filter(check_top24);
-    let top24FoundUnique = top24FoundAll.reduce((unique, item) =>
-        unique.includes(item) ? unique : [...unique, item],[]);
-
-    // Capture each key word thats found, save in array and add to current application obj
-    let explodedJD_dkw = toUpperCaseJD.split(/[^a-zA-Z\d\#\++:]/);
-    let explodedJD_udkw = toUpperCaseJD.split(/[^a-zA-Z\d\#\++:]/);
-    let dkwFoundAll = explodedJD_dkw.filter(check_dkw);
-    let dkwFoundUnique = dkwFoundAll.reduce((unique, item) =>
-        unique.includes(item) ? unique : [...unique, item],[]);
-    let udkwFoundAll = explodedJD_udkw.filter(check_udkw);
-    let udkwFoundUnique = udkwFoundAll.reduce((unique, item) =>
-        unique.includes(item) ? unique : [...unique, item], []);
-
-    if (!isDesirable || isNotDesirable) {
-        let currentApplication = {
-            "job_title": jobTitle,
-            "totalJobs_id": jobId,
-            "apply_attempted": false,
-            "db_id": mongoose.Types.ObjectId(),
-            "found_dkw": dkwFoundUnique,
-            "found_udkw": udkwFoundUnique,
-            "found_top24": top24FoundUnique
-        }
-        console.log(currentApplication)
-        // add currentApplication to db
-        await driver.close();
-        let backToMainWindow = await driver.switchTo().window(mainWindow)
+        return true;
+    } else {
         return false
     }
+}
 
-    // create and add to DB current application
+async function grab_job_detail(jobId, jobAddUrl) {
     let location;
     let locationSyntax_1 = await driver.findElements({ css: '.travelTime-locationText ul li a' });
     let locationSyntax_2 = await driver.findElements({ css: '.travelTime-locationText ul li' });
@@ -283,16 +214,16 @@ async function process_jobAdd(jobId, previouslyAppliedJobs, dkw, udkw) {
     let contactShift = contactSplit.shift();
     let contact = contactSplit.join(" ");
 
+    let jobTitle = await driver.findElement({ css: '.job-content-top h1' }).getText();
     let salary = await driver.findElement({ css: '.salary div' }).getText();
     let company = await driver.findElement({ css: '.company div a' }).getText();
     let jobType = await driver.findElement({ css: '.job-type div' }).getText();
     let jobPosted = await driver.findElement({ css: '.date-posted div span'}).getText();
     let totalJobsRef = await driver.findElement({ css: '.contact-reference li:nth-child(2)'}).getText();
 
-    let currentApplication = {
+    return {
         "job_title": jobTitle,
         "totalJobs_id": jobId,
-        "apply_attempted": true,
         "salary": salary,
         "company": company,
         "job_type": jobType,
@@ -301,23 +232,142 @@ async function process_jobAdd(jobId, previouslyAppliedJobs, dkw, udkw) {
         "job_url": jobAddUrl,
         "job_contact": contact,
         "totalJobs_ref": totalJobsRef,
-        "db_id": mongoose.Types.ObjectId(),
+    }
+}
+
+function key_word_finder(upperCaseJobString) {
+    let explodedJD_dkw = upperCaseJobString.split(/[^a-zA-Z\d\#\++:]/);
+    let explodedJD_udkw = upperCaseJobString.split(/[^a-zA-Z\d\#\++:]/);
+    let explodedJD_top24 = upperCaseJobString.split(/[^a-zA-Z\d\#\++:]/);
+
+    let dkwFoundAll = explodedJD_dkw.filter(check_dkw);
+    let udkwFoundAll = explodedJD_udkw.filter(check_udkw);
+    let top24FoundAll = explodedJD_top24.filter(check_top24);
+
+    let dkwFoundUnique = dkwFoundAll.reduce((unique, item) =>
+        unique.includes(item) ? unique : [...unique, item],[]);
+    let udkwFoundUnique = udkwFoundAll.reduce((unique, item) =>
+        unique.includes(item) ? unique : [...unique, item], []);
+    let top24FoundUnique = top24FoundAll.reduce((unique, item) =>
+        unique.includes(item) ? unique : [...unique, item],[]);
+
+    return {
         "found_dkw": dkwFoundUnique,
         "found_udkw": udkwFoundUnique,
         "found_top24": top24FoundUnique
     }
+}
+
+function check_desirability(upperCaseJobString, dkw, udkw) {
+    let explodedJobString = upperCaseJobString.split(/[^a-zA-Z\d\#\++:]/);
+    let isDesirable = dkw.some(r => explodedJobString.indexOf(r) >= 0);
+    let isNotDesirable = udkw.some(r => explodedJobString.indexOf(r) >= 0);
+    console.log(`Includes DKW: ${isDesirable}`)
+    console.log(`Includes UDKW: ${isNotDesirable}`)
+
+    return {
+        "is_desirable": isDesirable,
+        "is_not_desirable": isNotDesirable
+    }
+}
+
+async function log_undesirable_job(session_id, session_date, session_time, jobAdd, keyWordFinder) {
+    let currentApplication = {
+        "session_id": session_id,
+        "session_date": session_date,
+        "session_time": session_time,
+        "job_title": jobAdd.job_title,
+        "totalJobs_id": jobAdd.totalJobs_id,
+        "apply_attempted": false,
+        "db_id": mongoose.Types.ObjectId(),
+        "found_dkw": keyWordFinder.found_dkw,
+        "found_udkw": keyWordFinder.found_udkw,
+        "found_top24": keyWordFinder.found_top24
+    }
     console.log(currentApplication)
-
     // add currentApplication to db
+}
 
-    await driver.close();
-    let backToMainWindow = await driver.switchTo().window(mainWindow)
+async function log_desireable_job(session_id, session_date, session_time, jobAdd, keyWordFinder) {
+    let currentApplication = {
+        "session_id": session_id,
+        "session_date": session_date,
+        "session_time": session_time,
+        "job_title": jobAdd.job_title,
+        "totalJobs_id": jobAdd.totalJobs_id,
+        "apply_attempted": true,
+        "salary": jobAdd.salary,
+        "company": jobAdd.company,
+        "job_type": jobAdd.job_type,
+        "job_posted": jobAdd.job_posted,
+        "location": jobAdd.location,
+        "job_url": jobAdd.job_url,
+        "job_contact": jobAdd.job_contact,
+        "totalJobs_ref": jobAdd.totalJobs_ref,
+        "db_id": mongoose.Types.ObjectId(),
+        "found_dkw": keyWordFinder.found_dkw,
+        "found_udkw": keyWordFinder.found_udkw,
+        "found_top24": keyWordFinder.found_top24
+    }
+    console.log(currentApplication)
+    // add currentApplication to db
+}
 
-    if (jobElement) {
-        return true
-    } else {
+async function process_jobAdd(jobId, previouslyAppliedJobs, dkw, udkw, session_id, session_date, session_time) {
+    console.log('************************************************');
+    let mainWindow = await driver.getWindowHandle();
+    let appliedJob = false;
+
+    // make sure jobId exists on page. Return false if so or grab url and continue
+    let jobIdElement = await driver.findElements({ xpath: '//*[@id="' + jobId + '"]/div/div/div[1]/a' });
+    if (jobIdElement.length <= 0) {
+        console.log('SESSION ERROR: jobId not located');
         return false
     }
+
+    // open a new tab and go to current id job post
+    let jobElement = await driver.findElement({ xpath: '//*[@id="' + jobId + '"]/div/div/div[1]/a'});
+    let jobAddUrl = await jobElement.getAttribute('href');
+    console.log(jobAddUrl)
+    let navigateToResultPage = await open_result(jobAddUrl)
+    if (!navigateToResultPage) {
+        console.log('SESSION ERROR: result page not loaded, salary information not found');
+        await driver.close();
+        let backToMainWindow = await driver.switchTo().window(mainWindow)
+        return false
+    }
+
+    // check jobId against previously applied
+    let alreadyApplied = await check_already_applied(previouslyAppliedJobs, jobId);
+    if (alreadyApplied) {
+        console.log(`Already applied: ${alreadyApplied}`);
+        await driver.close();
+        let backToMainWindow = await driver.switchTo().window(mainWindow)
+        return false
+    }
+
+    // grab all jobAdd page detail
+    let jobDescription = await driver.findElement({ className: 'job-description' }).getText();
+    let toUpperCaseJD = jobDescription.toUpperCase();
+    let jobAdd = await grab_job_detail(jobId, jobAddUrl);
+    let keyWordFinder = key_word_finder(toUpperCaseJD);
+
+    // check desirability, log and apply accordingly
+    let jobDesirability = check_desirability(toUpperCaseJD, dkw, udkw)
+    let isDesirable = jobDesirability.is_desirable;
+    let isNotDesirable = jobDesirability.is_not_desirable;
+
+    if (isDesirable && !isNotDesirable) {
+        let logDesirableJob = await log_desireable_job(session_id, session_date, session_time, jobAdd, keyWordFinder)
+        appliedJob = true
+    } else {
+        let logUndesirableJob = await log_undesirable_job(session_id, session_date, session_time, jobAdd, keyWordFinder);
+    }
+
+    await driver.close();
+    let backToMainWindow = await driver.switchTo().window(mainWindow);
+
+    return appliedJob;
 }
 
 async function get_applied_jobIds() {
@@ -325,14 +375,14 @@ async function get_applied_jobIds() {
     return ['90265955', '90264496']
 }
 
-exports.process_interested_jobs = async function(interestedJobIds, dkw, udkw) {
+exports.process_interested_jobs = async function(interestedJobIds, dkw, udkw, session_id, session_date, session_time) {
     console.log('--------> processing interested jobs: <--------')
     let appliedJobs = [];
     let previouslyAppliedJobs = await get_applied_jobIds()
 
     for (i = 0; i < interestedJobIds.length; i++) {
         console.log('------------------------------------------------')
-        let appliedJob = await process_jobAdd(interestedJobIds[i], previouslyAppliedJobs, dkw, udkw)
+        let appliedJob = await process_jobAdd(interestedJobIds[i], previouslyAppliedJobs, dkw, udkw, session_id, session_date, session_time)
         console.log('/---- applied job: ')
         console.log(appliedJob)
         if (appliedJob) {
@@ -341,6 +391,29 @@ exports.process_interested_jobs = async function(interestedJobIds, dkw, udkw) {
     }
 
     return appliedJobs;
+}
+
+exports.getDate = function(separator) {
+    today = new Date();
+    let dd = today.getDate();
+    let mm = today.getMonth() + 1;
+    let yyyy = today.getFullYear();
+
+    if(dd < 10) dd = '0' + dd;
+    if(mm < 10) mm = '0' + mm;
+    return (yyyy+separator+mm+separator+dd)
+}
+
+exports.getTime = function() {
+    let today = new Date();
+    let hh = today.getHours();
+    let min = today.getMinutes();
+    let sec = today.getSeconds();
+
+    if(hh < 10) hh = '0' + hh;
+    if(min < 10) min = '0' + min;
+    if(sec < 10) sec = '0' + sec;
+    return time = `${hh}:${min}:${sec}`;
 }
 
 exports.test = async function() {
