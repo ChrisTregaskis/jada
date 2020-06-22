@@ -77,6 +77,7 @@ exports.log_application = (req, res, next) => {
         .save()
         .then(result => {
             res.status(200).json({
+                status: 200,
                 message: "Application successfully logged",
                 loggedApplication: {
                     _id: result._id,
@@ -154,7 +155,7 @@ exports.get_application = (req, res, next) => {
         })
 };
 
-exports.delete_application = (req,res, next) => {
+exports.delete_application = (req, res, next) => {
     const id = req.params.applicationId
     Application
         .deleteOne({_id: id})
@@ -175,4 +176,20 @@ exports.delete_application = (req,res, next) => {
                 error: err
             })
         });
+}
+
+exports.delete_applications = (req, res, next) => {
+    Application
+        .deleteMany({ "apply_attempted": false })
+        .exec()
+        .then(result => {
+            res.status(200).json({
+                message: `Deleted ${result.deletedCount}`
+            })
+        })
+        .catch(err => {
+            res.status(500).json({
+                error: err
+            })
+        })
 }
