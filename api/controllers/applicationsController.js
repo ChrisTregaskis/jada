@@ -179,8 +179,10 @@ exports.delete_application = (req, res, next) => {
 }
 
 exports.delete_applications = (req, res, next) => {
+    let deleteOption = req.body.deleteOption;
+    console.log(deleteOption)
     Application
-        .deleteMany({ "apply_attempted": false })
+        .deleteMany({ "apply_attempted": deleteOption })
         .exec()
         .then(result => {
             res.status(200).json({
