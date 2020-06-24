@@ -3,14 +3,17 @@ const Jada = require('./jada_functions');
 const dkw = ['SOFTWARE', 'ENGINEER', 'ENGINEERING', 'DEVELOPER', 'GIT', 'BASH', 'NODE', 'AGILE', 'NODEJS',
     'BACKEND', 'FRONTEND', 'PHP', 'OOP', 'JS', 'JAVASCRIPT', 'HTML', 'CSS', 'MYSQL', 'MONGODB', 'RESTFUL', 'API',
     'GULP', 'GRADUATE', 'JUNIOR'];
-const udkw = ['TRAINEESHIP', 'NET', 'TRAINEE', 'CONSULTANT', 'UX', 'DESIGNER', 'SALES', 'LEAD', 'WINDOWS', 'SENIOR', 'PYTHON'];
-const jobTitle = 'software developer';
+const udkw = ['TRAINEESHIP', 'NET', 'TRAINEE', 'CONSULTANT', 'UX', 'DESIGNER', 'SALES', 'LEAD', 'WINDOWS'];
+const jobTitle = 'junior software engineer';
 const area = 'Bath';
-const radius = 30;
+const radius = 10;
 
 run_jada(jobTitle, area, radius);
 
 async function run_jada(jobTitle, area, radius) {
+    console.log(`Job Title: ${jobTitle}`)
+    console.log(`Area: ${area}`)
+    console.log(`Radius: ${radius}`)
     const radiusOptions = [0, 5, 10, 20, 30];
     let session_date = Jada.getDate('-')
     let session_id = Jada.getDate('') + mongoose.Types.ObjectId();

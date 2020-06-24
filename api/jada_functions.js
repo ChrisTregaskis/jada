@@ -4,7 +4,7 @@ const WebDriver = require('selenium-webdriver');
 const driver = new WebDriver.Builder().forBrowser('chrome').build();
 
 exports.navigate_to_website = async function() {
-    driver.get(`https://www.totaljobs.com/jobs/software-engineer/in-bath?radius=20&s=header`)
+    driver.get(`https://www.totaljobs.com/jobs/junior-software-engineer/in-bath?radius=10&s=header`)
     // const url = 'https://www.totaljobs.com/';
     // await driver.get(url);
     // driver.getTitle()
@@ -142,7 +142,7 @@ function check_dkw(item) {
 }
 
 function check_udkw(item) {
-    const udkw = ['TRAINEESHIP', 'NET', 'TRAINEE', 'CONSULTANT', 'UX', 'DESIGNER', 'SALES', 'LEAD', 'WINDOWS', 'SENIOR', 'PYTHON'];
+    const udkw = ['TRAINEESHIP', 'NET', 'TRAINEE', 'CONSULTANT', 'UX', 'DESIGNER', 'SALES', 'LEAD', 'WINDOWS'];
 
     let itemCheck = udkw.includes(item)
     if (itemCheck) {
@@ -172,7 +172,7 @@ async function open_result(url) {
     }
 }
 
-async function check_already_applied(previouslyAppliedJobs, jobId) {
+async function check_processed_ids(previouslyAppliedJobs, jobId) {
     let alreadyApplied = previouslyAppliedJobs.includes(jobId)
     if (alreadyApplied) {
         return true;
@@ -275,18 +275,17 @@ async function handle_fetch(url, requestMethod, dataToSend) {
         headers: {
             "Content-Type" : "application/json"
         }
-    }).then((res) => {
-        return res.json()
     })
-    // let responseData = await response.json();
 
-    if (response.status !== 200) {
+    let responseData = await response.json();
+
+    if (responseData.status !== 200) {
         console.log('SESSION ERROR: handle fetch unsuccessful')
-        console.log(`Response status: ${response.status}`)
-        console.log(`Response message: ${response.message}`)
+        console.log(`Response status: ${responseData.status}`)
+        console.log(`Response message: ${responseData.message}`)
     }
 
-    return response
+    return responseData
 }
 
 async function log_failed_interest(session_id, session_date, session_time, jobId, jobTitle, keyWordFinder) {
@@ -304,6 +303,9 @@ async function log_failed_interest(session_id, session_date, session_time, jobId
     }
     let logApplication = await add_application_db(currentApplication);
     console.log(logApplication)
+    if (logApplication.status !== 200) {
+        console.log(`SESSION ERROR: unable to log job id: ${jobId}`)
+    }
 }
 
 async function log_undesirable_job(session_id, session_date, session_time, jobAdd, keyWordFinder) {
@@ -322,6 +324,9 @@ async function log_undesirable_job(session_id, session_date, session_time, jobAd
     }
     let logApplication = await add_application_db(currentApplication);
     console.log(logApplication)
+    if (logApplication.status !== 200) {
+        console.log(`SESSION ERROR: unable to log job id: ${jobAdd.totalJobs_id}`)
+    }
 }
 
 async function log_desirable_job(session_id, session_date, session_time, jobAdd, keyWordFinder) {
@@ -347,6 +352,9 @@ async function log_desirable_job(session_id, session_date, session_time, jobAdd,
     }
     let logApplication = await add_application_db(currentApplication);
     console.log(logApplication)
+    if (logApplication.status !== 200) {
+        console.log(`SESSION ERROR: unable to log job id: ${jobAdd.totalJobs_id}`)
+    }
 }
 
 async function process_jobAdd(jobId, previouslyAppliedJobs, dkw, udkw, session_id, session_date, session_time) {
@@ -374,9 +382,9 @@ async function process_jobAdd(jobId, previouslyAppliedJobs, dkw, udkw, session_i
     }
 
     // check jobId against previously applied
-    let alreadyApplied = await check_already_applied(previouslyAppliedJobs, jobId);
+    let alreadyApplied = await check_processed_ids(previouslyAppliedJobs, jobId);
     if (alreadyApplied) {
-        console.log(`Already applied: ${alreadyApplied}`);
+        console.log(`Job already processed: ${alreadyApplied}`);
         await driver.close();
         let backToMainWindow = await driver.switchTo().window(mainWindow)
         return false
@@ -407,14 +415,38 @@ async function process_jobAdd(jobId, previouslyAppliedJobs, dkw, udkw, session_i
 }
 
 async function get_applied_jobIds() {
-    //this function will grab all ids from db and return them in an array
-    return ['90265955', '90264496']
+    console.log('Grabbing processed job ids...')
+    let response = await fetch('http://localhost:8080/applications', {
+        method: 'GET',
+        headers: {
+            "Content-Type" : "application/json"
+        }
+    })
+
+    let responseData = await response.json();
+    let applications = await responseData.response.applications;
+
+    if (responseData.response.status !== 200) {
+        console.log('SESSION ERROR: handle fetch unsuccessful')
+        console.log(`Response status: ${responseData.response.status}`)
+        console.log(`Response message: ${responseData.response.message}`)
+    }
+
+    let processedIds = applications.map(application => {
+        return application.totalJobs_id
+    })
+    console.log('Job ids successfully loaded: ')
+    console.log('Job id count: ')
+    console.log(processedIds.length)
+    return processedIds
 }
+
+get_applied_jobIds();
 
 exports.process_interested_jobs = async function(interestedJobIds, dkw, udkw, session_id, session_date, session_time) {
     console.log('--------> processing interested jobs: <--------')
     let appliedJobs = [];
-    let previouslyAppliedJobs = await get_applied_jobIds()
+    let previouslyAppliedJobs = await get_applied_jobIds();
 
     for (i = 0; i < interestedJobIds.length; i++) {
         console.log('------------------------------------------------')
