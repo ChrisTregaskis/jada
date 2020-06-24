@@ -4,7 +4,7 @@ const WebDriver = require('selenium-webdriver');
 const driver = new WebDriver.Builder().forBrowser('chrome').build();
 
 exports.navigate_to_website = async function() {
-    driver.get(`https://www.totaljobs.com/jobs/junior-software-engineer/in-bath?radius=10&s=header`)
+    driver.get(`https://www.totaljobs.com/jobs/junior-developer/in-bath?radius=20&s=header`)
     // const url = 'https://www.totaljobs.com/';
     // await driver.get(url);
     // driver.getTitle()
@@ -110,9 +110,10 @@ async function isInterested(jobId, dkw, udkw, session_id, session_date, session_
     }
 }
 
-exports.check_interest = async function(potentialJobs, viewedResults, dkw, udkw, session_id, session_date, session_time) {
+exports.check_interest = async function(potentialJobs, dkw, udkw, session_id, session_date, session_time) {
     console.log('-------> checking job initial interest: <-------')
     let interestedRoles = [];
+    let viewedResults = await get_applied_jobIds();
     for (i = 0; i < potentialJobs.length; i++) {
         let hasBeenViewed = viewedResults.includes(potentialJobs[i]);
         console.log('------------------------------------------------')
@@ -441,8 +442,6 @@ async function get_applied_jobIds() {
     return processedIds
 }
 
-get_applied_jobIds();
-
 exports.process_interested_jobs = async function(interestedJobIds, dkw, udkw, session_id, session_date, session_time) {
     console.log('--------> processing interested jobs: <--------')
     let appliedJobs = [];
@@ -484,6 +483,28 @@ exports.getTime = function() {
     return time = `${hh}:${min}:${sec}`;
 }
 
-exports.test = async function() {
+exports.check_nextBtn_status = async function() {
+    let nextBtnElement = await driver.findElement({ css: '.pagination .next' });
+    let nextBtnClasses = await nextBtnElement.getAttribute('class');
+    let explodedBtnClasses = nextBtnClasses.split(" ");
+    let disabledNextBtn = explodedBtnClasses.includes('disabled')
 
+    if (!disabledNextBtn) {
+        return true
+    } else {
+        return false
+    }
+}
+
+exports.next_results_page = async function() {
+    let nextBtnElement = await driver.findElement({ css: '.pagination .next' }).click();
+    let resultsPage = await driver.wait(WebDriver.until.elementLocated({ xpath: '//*[@id="scroll-to-top"]'}), 4000);
+    if (resultsPage) {
+        console.log('************************************************')
+        console.log('************************************************')
+        console.log('Successfully reached next results page');
+        return true;
+    } else {
+        return false;
+    }
 }

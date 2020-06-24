@@ -18,9 +18,10 @@ async function run_jada(jobTitle, area, radius) {
     let session_date = Jada.getDate('-')
     let session_id = Jada.getDate('') + mongoose.Types.ObjectId();
     let session_time = Jada.getTime();
-    let viewedResults = [];
+    let jobsAppliedTo = [];
     let potentialJobsIds = [];
     let interestedJobIds = [];
+    let resultPage = 0;
     let radiusValid = radiusOptions.includes(radius);
     if (!radiusValid) { return console.log('SESSION FAILED: invalid radius option') }
 
@@ -34,20 +35,68 @@ async function run_jada(jobTitle, area, radius) {
     // let enteredSearch = await Jada.enter_search(jobTitle, area, radius);
     // if (!enteredSearch) { return console.log('SESSION FAILED: first xpath result not found') }
 
+    let activeNextBtn = await Jada.check_nextBtn_status();
+    while (activeNextBtn) {
+        resultPage++;
+        console.log(resultPage)
+        potentialJobsIds = [];
+        interestedJobIds = [];
+        let additionalJobs = await Jada.populate_potential_jobs();
+        potentialJobsIds.push(...additionalJobs);
+
+        let isInterested = await Jada.check_interest(potentialJobsIds, dkw, udkw, session_id, session_date, session_time);
+        interestedJobIds.push(...isInterested);
+        console.log('INTERESTED JIds: ---------------- ')
+        console.log(interestedJobIds.length)
+        console.log(interestedJobIds)
+
+        let additionalJobsAppliedTo = await Jada.process_interested_jobs(interestedJobIds, dkw, udkw, session_id, session_date, session_time);
+        jobsAppliedTo.push(...additionalJobsAppliedTo);
+        console.log('APPLIED TO JIds: ----------------- ')
+        console.log(jobsAppliedTo.length)
+        console.log(jobsAppliedTo)
+
+        let nextPage = await Jada.next_results_page();
+        if (!nextPage) { return console.log('SESSION FAILED: next result page button not found') }
+        activeNextBtn = await Jada.check_nextBtn_status();
+        console.log(`Next results page button available: ${activeNextBtn}`)
+    }
+
+    resultPage++;
+    console.log(resultPage)
+    potentialJobsIds = [];
+    interestedJobIds = [];
     let additionalJobs = await Jada.populate_potential_jobs();
     potentialJobsIds.push(...additionalJobs);
 
-    let isInterested = await Jada.check_interest(potentialJobsIds, viewedResults, dkw, udkw, session_id, session_date, session_time);
+    let isInterested = await Jada.check_interest(potentialJobsIds, dkw, udkw, session_id, session_date, session_time);
     interestedJobIds.push(...isInterested);
     console.log('INTERESTED JIds: ---------------- ')
     console.log(interestedJobIds.length)
     console.log(interestedJobIds)
 
-    let jobsAppliedTo = await Jada.process_interested_jobs(interestedJobIds, dkw, udkw, session_id, session_date, session_time);
-    // viewedResults.push(...jobsAppliedTo);
+    let additionalJobsAppliedTo = await Jada.process_interested_jobs(interestedJobIds, dkw, udkw, session_id, session_date, session_time);
+    jobsAppliedTo.push(...additionalJobsAppliedTo);
     console.log('APPLIED TO JIds: ----------------- ')
     console.log(jobsAppliedTo.length)
     console.log(jobsAppliedTo)
 
-    // await Jada.test();
+    // produce report... pass session_id as param to fetch all application in current session.
+    // session_id
+    // session_date
+    // session_time
+    // count: successfully applied
+    // count: skipped
+    // count: already processed
+    // dkw, include duplicates push into obj ie. { i : i.count }
+    // dkw, count of each dkw
+    // udkw, include duplicates
+    // udkw, count of each dkw
+    // location, include duplicates
+    // location, count of each location
+    // list of applied console.table?
+    // list of not interested console.table?
+
+    // once report produced, save in separate table
+
 }
