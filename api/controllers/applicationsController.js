@@ -39,6 +39,7 @@ exports.get_all_applications = (req, res, next) => {
                 res.status(200).json({response})
             } else {
                 res.status(404).json({
+                    status: 404,
                     message: 'no data in db'
                 })
             }
@@ -46,6 +47,7 @@ exports.get_all_applications = (req, res, next) => {
         })
         .catch(err => {
             res.status(500).json({
+                status: 500,
                 error: err
             });
         })
@@ -90,6 +92,7 @@ exports.get_by_session_id = (req, res, next) => {
                 res.status(200).json({response})
             } else {
                 res.status(404).json({
+                    status: 404,
                     message: 'no data in db'
                 })
             }
@@ -97,6 +100,7 @@ exports.get_by_session_id = (req, res, next) => {
         })
         .catch(err => {
             res.status(500).json({
+                status: 500,
                 error: err
             });
         })
@@ -161,6 +165,7 @@ exports.log_application = (req, res, next) => {
         })
         .catch(err => {
             res.status(500).json({
+                status: 500,
                 error: err
             })
         });
@@ -196,12 +201,14 @@ exports.get_application = (req, res, next) => {
                 })
             } else {
                 res.status(404).json({
+                    status: 404,
                     message: 'no valid entry found for application id'
                 })
             }
         })
         .catch(err => {
             res.status(500).json({
+                status: 500,
                 error: err
             })
         })
@@ -214,6 +221,7 @@ exports.delete_application = (req, res, next) => {
         .exec()
         .then(result => {
             res.status(200).json({
+                status: 200,
                 message: 'application deleted',
                 request: {
                     type: 'POST',
@@ -225,6 +233,7 @@ exports.delete_application = (req, res, next) => {
         })
         .catch(err => {
             res.status(500).json({
+                status: 500,
                 error: err
             })
         });
@@ -238,11 +247,13 @@ exports.delete_applications = (req, res, next) => {
         .exec()
         .then(result => {
             res.status(200).json({
+                status: 200,
                 message: `Deleted ${result.deletedCount}`
             })
         })
         .catch(err => {
             res.status(500).json({
+                status: 500,
                 error: err
             })
         })
