@@ -7,6 +7,7 @@ exports.get_all_applications = (req, res, next) => {
         .exec()
         .then(docs => {
             const response = {
+                status: 200,
                 count: docs.length,
                 applications: docs.map(doc => {
                     return {
