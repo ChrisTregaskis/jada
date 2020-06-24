@@ -4,20 +4,20 @@ const WebDriver = require('selenium-webdriver');
 const driver = new WebDriver.Builder().forBrowser('chrome').build();
 
 exports.navigate_to_website = async function() {
-    // driver.get(`https://www.totaljobs.com/jobs/junior-developer/in-bath?radius=20&s=header`)
-    const url = 'https://www.totaljobs.com/';
-    await driver.get(url);
-    driver.getTitle()
-        .then(title => {
-            if (title === 'Jobs | UK Job Search | Find your perfect job - totaljobs') {
-                console.log(`successfully navigated to ${url}`);
-            } else {
-                console.log('page title does not match expected url page title')
-            }
-        })
-        .catch(err => {
-            console.log(err)
-        });
+    driver.get(`https://www.totaljobs.com/jobs/junior-developer/in-bath?radius=10&s=header`)
+    // const url = 'https://www.totaljobs.com/';
+    // await driver.get(url);
+    // driver.getTitle()
+    //     .then(title => {
+    //         if (title === 'Jobs | UK Job Search | Find your perfect job - totaljobs') {
+    //             console.log(`successfully navigated to ${url}`);
+    //         } else {
+    //             console.log('page title does not match expected url page title')
+    //         }
+    //     })
+    //     .catch(err => {
+    //         console.log(err)
+    //     });
 };
 
 exports.navigate_to_loginPage = async function() {
@@ -233,12 +233,9 @@ function key_word_finder(upperCaseJobString) {
     let udkwFoundAll = explodedJD_udkw.filter(check_udkw);
     let top24FoundAll = explodedJD_top24.filter(check_top24);
 
-    let dkwFoundUnique = dkwFoundAll.reduce((unique, item) =>
-        unique.includes(item) ? unique : [...unique, item],[]);
-    let udkwFoundUnique = udkwFoundAll.reduce((unique, item) =>
-        unique.includes(item) ? unique : [...unique, item], []);
-    let top24FoundUnique = top24FoundAll.reduce((unique, item) =>
-        unique.includes(item) ? unique : [...unique, item],[]);
+    let dkwFoundUnique = remove_duplicates(dkwFoundAll)
+    let udkwFoundUnique = remove_duplicates(udkwFoundAll)
+    let top24FoundUnique = remove_duplicates(top24FoundAll)
 
     return {
         "found_dkw": dkwFoundUnique,
@@ -415,8 +412,8 @@ async function process_jobAdd(jobId, previouslyAppliedJobs, dkw, udkw, session_i
     return appliedJob;
 }
 
-async function get_applied_jobIds() {
-    console.log('Grabbing processed job ids...')
+async function get_all_applications() {
+    console.log('Grabbing all applications...')
     let response = await fetch('http://localhost:8080/applications', {
         method: 'GET',
         headers: {
@@ -425,18 +422,27 @@ async function get_applied_jobIds() {
     })
 
     let responseData = await response.json();
-    let applications = await responseData.response.applications;
 
-    if (responseData.response.status !== 200) {
-        console.log('SESSION ERROR: handle fetch unsuccessful')
-        console.log(`Response status: ${responseData.response.status}`)
-        console.log(`Response message: ${responseData.response.message}`)
+    if (responseData.status === 404) {
+        console.log(`Response status: ${responseData.status}`);
+        console.log(`Response message: ${responseData.message}`);
+        return [];
+    } else if (responseData.status === 500) {
+        console.log('SESSION ERROR: handle fetch unsuccessful');
+        console.log(`Response status: ${responseData.status}`);
+        console.log(`Response message: ${responseData.message}`);
     }
 
+    let applications = await responseData.response.applications;
+    return applications
+}
+
+async function get_applied_jobIds() {
+    let applications = await get_all_applications();
     let processedIds = applications.map(application => {
         return application.totalJobs_id
     })
-    console.log('Job ids successfully loaded: ')
+    console.log('Job ids successfully loaded...')
     console.log('Job id count: ')
     console.log(processedIds.length)
     return processedIds
@@ -508,3 +514,124 @@ exports.next_results_page = async function() {
         return false;
     }
 }
+
+async function get_by_sessionId(sessionId) {
+    console.log('Grabbing all applications by session_id...')
+    let response = await fetch(`http://localhost:8080/applications/session/${sessionId}`, {
+        method: 'GET',
+        headers: {
+            "Content-Type" : "application/json"
+        }
+    })
+
+    let responseData = await response.json();
+    if (responseData.status === 404) {
+        console.log(`Response status: ${responseData.status}`);
+        console.log(`Response message: ${responseData.message}`);
+        return [];
+    } else if (responseData.status === 500) {
+        console.log('SESSION ERROR: handle fetch unsuccessful');
+        console.log(`Response status: ${responseData.status}`);
+        console.log(`Response message: ${responseData.message}`);
+    }
+
+    let applications = await responseData.response.applications;
+    return applications
+}
+
+function map_dkw(applications) {
+    let dkw = [];
+    applications.forEach(application => {
+        dkw.push(...application.found_dkw)
+    });
+    return dkw
+}
+
+function map_udkw(applications) {
+    let udkw = [];
+    applications.forEach(application => {
+        udkw.push(...application.found_udkw)
+    });
+    return udkw
+}
+
+function map_top24(applications) {
+    let top24 = [];
+    applications.forEach(application => {
+        top24.push(...application.found_top24)
+    });
+    return top24
+}
+
+function map_locations(applications) {
+    let locations = [];
+    applications.forEach(application => {
+        if (application.location !== undefined) {
+            let toUpperCaseLocation = application.location.toUpperCase();
+            let location = toUpperCaseLocation.split(/[^a-zA-Z\d:]/);
+
+            if (location.includes('BRISTOL') === true) {
+                locations.push('BRISTOL')
+            } else if (location.includes('BATH') === true) {
+                locations.push('BATH')
+            } else {
+                locations.push(location[0])
+            }
+        }
+    });
+    return locations
+}
+
+function remove_duplicates(array) {
+    return array.reduce((unique, item) =>
+        unique.includes(item) ? unique : [...unique, item],[]);
+}
+
+exports.produce_session_report = async function(session_id, session_date, session_time, allSessionJobIds) {
+    let applications = await get_by_sessionId(session_id)
+    let successfullyApplied = applications.filter((application) => {
+        if (application.apply_attempted === true) {
+            return application
+        }
+    });
+
+    let skippedApplications = applications.filter((application) => {
+        if (application.apply_attempted === false) {
+            return application
+        }
+    })
+
+    let dkwFoundAll = map_dkw(applications);
+    let udkwFoundAll = map_udkw(applications);
+    let top24FoundAll = map_top24(applications);
+    let locationsAll = map_locations(applications);
+
+    let dkwFoundUnique = remove_duplicates(dkwFoundAll);
+    let udkwFoundUnique = remove_duplicates(udkwFoundAll);
+    let top24FoundUnique = remove_duplicates(top24FoundAll);
+    let locationsOverview = remove_duplicates(locationsAll);
+
+
+
+    let sessionReport = {
+        "session_id": session_id,
+        "session_date": session_date,
+        "session_time": session_time,
+        "total_processed": allSessionJobIds.length,
+        "newly_processed": applications.length,
+        "successfully_applied": successfullyApplied.length,
+        "skipped_applications": skippedApplications.length,
+        "dkw_overview": dkwFoundUnique,
+        "dkw_all": dkwFoundAll,
+        "udkw_overview":udkwFoundUnique,
+        "udkw_all": udkwFoundAll,
+        "top24_overview": top24FoundUnique,
+        "top24_all": top24FoundAll,
+        "locations_overview": locationsOverview,
+        "locations_all" : locationsAll
+    }
+
+    return sessionReport
+}
+
+// produce_session_report('202006235ef1df39d0a0ae9b6c758db8', '2020-06-24', '21:45:08', [1,2,3,4]);

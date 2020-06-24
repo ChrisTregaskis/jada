@@ -18,6 +18,7 @@ async function run_jada(jobTitle, area, radius) {
     let session_date = Jada.getDate('-')
     let session_id = Jada.getDate('') + mongoose.Types.ObjectId();
     let session_time = Jada.getTime();
+    let allSessionJobIds = [];
     let jobsAppliedTo = [];
     let potentialJobsIds = [];
     let interestedJobIds = [];
@@ -26,14 +27,14 @@ async function run_jada(jobTitle, area, radius) {
     if (!radiusValid) { return console.log('SESSION FAILED: invalid radius option') }
 
     await Jada.navigate_to_website();
-    let navigateToLogin = await Jada.navigate_to_loginPage();
-    if (!navigateToLogin) { return console.log('SESSION FAILED: navigate to login page failed') }
-
-    let login = await Jada.jobSeeker_login();
-    if (!login) { return console.log('SESSION FAILED: logged in user search button not found') }
-
-    let enteredSearch = await Jada.enter_search(jobTitle, area, radius);
-    if (!enteredSearch) { return console.log('SESSION FAILED: first xpath result not found') }
+    // let navigateToLogin = await Jada.navigate_to_loginPage();
+    // if (!navigateToLogin) { return console.log('SESSION FAILED: navigate to login page failed') }
+    //
+    // let login = await Jada.jobSeeker_login();
+    // if (!login) { return console.log('SESSION FAILED: logged in user search button not found') }
+    //
+    // let enteredSearch = await Jada.enter_search(jobTitle, area, radius);
+    // if (!enteredSearch) { return console.log('SESSION FAILED: first xpath result not found') }
 
     let activeNextBtn = await Jada.check_nextBtn_status();
     while (activeNextBtn) {
@@ -43,6 +44,7 @@ async function run_jada(jobTitle, area, radius) {
         interestedJobIds = [];
         let additionalJobs = await Jada.populate_potential_jobs();
         potentialJobsIds.push(...additionalJobs);
+        allSessionJobIds.push(...additionalJobs);
 
         let isInterested = await Jada.check_interest(potentialJobsIds, dkw, udkw, session_id, session_date, session_time);
         interestedJobIds.push(...isInterested);
@@ -68,6 +70,7 @@ async function run_jada(jobTitle, area, radius) {
     interestedJobIds = [];
     let additionalJobs = await Jada.populate_potential_jobs();
     potentialJobsIds.push(...additionalJobs);
+    allSessionJobIds.push(...additionalJobs);
 
     let isInterested = await Jada.check_interest(potentialJobsIds, dkw, udkw, session_id, session_date, session_time);
     interestedJobIds.push(...isInterested);
@@ -81,22 +84,8 @@ async function run_jada(jobTitle, area, radius) {
     console.log(jobsAppliedTo.length)
     console.log(jobsAppliedTo)
 
-    // produce report... pass session_id as param to fetch all application in current session.
-    // session_id
-    // session_date
-    // session_time
-    // count: successfully applied
-    // count: skipped
-    // count: already processed
-    // dkw, include duplicates push into obj ie. { i : i.count }
-    // dkw, count of each dkw
-    // udkw, include duplicates
-    // udkw, count of each dkw
-    // location, include duplicates
-    // location, count of each location
-    // list of applied console.table?
-    // list of not interested console.table?
-
+    let sessionReport = await Jada.produce_session_report(session_id, session_date, session_time, allSessionJobIds);
+    console.log(sessionReport)
     // once report produced, save in separate table
 
 }
