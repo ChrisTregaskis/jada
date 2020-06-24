@@ -4,20 +4,20 @@ const WebDriver = require('selenium-webdriver');
 const driver = new WebDriver.Builder().forBrowser('chrome').build();
 
 exports.navigate_to_website = async function() {
-    driver.get(`https://www.totaljobs.com/jobs/junior-developer/in-bath?radius=20&s=header`)
-    // const url = 'https://www.totaljobs.com/';
-    // await driver.get(url);
-    // driver.getTitle()
-    //     .then(title => {
-    //         if (title === 'Jobs | UK Job Search | Find your perfect job - totaljobs') {
-    //             console.log(`successfully navigated to ${url}`);
-    //         } else {
-    //             console.log('page title does not match expected url page title')
-    //         }
-    //     })
-    //     .catch(err => {
-    //         console.log(err)
-    //     });
+    // driver.get(`https://www.totaljobs.com/jobs/junior-developer/in-bath?radius=20&s=header`)
+    const url = 'https://www.totaljobs.com/';
+    await driver.get(url);
+    driver.getTitle()
+        .then(title => {
+            if (title === 'Jobs | UK Job Search | Find your perfect job - totaljobs') {
+                console.log(`successfully navigated to ${url}`);
+            } else {
+                console.log('page title does not match expected url page title')
+            }
+        })
+        .catch(err => {
+            console.log(err)
+        });
 };
 
 exports.navigate_to_loginPage = async function() {
