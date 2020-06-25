@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const fetch = require('node-fetch');
+const nodeMailer = require('nodemailer');
 const WebDriver = require('selenium-webdriver');
 const driver = new WebDriver.Builder().forBrowser('chrome').build();
 
@@ -650,3 +651,50 @@ exports.save_session = async function(sessionReport) {
         return true
     }
 }
+
+exports.email_session_report = async function(sessionReport) {
+    let date = sessionReport.session_date;
+    let time = sessionReport.session_time;
+    let sessionId = sessionReport.session_id;
+    let totalProcessed = sessionReport.total_processed;
+    let newlyProcessed = sessionReport.newly_processed;
+    let successfullyApplied = sessionReport.successfully_applied;
+    let skippedApplications = sessionReport.skipped_applications;
+
+    let transporter = nodeMailer.createTransport({
+        service: 'gmail',
+        auth: {
+            user: 'chris.tregaskis.work@gmail.com',
+            pass: 'Romans 12.1-2'
+        }
+    });
+
+    let mailOptions = {
+        from: 'chris.tregaskis.work@gmail.com',
+        to: 'chris.tregaskis.work@gmail.com',
+        subject: `Jada session report! ${date}`,
+        html: `
+            <h1>Jada Session Report: ${date} @ ${time}</h1>
+            <br>
+            <h3>Hello Chris, here is your session report...</h3>
+            <br>
+            <p>Session Id: ${sessionId}</p>
+            <p>Session date: ${date}</p>
+            <p>Session time: ${time}</p>
+            <p>Session total processed: ${totalProcessed}</p>
+            <p>Session newly processed: ${newlyProcessed}</p>
+            <p>Session successfully applied: ${successfullyApplied}</p>
+            <p>Session skipped applications: ${skippedApplications}</p>
+            
+        `
+    }
+
+    transporter.sendMail(mailOptions, (error, info) => {
+        if (error) {
+            console.log(error)
+        } else {
+            console.log(`EMAIL SENT: ${info.response}`)
+        }
+    })
+}
+

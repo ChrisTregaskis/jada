@@ -86,7 +86,9 @@ async function run_jada(jobTitle, area, radius) {
 
     let sessionReport = await Jada.produce_session_report(session_id, session_date, session_time, allSessionJobIds);
     let savedSessionReport = await Jada.save_session(sessionReport)
-    console.log(savedSessionReport)
 
+    if (savedSessionReport) {
+        let emailSession = await Jada.email_session_report(sessionReport)
+    }
 
 }
