@@ -5,6 +5,7 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 
 const applicationsRoute = require('../api/routes/applications');
+const sessionsRoute = require('../api/routes/sessions');
 
 // db connection
 mongoose.connect(
@@ -19,6 +20,7 @@ app.use(bodyParser.json());
 
 // route paths
 app.use('/applications', applicationsRoute);
+app.use('/sessions', sessionsRoute);
 
 // if no route found
 app.use((req, res, next) => {
