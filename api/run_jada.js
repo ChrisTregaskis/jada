@@ -85,7 +85,8 @@ async function run_jada(jobTitle, area, radius) {
     console.log(jobsAppliedTo)
 
     let sessionReport = await Jada.produce_session_report(session_id, session_date, session_time, allSessionJobIds);
-    console.log(sessionReport)
-    // once report produced, save in separate table
+    let savedSessionReport = await Jada.save_session(sessionReport)
+    console.log(savedSessionReport)
+
 
 }

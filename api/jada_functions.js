@@ -4,7 +4,7 @@ const WebDriver = require('selenium-webdriver');
 const driver = new WebDriver.Builder().forBrowser('chrome').build();
 
 exports.navigate_to_website = async function() {
-    driver.get(`https://www.totaljobs.com/jobs/junior-developer/in-bath?radius=10&s=header`)
+    driver.get(`https://www.totaljobs.com/jobs/junior-developer/in-leeds?radius=5&s=header`)
     // const url = 'https://www.totaljobs.com/';
     // await driver.get(url);
     // driver.getTitle()
@@ -277,12 +277,14 @@ async function handle_fetch(url, requestMethod, dataToSend) {
 
     let responseData = await response.json();
 
-    if (responseData.status !== 200) {
-        console.log('SESSION ERROR: handle fetch unsuccessful')
-        console.log(`Response status: ${responseData.status}`)
-        console.log(`Response message: ${responseData.message}`)
+    if (responseData.status === 404) {
+        console.log(`Response status: ${responseData.status}`);
+        console.log(`Response message: ${responseData.message}`);
+    } else if (responseData.status === 500) {
+        console.log('SESSION ERROR: handle fetch unsuccessful');
+        console.log(`Response status: ${responseData.status}`);
+        console.log(`Response message: ${responseData.message}`);
     }
-
     return responseData
 }
 
@@ -611,8 +613,6 @@ exports.produce_session_report = async function(session_id, session_date, sessio
     let top24FoundUnique = remove_duplicates(top24FoundAll);
     let locationsOverview = remove_duplicates(locationsAll);
 
-
-
     let sessionReport = {
         "session_id": session_id,
         "session_date": session_date,
@@ -634,4 +634,19 @@ exports.produce_session_report = async function(session_id, session_date, sessio
     return sessionReport
 }
 
-// produce_session_report('202006235ef1df39d0a0ae9b6c758db8', '2020-06-24', '21:45:08', [1,2,3,4]);
+exports.save_session = async function(sessionReport) {
+    let responseData = await handle_fetch(
+        'http://localhost:8080/sessions',
+        'POST',
+        sessionReport
+    )
+
+    if (responseData.status !== 200) {
+        console.log(`SESSION ERROR: unable to log job id: ${sessionReport.session_id}`)
+        return false
+    } else if (responseData.status === 200) {
+        console.log('Successfully logged session report...')
+        console.log(sessionReport)
+        return true
+    }
+}
