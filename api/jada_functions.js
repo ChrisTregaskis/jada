@@ -657,53 +657,7 @@ function count_key_word(keyWord, array) {
     return array.filter(word => word === keyWord)
 }
 
-exports.email_session_report = async function(sessionReport) {
-    let date = sessionReport.session_date;
-    let time = sessionReport.session_time;
-    let sessionId = sessionReport.session_id;
-    let totalProcessed = sessionReport.total_processed;
-    let newlyProcessed = sessionReport.newly_processed;
-    let successfullyApplied = sessionReport.successfully_applied;
-    let skippedApplications = sessionReport.skipped_applications;
-    // let dkwOverview = sessionReport.dkw_overview;
-    // let dkwAll = sessionReport.dkw_all;
-    let udkwOverview = sessionReport.udkw_overview;
-    let udkwAll = sessionReport.udkw_all;
-    let top24Overview = sessionReport.top24_overview;
-    let top24All = sessionReport.top24_all;
-
-    let transporter = nodeMailer.createTransport({
-        service: 'gmail',
-        auth: {
-            user: 'chris.tregaskis.work@gmail.com',
-            pass: 'Romans 12.1-2'
-        }
-    });
-
-    let dkwOverview = [
-        "AGILE", "PHP",
-        "JAVASCRIPT", "HTML",
-        "CSS", "API",
-        "RESTFUL", "MYSQL",
-        "JS", "GIT",
-        "NODEJS", "FRONTEND",
-        "GRADUATE", "JUNIOR",
-        "OOP", "MONGODB"
-    ];
-
-    let dkwAll = [
-        "AGILE", "PHP", "JAVASCRIPT", "HTML", "CSS", "AGILE", "API", "JAVASCRIPT",
-        "RESTFUL", "MYSQL", "JAVASCRIPT", "CSS", "JS", "JAVASCRIPT", "AGILE", "AGILE",
-        "JAVASCRIPT", "PHP", "DEVELOPER", "CSS", "JAVASCRIPT", "GIT", "AGILE",
-        "NODEJS", "FRONTEND", "JAVASCRIPT", "JS", "AGILE", "AGILE", "AGILE", "API",
-        "JAVASCRIPT", "HTML", "AGILE", "AGILE", "AGILE", "AGILE", "GIT", "JS",
-        "AGILE", "GRADUATE", "JUNIOR", "OOP", "HTML", "CSS", "JAVASCRIPT", "MYSQL",
-        "AGILE", "JAVASCRIPT", "GIT", "PHP", "JS", "JAVASCRIPT", "MYSQL", "JAVASCRIPT",
-        "HTML", "AGILE", "RESTFUL", "MYSQL", "PHP", "JAVASCRIPT", "MYSQL", "API",
-        "JS", "GIT", "HTML", "CSS", "AGILE", "MONGODB", "AGILE", "JAVASCRIPT",
-        "HTML", "AGILE", "HTML", "CSS", "JAVASCRIPT", "JAVASCRIPT", "HTML", "AGILE"
-    ]
-
+function display_email_dkw(dkwOverview, dkwAll) {
     let dkwOverviewCount = [];
     let dkwOverviewHtmlStringArr = [];
     let dkwFoundUpToTwice = [];
@@ -751,6 +705,155 @@ exports.email_session_report = async function(sessionReport) {
 
     let dkwOverviewHtmlString = dkwOverviewHtmlStringArr.join(" ")
 
+    return `
+        <p>Desired key words found max 2 times: ${dkwFoundUpToTwice}</p>
+        <table width="100%" border="0" cellpadding="0" cellspacing="0" style="border: none; border-collapse: collapse; border-spacing: 0; mso-table-lspace: 0; mso-table-rspace: 0; width: 100%;">
+            <tr>
+                <td align="left" style="direction: ltr;">
+                    <table width="100%" border="0" cellpadding="0" cellspacing="0" style="border: none; border-collapse: collapse; border-spacing: 0; max-width: 800px; mso-table-lspace: 0; mso-table-rspace: 0; width: 100%;">
+                        <tr>
+                            <td align="center" style="direction: ltr;">
+                                <table width="100%" height="100%" border="0" cellpadding="0" cellspacing="0" class="" style="border: none; border-collapse: collapse; border-spacing: 0; mso-table-lspace: 0; mso-table-rspace: 0; table-layout: fixed; width: 100%;">
+                                    <tr>
+                                        <td style="direction: ltr;">
+                                            <!-- mapped results -->
+                                            ${dkwOverviewHtmlString}
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
+    `
+}
+
+function display_email_udkw(udkwOverview, udkwAll) {
+    let udkwOverviewCount = [];
+    let udkwOverviewHtmlStringArr = [];
+    let udkwFoundUpToTwice = [];
+    let udkwToDiscard = ['DEVELOPER', 'SOFTWARE', 'ENGINEER', 'ENGINEERING'];
+
+    udkwOverview.forEach(keyWord => {
+        udkwOverviewCount.push(count_key_word(keyWord, udkwAll).length)
+    })
+
+    for (i = 0; i < udkwOverview.length; i++) {
+        if (udkwToDiscard.includes(udkwOverview[i]) === false) {
+            if (udkwOverviewCount[i] <= 2) {
+                udkwFoundUpToTwice.push(udkwOverview[i].toLowerCase())
+            } else {
+                udkwOverviewHtmlStringArr.push(`
+            <table width="100%" border="0" cellpadding="0" cellspacing="0" style="border:0;border-collapse:collapse;border-spacing:0;mso-table-lspace:0;mso-table-rspace:0;width:100%">
+                <tr>
+                    <td width="15%" style="border-right:1px solid #c3c8c9; color:#000000;direction:ltr;font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;font-size:14px;line-height:28px;padding-top:20px;vertical-align:top; text-align:right; padding-right:5px; min-width:55px;" valign="top" class="label" >${udkwOverview[i].toLowerCase()}</td>
+                    <td width="85%" style="direction:ltr;vertical-align:top" valign="top">
+                        <table border="0" cellpadding="0" cellspacing="0" width="100%" align="left" style="border:0;border-collapse:collapse;border-spacing:0;mso-table-lspace:0;mso-table-rspace:0;table-layout:fixed;width:100%">
+                            <tr>
+                                <td align="left" style="direction:ltr">
+                                    <table style="border:0;border-collapse:collapse;border-spacing:0;mso-table-lspace:0;mso-table-rspace:0;width:${50 + (udkwOverviewCount[i] * 10)}px" class="bar"> 
+                                        <tr>
+                                            <td align="left" style="direction:ltr;padding-bottom:15px;padding-left:0;padding-top:15px">
+                                                <table width="100%" border="0" cellpadding="0" cellspacing="0" style="background-color:#17a2b8; border:0;border-collapse:collapse;border-spacing:0;mso-table-lspace:0;mso-table-rspace:0;width:100%" bgcolor="#17a2b8">
+                                                    <tr>
+                                                        <td height="40" style="font-size:0;line-height:0;">&nbsp;</td>
+                                                    </tr>
+                                                </table>
+                                            </td>
+                                            <td width="40" align="left" style="color:#717172;direction:ltr;font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;font-size:14px;line-height:28px;padding-left:8px;padding-top:20px;text-align:left;vertical-align:top;max-width:40px;" valign="top" class="label" >${udkwOverviewCount[i]}</td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+        `)
+            }
+        }
+    }
+
+    let udkwOverviewHtmlString = udkwOverviewHtmlStringArr.join(" ")
+
+
+    return `
+        <p>Undesired key words found max 2 times: ${udkwFoundUpToTwice}</p>
+        <table width="100%" border="0" cellpadding="0" cellspacing="0" style="border: none; border-collapse: collapse; border-spacing: 0; mso-table-lspace: 0; mso-table-rspace: 0; width: 100%;">
+            <tr>
+                <td align="left" style="direction: ltr;">
+                    <table width="100%" border="0" cellpadding="0" cellspacing="0" style="border: none; border-collapse: collapse; border-spacing: 0; max-width: 800px; mso-table-lspace: 0; mso-table-rspace: 0; width: 100%;">
+                        <tr>
+                            <td align="center" style="direction: ltr;">
+                                <table width="100%" height="100%" border="0" cellpadding="0" cellspacing="0" class="" style="border: none; border-collapse: collapse; border-spacing: 0; mso-table-lspace: 0; mso-table-rspace: 0; table-layout: fixed; width: 100%;">
+                                    <tr>
+                                        <td style="direction: ltr;">
+                                            <!-- mapped results -->
+                                            ${udkwOverviewHtmlString}
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
+    `
+}
+
+exports.email_session_report = async function(sessionReport) {
+    let date = sessionReport.session_date;
+    let time = sessionReport.session_time;
+    let sessionId = sessionReport.session_id;
+    let totalProcessed = sessionReport.total_processed;
+    let newlyProcessed = sessionReport.newly_processed;
+    let successfullyApplied = sessionReport.successfully_applied;
+    let skippedApplications = sessionReport.skipped_applications;
+    // let dkwOverview = sessionReport.dkw_overview;
+    // let dkwAll = sessionReport.dkw_all;
+    // let udkwOverview = sessionReport.udkw_overview;
+    // let udkwAll = sessionReport.udkw_all;
+    let top24Overview = sessionReport.top24_overview;
+    let top24All = sessionReport.top24_all;
+
+    let transporter = nodeMailer.createTransport({
+        service: 'gmail',
+        auth: {
+            user: 'chris.tregaskis.work@gmail.com',
+            pass: 'Romans 12.1-2'
+        }
+    });
+
+    let dkwOverview = [
+        "AGILE", "PHP",
+        "JAVASCRIPT", "HTML",
+        "CSS", "API",
+        "RESTFUL", "MYSQL",
+        "JS", "GIT",
+        "NODEJS", "FRONTEND",
+        "GRADUATE", "JUNIOR",
+        "OOP", "MONGODB"
+    ];
+
+    let dkwAll = [
+        "AGILE", "PHP", "JAVASCRIPT", "HTML", "CSS", "AGILE", "API", "JAVASCRIPT",
+        "RESTFUL", "MYSQL", "JAVASCRIPT", "CSS", "JS", "JAVASCRIPT", "AGILE", "AGILE",
+        "JAVASCRIPT", "PHP", "DEVELOPER", "CSS", "JAVASCRIPT", "GIT", "AGILE",
+        "NODEJS", "FRONTEND", "JAVASCRIPT", "JS", "AGILE", "AGILE", "AGILE", "API",
+        "JAVASCRIPT", "HTML", "AGILE", "AGILE", "AGILE", "AGILE", "GIT", "JS",
+        "AGILE", "GRADUATE", "JUNIOR", "OOP", "HTML", "CSS", "JAVASCRIPT", "MYSQL",
+        "AGILE", "JAVASCRIPT", "GIT", "PHP", "JS", "JAVASCRIPT", "MYSQL", "JAVASCRIPT",
+        "HTML", "AGILE", "RESTFUL", "MYSQL", "PHP", "JAVASCRIPT", "MYSQL", "API",
+        "JS", "GIT", "HTML", "CSS", "AGILE", "MONGODB", "AGILE", "JAVASCRIPT",
+        "HTML", "AGILE", "HTML", "CSS", "JAVASCRIPT", "JAVASCRIPT", "HTML", "AGILE"
+    ]
+
+    let udkwOverview = [ 'TRAINEESHIP', 'NET', 'LEAD', 'WINDOWS']
+    let udkwAll = ['TRAINEESHIP', 'WINDOWS', 'WINDOWS', 'NET', 'NET', 'NET', 'NET', 'NET', 'NET', 'NET', 'LEAD'];
+
 
 
 
@@ -772,29 +875,10 @@ exports.email_session_report = async function(sessionReport) {
             <p>Session skipped applications: ${skippedApplications}</p>
             
             <h3>Desired Key Words Overview:</h3>
-            <p>Desired key words found max 2 times: ${dkwFoundUpToTwice}</p>
-            <table width="100%" border="0" cellpadding="0" cellspacing="0" style="border: none; border-collapse: collapse; border-spacing: 0; mso-table-lspace: 0; mso-table-rspace: 0; width: 100%;">
-                <tr>
-                    <td align="left" style="direction: ltr;">
-                        <table width="100%" border="0" cellpadding="0" cellspacing="0" style="border: none; border-collapse: collapse; border-spacing: 0; max-width: 800px; mso-table-lspace: 0; mso-table-rspace: 0; width: 100%;">
-                            <tr>
-                                <td align="center" style="direction: ltr;">
-                                    <table width="100%" height="100%" border="0" cellpadding="0" cellspacing="0" class="" style="border: none; border-collapse: collapse; border-spacing: 0; mso-table-lspace: 0; mso-table-rspace: 0; table-layout: fixed; width: 100%;">
-                                        <tr>
-                                            <td style="direction: ltr;">
-                                            
-                                                <!-- mapped results -->
-                                                ${dkwOverviewHtmlString}
-            
-                                            </td>
-                                        </tr>
-                                    </table>
-                                </td>
-                            </tr>
-                        </table>
-                    </td>
-                </tr>
-            </table>
+            ${display_email_dkw(dkwOverview, dkwAll)}
+            <br>
+            <h3>Undesired Key Words Overview:</h3>
+            ${display_email_udkw(udkwOverview, udkwAll)}
 
         `
     }
