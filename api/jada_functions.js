@@ -5,7 +5,7 @@ const WebDriver = require('selenium-webdriver');
 const driver = new WebDriver.Builder().forBrowser('chrome').build();
 
 exports.navigate_to_website = async function() {
-    driver.get(`https://www.totaljobs.com/jobs/junior-developer/in-bath?radius=5&s=header`)
+    driver.get(`https://www.totaljobs.com/jobs/junior-developer/in-bristol?radius=5&s=header`)
     // const url = 'https://www.totaljobs.com/';
     // await driver.get(url);
     // driver.getTitle()
@@ -740,14 +740,14 @@ exports.email_session_report = async function(sessionReport) {
     let newlyProcessed = sessionReport.newly_processed;
     let successfullyApplied = sessionReport.successfully_applied;
     let skippedApplications = sessionReport.skipped_applications;
-    // let dkwOverview = sessionReport.dkw_overview;
-    // let dkwAll = sessionReport.dkw_all;
-    // let udkwOverview = sessionReport.udkw_overview;
-    // let udkwAll = sessionReport.udkw_all;
-    // let top24Overview = sessionReport.top24_overview;
-    // let top24All = sessionReport.top24_all;
-    // let locationOverview = sessionReport.locations_overview;
-    // let locationAll = sessionReport.locations_all;
+    let dkwOverview = sessionReport.dkw_overview;
+    let dkwAll = sessionReport.dkw_all;
+    let udkwOverview = sessionReport.udkw_overview;
+    let udkwAll = sessionReport.udkw_all;
+    let top24Overview = sessionReport.top24_overview;
+    let top24All = sessionReport.top24_all;
+    let locationOverview = sessionReport.locations_overview;
+    let locationAll = sessionReport.locations_all;
 
     let transporter = nodeMailer.createTransport({
         service: 'gmail',
@@ -756,69 +756,6 @@ exports.email_session_report = async function(sessionReport) {
             pass: 'Romans 12.1-2'
         }
     });
-
-    let dkwOverview = [
-        "AGILE", "PHP",
-        "JAVASCRIPT", "HTML",
-        "CSS", "API",
-        "RESTFUL", "MYSQL",
-        "JS", "GIT",
-        "NODEJS", "FRONTEND",
-        "GRADUATE", "JUNIOR",
-        "OOP", "MONGODB"
-    ];
-
-    let dkwAll = [
-        "AGILE", "PHP", "JAVASCRIPT", "HTML", "CSS", "AGILE", "API", "JAVASCRIPT",
-        "RESTFUL", "MYSQL", "JAVASCRIPT", "CSS", "JS", "JAVASCRIPT", "AGILE", "AGILE",
-        "JAVASCRIPT", "PHP", "DEVELOPER", "CSS", "JAVASCRIPT", "GIT", "AGILE",
-        "NODEJS", "FRONTEND", "JAVASCRIPT", "JS", "AGILE", "AGILE", "AGILE", "API",
-        "JAVASCRIPT", "HTML", "AGILE", "AGILE", "AGILE", "AGILE", "GIT", "JS",
-        "AGILE", "GRADUATE", "JUNIOR", "OOP", "HTML", "CSS", "JAVASCRIPT", "MYSQL",
-        "AGILE", "JAVASCRIPT", "GIT", "PHP", "JS", "JAVASCRIPT", "MYSQL", "JAVASCRIPT",
-        "HTML", "AGILE", "RESTFUL", "MYSQL", "PHP", "JAVASCRIPT", "MYSQL", "API",
-        "JS", "GIT", "HTML", "CSS", "AGILE", "MONGODB", "AGILE", "JAVASCRIPT",
-        "HTML", "AGILE", "HTML", "CSS", "JAVASCRIPT", "JAVASCRIPT", "HTML", "AGILE"
-    ]
-
-    let udkwOverview = [ 'TRAINEESHIP', 'NET', 'LEAD', 'WINDOWS']
-    let udkwAll = ['TRAINEESHIP', 'WINDOWS', 'WINDOWS', 'NET', 'NET', 'NET', 'NET', 'NET', 'NET', 'NET', 'LEAD'];
-
-    let top24Overview = [
-        "NET", "C#",
-        "SCHEME", "PYTHON",
-        "REACT", "JAVASCRIPT",
-        "C++", "C",
-        "BASH", "SCALA",
-        "GO", "SQL",
-        "JAVA", "RUBY",
-        "HTML", "CSS",
-        "PHP", "NODE",
-        "SWIFT", "NODEJS",
-        "R"
-    ]
-        let top24All = [
-        "NET", "C#", "NET", "C#", "SCHEME", "PYTHON", "REACT", "JAVASCRIPT",
-        "C++", "PYTHON", "JAVASCRIPT", "C++", "C", "BASH", "REACT", "SCHEME",
-        "PYTHON", "REACT", "JAVASCRIPT", "C++", "C", "BASH", "SCALA", "GO",
-        "SQL", "PYTHON", "REACT", "JAVASCRIPT", "C++", "C", "BASH", "PYTHON",
-        "REACT", "JAVASCRIPT", "C++", "C", "BASH", "PYTHON", "REACT", "JAVASCRIPT",
-        "C++", "C", "BASH", "SCHEME", "PYTHON", "PYTHON", "C++", "JAVA",
-        "JAVASCRIPT", "REACT", "C", "BASH", "PYTHON", "JAVA", "RUBY", "C",
-        "C++", "HTML", "CSS", "JAVASCRIPT", "REACT", "SCHEME", "PYTHON", "REACT",
-        "JAVASCRIPT", "C++", "C", "BASH", "PYTHON", "PYTHON", "C++", "JAVASCRIPT",
-        "REACT", "C", "BASH", "PYTHON", "SCHEME", "JAVASCRIPT", "REACT", "C",
-        "C++", "PHP", "NODE", "JAVASCRIPT", "C", "C++", "C#", "RUBY",
-        "JAVA", "PYTHON", "SWIFT", "PYTHON", "REACT", "JAVASCRIPT", "C++", "C",
-        "BASH", "SCHEME", "GO", "NET", "C#", "NET", "C#", "NET",
-        "C#", "NET", "C#", "NET", "PHP", "JAVASCRIPT", "HTML", "CSS",
-        "NODEJS", "REACT", "JAVASCRIPT", "NODE", "R", "SCHEME", "RUBY", "HTML",
-        "CSS", "JAVASCRIPT", "SQL", "JAVA", "HTML", "CSS", "JAVASCRIPT", "PYTHON",
-        "JAVASCRIPT", "REACT"
-    ]
-
-    let locationOverview = ['BATH', 'UK', 'BRISTOL'];
-    let locationAll = ['BATH', 'BATH', 'BATH', 'BATH', 'BATH', 'BATH', 'BATH', 'UK', 'BRISTOL', 'BRISTOL', 'BRISTOL', 'BRISTOL'];
 
     let mailOptions = {
         from: 'chris.tregaskis.work@gmail.com',
@@ -854,8 +791,10 @@ exports.email_session_report = async function(sessionReport) {
     transporter.sendMail(mailOptions, (error, info) => {
         if (error) {
             console.log(error)
+            //return false
         } else {
             console.log(`EMAIL SENT: ${info.response}`)
+            //return true
         }
     })
 }
