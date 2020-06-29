@@ -665,8 +665,8 @@ exports.email_session_report = async function(sessionReport) {
     let newlyProcessed = sessionReport.newly_processed;
     let successfullyApplied = sessionReport.successfully_applied;
     let skippedApplications = sessionReport.skipped_applications;
-    let dkwOverview = sessionReport.dkw_overview;
-    let dkwAll = sessionReport.dkw_all;
+    // let dkwOverview = sessionReport.dkw_overview;
+    // let dkwAll = sessionReport.dkw_all;
     let udkwOverview = sessionReport.udkw_overview;
     let udkwAll = sessionReport.udkw_all;
     let top24Overview = sessionReport.top24_overview;
@@ -680,118 +680,79 @@ exports.email_session_report = async function(sessionReport) {
         }
     });
 
-    // let dkwOverview = [
-    //     "AGILE", "PHP",
-    //     "JAVASCRIPT", "HTML",
-    //     "CSS", "API",
-    //     "RESTFUL", "MYSQL",
-    //     "JS", "GIT",
-    //     "NODEJS", "FRONTEND",
-    //     "GRADUATE", "JUNIOR",
-    //     "OOP", "MONGODB"
-    // ];
-    //
-    // let dkwAll = [
-    //     "AGILE", "PHP", "JAVASCRIPT", "HTML", "CSS", "AGILE", "API", "JAVASCRIPT",
-    //     "RESTFUL", "MYSQL", "JAVASCRIPT", "CSS", "JS", "JAVASCRIPT", "AGILE", "AGILE",
-    //     "JAVASCRIPT", "PHP", "DEVELOPER", "CSS", "JAVASCRIPT", "GIT", "AGILE",
-    //     "NODEJS", "FRONTEND", "JAVASCRIPT", "JS", "AGILE", "AGILE", "AGILE", "API",
-    //     "JAVASCRIPT", "HTML", "AGILE", "AGILE", "AGILE", "AGILE", "GIT", "JS",
-    //     "AGILE", "GRADUATE", "JUNIOR", "OOP", "HTML", "CSS", "JAVASCRIPT", "MYSQL",
-    //     "AGILE", "JAVASCRIPT", "GIT", "PHP", "JS", "JAVASCRIPT", "MYSQL", "JAVASCRIPT",
-    //     "HTML", "AGILE", "RESTFUL", "MYSQL", "PHP", "JAVASCRIPT", "MYSQL", "API",
-    //     "JS", "GIT", "HTML", "CSS", "AGILE", "MONGODB", "AGILE", "JAVASCRIPT",
-    //     "HTML", "AGILE", "HTML", "CSS", "JAVASCRIPT", "JAVASCRIPT", "HTML", "AGILE"
-    // ]
+    let dkwOverview = [
+        "AGILE", "PHP",
+        "JAVASCRIPT", "HTML",
+        "CSS", "API",
+        "RESTFUL", "MYSQL",
+        "JS", "GIT",
+        "NODEJS", "FRONTEND",
+        "GRADUATE", "JUNIOR",
+        "OOP", "MONGODB"
+    ];
+
+    let dkwAll = [
+        "AGILE", "PHP", "JAVASCRIPT", "HTML", "CSS", "AGILE", "API", "JAVASCRIPT",
+        "RESTFUL", "MYSQL", "JAVASCRIPT", "CSS", "JS", "JAVASCRIPT", "AGILE", "AGILE",
+        "JAVASCRIPT", "PHP", "DEVELOPER", "CSS", "JAVASCRIPT", "GIT", "AGILE",
+        "NODEJS", "FRONTEND", "JAVASCRIPT", "JS", "AGILE", "AGILE", "AGILE", "API",
+        "JAVASCRIPT", "HTML", "AGILE", "AGILE", "AGILE", "AGILE", "GIT", "JS",
+        "AGILE", "GRADUATE", "JUNIOR", "OOP", "HTML", "CSS", "JAVASCRIPT", "MYSQL",
+        "AGILE", "JAVASCRIPT", "GIT", "PHP", "JS", "JAVASCRIPT", "MYSQL", "JAVASCRIPT",
+        "HTML", "AGILE", "RESTFUL", "MYSQL", "PHP", "JAVASCRIPT", "MYSQL", "API",
+        "JS", "GIT", "HTML", "CSS", "AGILE", "MONGODB", "AGILE", "JAVASCRIPT",
+        "HTML", "AGILE", "HTML", "CSS", "JAVASCRIPT", "JAVASCRIPT", "HTML", "AGILE"
+    ]
 
     let dkwOverviewCount = [];
+    let dkwOverviewHtmlStringArr = [];
+    let dkwFoundUpToTwice = [];
+    let dkwToDiscard = ['DEVELOPER', 'SOFTWARE', 'ENGINEER', 'ENGINEERING'];
+
     dkwOverview.forEach(keyWord => {
         dkwOverviewCount.push(count_key_word(keyWord, dkwAll).length)
     })
 
-    let dkwHtmlStringCountArray = [];
-    dkwOverviewCount.forEach(keyWordCount => {
-        return dkwHtmlStringCountArray.push(`
-            <td valign="bottom">
-                <table width="100%" border="0" cellpadding="0" cellspacing="0" style="max-width:243px" align="center">
-                    <tr>
-                        <td valign="bottom" align="center">
-                            <table width="100%" border="0" cellpadding="0" cellspacing="0">
-                                <tr>
-                                    <td height="180" style="font-size:0px; line-height:0px;"> </td>
-                                </tr>
-                            </table>
-                            <table width="100%" cellpadding="0" cellspacing="0" border="0">
-                                <tr>
-                                    <td align="center" valign="bottom">
-                                        <table width="100%" cellpadding="0" cellspacing="0" border="0" class="chartWidth" style="width:100%">
-                                            <tr>
-                                                <td align="center" class="label" style="color: #717172; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 14px; line-height: 28px; text-align:center;" >${keyWordCount}</td>
-                                            </tr>
-                                            <tr>
-                                                <td height="9" style="font-size:1px;line-height:1px"> </td>
-                                            </tr>
-                                            <tr>
-                                                <td height="${keyWordCount * 10}" class="animate" style="font-size:0px; line-height:0px; background-color:#17a2b8;" bgcolor="#17a2b8">&nbsp;</td><!-- height x10px per count -->
-                                            </tr>
-                                        </table>
-                                    </td>
-                                </tr>
-                            </table>
-                        </td>
-                    </tr>
-                </table>
-            </td>
-            <!-- COUNT AND BAR ALIGNMENT-->
-            <td width="3%">
-                <table width="100%" border="0" cellpadding="0" cellspacing="0" >
-                    <tr>
-                        <td> </td>
-                    </tr>
-                </table>
-            </td>
-            <!-- NEXT COUNT AND BAR ITEM-->
+    for (i = 0; i < dkwOverview.length; i++) {
+        if (dkwToDiscard.includes(dkwOverview[i]) === false) {
+            if (dkwOverviewCount[i] <= 2) {
+                dkwFoundUpToTwice.push(dkwOverview[i].toLowerCase())
+            } else {
+                dkwOverviewHtmlStringArr.push(`
+            <table width="100%" border="0" cellpadding="0" cellspacing="0" style="border:0;border-collapse:collapse;border-spacing:0;mso-table-lspace:0;mso-table-rspace:0;width:100%">
+                <tr>
+                    <td width="15%" style="border-right:1px solid #c3c8c9; color:#000000;direction:ltr;font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;font-size:14px;line-height:28px;padding-top:20px;vertical-align:top; text-align:right; padding-right:5px; min-width:55px;" valign="top" class="label" >${dkwOverview[i].toLowerCase()}</td>
+                    <td width="85%" style="direction:ltr;vertical-align:top" valign="top">
+                        <table border="0" cellpadding="0" cellspacing="0" width="100%" align="left" style="border:0;border-collapse:collapse;border-spacing:0;mso-table-lspace:0;mso-table-rspace:0;table-layout:fixed;width:100%">
+                            <tr>
+                                <td align="left" style="direction:ltr">
+                                    <table style="border:0;border-collapse:collapse;border-spacing:0;mso-table-lspace:0;mso-table-rspace:0;width:${50 + (dkwOverviewCount[i] * 10)}px" class="bar"> 
+                                        <tr>
+                                            <td align="left" style="direction:ltr;padding-bottom:15px;padding-left:0;padding-top:15px">
+                                                <table width="100%" border="0" cellpadding="0" cellspacing="0" style="background-color:#17a2b8; border:0;border-collapse:collapse;border-spacing:0;mso-table-lspace:0;mso-table-rspace:0;width:100%" bgcolor="#17a2b8">
+                                                    <tr>
+                                                        <td height="40" style="font-size:0;line-height:0;">&nbsp;</td>
+                                                    </tr>
+                                                </table>
+                                            </td>
+                                            <td width="40" align="left" style="color:#717172;direction:ltr;font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;font-size:14px;line-height:28px;padding-left:8px;padding-top:20px;text-align:left;vertical-align:top;max-width:40px;" valign="top" class="label" >${dkwOverviewCount[i]}</td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
         `)
-    })
-    let dkwHtmlStringCount = dkwHtmlStringCountArray.join(" ")
+            }
+        }
+    }
 
-    let dkwOverviewHtmlStringArr = [];
-    dkwOverview.forEach(keyWord => {
-        return dkwOverviewHtmlStringArr.push(`
-            <td valign="top">
-                <table width="100%" border="0" cellpadding="0" cellspacing="0" style="max-width:243px" align="center">
-                    <tr>
-                        <td valign="bottom" align="center">
-                            <table width="100%" cellpadding="0" cellspacing="0" border="0" class="chartWidth" style="width:100%">
-                                <tr>
-                                    <td>
-                                        <table width="243" style="width:100%" border="0" cellpadding="0" cellspacing="0" class="" align="left">
-                                            <tr>
-                                                <td height="7" style="font-size:1px;line-height:1px"> </td>
-                                            </tr>
-                                            <tr>
-                                                <td align="center" class="labelBot" style="color: #000000; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 14px; line-height: 28px; text-align:center;" >${keyWord.toLowerCase()}</td>
-                                            </tr>
-                                        </table>
-                                    </td>
-                                </tr>
-                            </table>
-                        </td>
-                    </tr>
-                </table>
-            </td>
-            <!-- KEY WORD ITEM ALIGNMENT-->
-            <td width="10%">
-                <table width="100%" border="0" cellpadding="0" cellspacing="0" >
-                    <tr>
-                        <td> </td>
-                    </tr>
-                </table>
-            </td>
-            <!-- NEXT KEY WORD ITEM-->
-        `)
-    })
     let dkwOverviewHtmlString = dkwOverviewHtmlStringArr.join(" ")
+
+
+
 
 
     let mailOptions = {
@@ -809,52 +770,23 @@ exports.email_session_report = async function(sessionReport) {
             <p>Session newly processed: ${newlyProcessed}</p>
             <p>Session successfully applied: ${successfullyApplied}</p>
             <p>Session skipped applications: ${skippedApplications}</p>
-            <p>Desired Key Words Overview: ${dkwOverview}</p>
-            <p>Desired Key Words All: ${dkwAll}</p>
-            <p>Undesirable Key Words Overview: ${udkwOverview}</p>
-            <p>Undesirable Key Words All: ${udkwAll}</p>
-            <p>Top 24 Key Words Overview: ${top24Overview}</p>
-            <p>Top 24 Key Words All: ${top24All}</p>
             
-            <table width="100%" border="0" cellpadding="0" cellspacing="0">
+            <h3>Desired Key Words Overview:</h3>
+            <p>Desired key words found max 2 times: ${dkwFoundUpToTwice}</p>
+            <table width="100%" border="0" cellpadding="0" cellspacing="0" style="border: none; border-collapse: collapse; border-spacing: 0; mso-table-lspace: 0; mso-table-rspace: 0; width: 100%;">
                 <tr>
-                    <td align="left">
-                        <table width="100%" border="0" cellpadding="0" cellspacing="0" style="max-width:1100px"> <!-- make width x100 per key word -->
+                    <td align="left" style="direction: ltr;">
+                        <table width="100%" border="0" cellpadding="0" cellspacing="0" style="border: none; border-collapse: collapse; border-spacing: 0; max-width: 800px; mso-table-lspace: 0; mso-table-rspace: 0; width: 100%;">
                             <tr>
-                                <td align="center">
-                                    <table width="90%" height="240" border="0" cellpadding="0" cellspacing="0" class="wrap90" style="table-layout:fixed">
+                                <td align="center" style="direction: ltr;">
+                                    <table width="100%" height="100%" border="0" cellpadding="0" cellspacing="0" class="" style="border: none; border-collapse: collapse; border-spacing: 0; mso-table-lspace: 0; mso-table-rspace: 0; table-layout: fixed; width: 100%;">
                                         <tr>
+                                            <td style="direction: ltr;">
+                                            
+                                                <!-- mapped results -->
+                                                ${dkwOverviewHtmlString}
             
-                                            <!-- COUNT & BAR ITEM / ALIGNMENT -->
-                                            ${dkwHtmlStringCount}
-            
-                                        </tr>
-                                    </table>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <table width="100%" border="0" cellpadding="0" cellspacing="0">
-                                        <tr>
-                                            <td>
-                                                <table width="100%" border="0" cellpadding="0" cellspacing="0" class="">
-                                                    <tr>
-                                                        <td height="1" width="100%" bgcolor="#c3c8c9" class="tronHr" style="background-color:#c3c8c9;font-size:1px;line-height:1px">&nbsp;</td>
-                                                    </tr>
-                                                </table>
                                             </td>
-                                        </tr>
-                                    </table>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td align="center">
-                                    <table width="90%" height="20" border="0" cellpadding="0" cellspacing="0" class="" style="table-layout:fixed">
-                                        <tr>
-            
-                                            <!-- KEY WORD ITEM / ALIGNMENT -->
-                                            ${dkwOverviewHtmlString}
-            
                                         </tr>
                                     </table>
                                 </td>
