@@ -14,6 +14,7 @@ async function run_jada(jobTitle, area, radius) {
     console.log(`Job Title: ${jobTitle}`)
     console.log(`Area: ${area}`)
     console.log(`Radius: ${radius}`)
+    let searchParams = { "job_title": jobTitle, "location": area, "radius": radius }
     const radiusOptions = [0, 5, 10, 20, 30];
     let session_date = Jada.getDate('-')
     let session_id = Jada.getDate('') + mongoose.Types.ObjectId();
@@ -88,7 +89,7 @@ async function run_jada(jobTitle, area, radius) {
     let savedSessionReport = await Jada.save_session(sessionReport)
 
     if (savedSessionReport) {
-        let emailSession = await Jada.email_session_report(sessionReport)
+        let emailSession = await Jada.email_session_report(searchParams, sessionReport)
     }
 
 }
