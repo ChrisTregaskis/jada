@@ -5,7 +5,7 @@ const WebDriver = require('selenium-webdriver');
 const driver = new WebDriver.Builder().forBrowser('chrome').build();
 
 exports.navigate_to_website = async function() {
-    driver.get(`https://www.totaljobs.com/jobs/junior-developer/in-chippenham?radius=5&s=header`)
+    driver.get(`https://www.totaljobs.com/jobs/junior-developer/in-bristol?radius=20&s=header`)
     // const url = 'https://www.totaljobs.com/';
     // await driver.get(url);
     // driver.getTitle()
@@ -702,6 +702,45 @@ exports.produce_session_report = async function(session_id, session_date, sessio
     return sessionReport
 }
 
+async function produce_all_sessions_report() {
+    let applications = await get_all_applications();
+    let successfullyApplied = applications.filter((application) => {
+        if (application.apply_attempted === true) {
+            return application
+        }
+    });
+
+    let skippedApplications = applications.filter((application) => {
+        if (application.apply_attempted === false) {
+            return application
+        }
+    })
+
+    let dkwFoundAll = map_dkw(applications);
+    let udkwFoundAll = map_udkw(applications);
+    let top24FoundAll = map_top24(applications);
+    let locationsAll = map_locations(applications);
+
+    let dkwFoundUnique = remove_duplicates(dkwFoundAll);
+    let udkwFoundUnique = remove_duplicates(udkwFoundAll);
+    let top24FoundUnique = remove_duplicates(top24FoundAll);
+    let locationsOverview = remove_duplicates(locationsAll);
+
+    return {
+        "total_processed": applications.length,
+        "total_applied": successfullyApplied.length,
+        "total_skipped": skippedApplications.length,
+        "total_dkw_overview": dkwFoundUnique,
+        "total_dkw_all": dkwFoundAll,
+        "total_udkw_overview":udkwFoundUnique,
+        "total_udkw_all": udkwFoundAll,
+        "total_top24_overview": top24FoundUnique,
+        "total_top24_all": top24FoundAll,
+        "total_locations_overview": locationsOverview,
+        "total_locations_all" : locationsAll
+    }
+}
+
 exports.save_session = async function(sessionReport) {
     let responseData = await handle_fetch(
         'http://localhost:8080/sessions',
@@ -799,20 +838,12 @@ function display_email_keyWords(kwOverview, kwAll) {
 }
 
 exports.email_session_report = async function(searchParams, sessionReport) {
-    let dkwOverview = sessionReport.dkw_overview;
-    let dkwAll = sessionReport.dkw_all;
-    let udkwOverview = sessionReport.udkw_overview;
-    let udkwAll = sessionReport.udkw_all;
-    let top24Overview = sessionReport.top24_overview;
-    let top24All = sessionReport.top24_all;
-    let locationOverview = sessionReport.locations_overview;
-    let locationAll = sessionReport.locations_all;
-
+    let allSessionsReport = await produce_all_sessions_report();
     let transporter = nodeMailer.createTransport({
         service: 'gmail',
         auth: {
             user: 'chris.tregaskis.work@gmail.com',
-            pass: 'Romans 12.1-2'
+            pass: ''
         }
     });
 
@@ -839,28 +870,57 @@ exports.email_session_report = async function(searchParams, sessionReport) {
             <p>Session skipped applications: ${sessionReport.skipped_applications}</p>
             
             <h3>Desired Key Words Overview:</h3>
-            ${display_email_keyWords(dkwOverview, dkwAll)}
+            ${display_email_keyWords(sessionReport.dkw_overview, sessionReport.dkw_all)}
             <br>
             <h3>Undesired Key Words Overview:</h3>
-            ${display_email_keyWords(udkwOverview, udkwAll)}
+            ${display_email_keyWords(sessionReport.udkw_overview, sessionReport.udkw_all)}
             <br>
             <h3>Top 24 Programing Languages Overview:</h3>
-            ${display_email_keyWords(top24Overview, top24All)}
+            ${display_email_keyWords(sessionReport.top24_overview, sessionReport.top24_all)}
             <br>
             <h3>Locations Found Overview:</h3>
-            ${display_email_keyWords(locationOverview, locationAll)}
+            ${display_email_keyWords(sessionReport.locations_overview, sessionReport.locations_all)}
+            <br>
+            <br>
 
+            <h1>Jada - All Sessions Report</h1>
+            <br>
+            <h3>All applications processed overview:</h3>
+            <p>Total processed: ${allSessionsReport.total_processed}</p>
+            <p>Total applied: ${allSessionsReport.total_applied}</p>
+            <p>Total skipped: ${allSessionsReport.total_skipped}</p>
+            
+            <h3>Desired Key Words Overview For ALL Applications:</h3>
+            ${display_email_keyWords(allSessionsReport.total_dkw_overview, allSessionsReport.total_dkw_all)}
+            <br>
+            <h3>Undesired Key Words Overview For ALL Applications:</h3>
+            ${display_email_keyWords(allSessionsReport.total_udkw_overview, allSessionsReport.total_udkw_all)}
+            <br>
+            <h3>Top 24 Programing Languages Overview For ALL Applications:</h3>
+            ${display_email_keyWords(allSessionsReport.total_top24_overview, allSessionsReport.total_top24_all)}
+            <br>
+            <h3>Locations Found Overview For ALL Applications:</h3>
+            ${display_email_keyWords(allSessionsReport.total_locations_overview, allSessionsReport.total_locations_all)}
+            <br>
+            <br>
+            
         `
     }
 
     transporter.sendMail(mailOptions, (error, info) => {
         if (error) {
             console.log(error)
-            //return false
+            return false
         } else {
             console.log(`EMAIL SENT: ${info.response}`)
-            //return true
+            return true
         }
     })
 }
+
+// async function console_log() {
+//     let print = await produce_all_sessions_report();
+//     console.log(print)
+// }
+// console_log();
 
