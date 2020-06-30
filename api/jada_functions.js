@@ -5,7 +5,7 @@ const WebDriver = require('selenium-webdriver');
 const driver = new WebDriver.Builder().forBrowser('chrome').build();
 
 exports.navigate_to_website = async function() {
-    driver.get(`https://www.totaljobs.com/jobs/junior-developer/in-bristol?radius=5&s=header`)
+    driver.get(`https://www.totaljobs.com/jobs/junior-developer/in-chippenham?radius=5&s=header`)
     // const url = 'https://www.totaljobs.com/';
     // await driver.get(url);
     // driver.getTitle()
@@ -188,7 +188,6 @@ async function grab_job_detail(jobId, jobAddUrl) {
     let locationSyntax_1 = await driver.findElements({ css: '.travelTime-locationText ul li a' });
     let locationSyntax_2 = await driver.findElements({ css: '.travelTime-locationText ul li' });
     let locationSyntax_3 = await driver.findElements({ css: '.location div' });
-
     if (locationSyntax_1.length > 0) {
         location = await driver.findElement({ css: '.travelTime-locationText ul li a' }).getText();
     } else if (locationSyntax_2.length > 0) {
@@ -196,21 +195,80 @@ async function grab_job_detail(jobId, jobAddUrl) {
     } else if (locationSyntax_3.length > 0) {
         location = await driver.findElement({ css: '.location div' }).getText();
     } else {
+        location = 'NOT_FOUND'
         console.log('SESSION ERROR: location path not found')
     }
 
-    let contactInitial = await driver.findElement({ css: '.contact-reference li'}).getText();
-    let contactSplit = contactInitial.split(" ");
-    let contactShift = contactSplit.shift();
-    let contact = contactSplit.join(" ");
+    let contactInitial;
+    let contact;
+    contactInitial = await driver.findElements({ css: '.contact-reference li'});
+    if (contactInitial.length > 0) {
+        contactInitial = await driver.findElement({ css: '.contact-reference li'}).getText();
+        let contactSplit = contactInitial.split(" ");
+        let contactShift = contactSplit.shift();
+        contact = contactSplit.join(" ");
+    } else {
+        contact = 'NOT_FOUND'
+        console.log('SESSION ERROR: contact path not found');
+    }
 
-    // add handle for stale depricated issue that stops code from running. - UnhandledPromiseRejectionWarning
-    let jobTitle = await driver.findElement({ css: '.job-content-top h1' }).getText();
-    let salary = await driver.findElement({ css: '.salary div' }).getText();
-    let company = await driver.findElement({ css: '.company div a' }).getText();
-    let jobType = await driver.findElement({ css: '.job-type div' }).getText(); //sometimes doesn't appear on page... handle if its not there!
-    let jobPosted = await driver.findElement({ css: '.date-posted div span'}).getText();
-    let totalJobsRef = await driver.findElement({ css: '.contact-reference li:nth-child(2)'}).getText();
+    let totalJobsRefInitial;
+    let totalJobsRef;
+    totalJobsRefInitial = await driver.findElements({ css: '.contact-reference li:nth-child(2)'});
+    if (totalJobsRefInitial.length > 0) {
+        totalJobsRefInitial = await driver.findElement({ css: '.contact-reference li:nth-child(2)'}).getText();
+        let totalJobsRefSplit = totalJobsRefInitial.split(" ");
+        let totalJobsRefShift = totalJobsRefSplit.shift();
+        totalJobsRef = totalJobsRefSplit.join(" ");
+    } else {
+        totalJobsRef = 'NOT_FOUND'
+        console.log('SESSION ERROR: total jobs reference path not found')
+    }
+
+    let jobTitle;
+    jobTitle = await driver.findElements({ css: '.job-content-top h1' });
+    if (jobTitle.length > 0) {
+        jobTitle = await driver.findElement({ css: '.job-content-top h1' }).getText();
+    } else {
+        jobTitle = 'NOT_FOUND'
+        console.log('SESSION ERROR: job title path not found');
+    }
+
+    let salary;
+    salary = await driver.findElements({ css: '.salary div' });
+    if (salary.length > 0) {
+        salary = await driver.findElement({ css: '.salary div' }).getText();
+    } else {
+        salary = 'NOT_FOUND'
+        console.log('SESSION ERROR: salary path not found');
+    }
+
+    let company;
+    company = await driver.findElements({ css: '.company div a' });
+    if (company.length > 0) {
+        company = await driver.findElement({ css: '.company div a' }).getText();
+    } else {
+        company = 'NOT_FOUND'
+        console.log('SESSION ERROR: company path not found');
+    }
+
+    let jobType;
+    jobType = await driver.findElements({ css: '.job-type div' });
+    if (jobType.length > 0) {
+        jobType = await driver.findElement({ css: '.job-type div' }).getText();
+    } else {
+        jobType = 'NOT_FOUND'
+        console.log('SESSION ERROR: jobType path not found');
+    }
+
+    let jobPosted;
+    jobPosted = await driver.findElements({ css: '.date-posted div span'});
+    if (jobPosted.length > 0) {
+        jobPosted = await driver.findElement({ css: '.date-posted div span'}).getText();
+    } else {
+        jobPosted = 'NOT_FOUND'
+        console.log('SESSION ERROR: jobPosted path not found');
+    }
 
     return {
         "job_title": jobTitle,
@@ -494,13 +552,21 @@ exports.getTime = function() {
 }
 
 exports.check_nextBtn_status = async function() {
-    let nextBtnElement = await driver.findElement({ css: '.pagination .next' });
-    let nextBtnClasses = await nextBtnElement.getAttribute('class');
-    let explodedBtnClasses = nextBtnClasses.split(" ");
-    let disabledNextBtn = explodedBtnClasses.includes('disabled')
+    let nextBtnElement;
+    nextBtnElement = await driver.findElements({ css: '.pagination .next' });
 
-    if (!disabledNextBtn) {
-        return true
+    if (nextBtnElement.length > 0) {
+        nextBtnElement = await driver.findElement({ css: '.pagination .next' });
+        let nextBtnClasses = await nextBtnElement.getAttribute('class');
+        let explodedBtnClasses = nextBtnClasses.split(" ");
+        let disabledNextBtn = explodedBtnClasses.includes('disabled')
+
+        if (!disabledNextBtn) {
+            return true
+        } else {
+            return false
+        }
+
     } else {
         return false
     }
@@ -732,14 +798,7 @@ function display_email_keyWords(kwOverview, kwAll) {
     `
 }
 
-exports.email_session_report = async function(sessionReport) {
-    let date = sessionReport.session_date;
-    let time = sessionReport.session_time;
-    let sessionId = sessionReport.session_id;
-    let totalProcessed = sessionReport.total_processed;
-    let newlyProcessed = sessionReport.newly_processed;
-    let successfullyApplied = sessionReport.successfully_applied;
-    let skippedApplications = sessionReport.skipped_applications;
+exports.email_session_report = async function(searchParams, sessionReport) {
     let dkwOverview = sessionReport.dkw_overview;
     let dkwAll = sessionReport.dkw_all;
     let udkwOverview = sessionReport.udkw_overview;
@@ -760,18 +819,24 @@ exports.email_session_report = async function(sessionReport) {
     let mailOptions = {
         from: 'chris.tregaskis.work@gmail.com',
         to: 'chris.tregaskis.work@gmail.com',
-        subject: `Jada session report! ${date}`,
+        subject: `Jada session report! ${sessionReport.session_date}`,
         html: `
-            <h1>Jada Session Report: ${date} @ ${time}</h1>
+            <h1>Jada Session Report: ${sessionReport.session_date} @ ${sessionReport.session_time}</h1>
             <br>
             <h3>Yo Chris, here is your session report...</h3>
-            <p>Session Id: ${sessionId}</p>
-            <p>Session date: ${date}</p>
-            <p>Session time: ${time}</p>
-            <p>Session total processed: ${totalProcessed}</p>
-            <p>Session newly processed: ${newlyProcessed}</p>
-            <p>Session successfully applied: ${successfullyApplied}</p>
-            <p>Session skipped applications: ${skippedApplications}</p>
+            <h3>Session search parameters:</h3>
+            <p>Job title: ${searchParams.job_title}</p>
+            <p>Location: ${searchParams.location}</p>
+            <p>Radius: ${searchParams.radius}</p>
+            
+            <h3>Session results:</h3>
+            <p>Session Id: ${sessionReport.session_id}</p>
+            <p>Session date: ${sessionReport.session_date}</p>
+            <p>Session time: ${sessionReport.session_time}</p>
+            <p>Session total processed: ${sessionReport.total_processed}</p>
+            <p>Session newly processed: ${sessionReport.newly_processed}</p>
+            <p>Session successfully applied: ${sessionReport.successfully_applied}</p>
+            <p>Session skipped applications: ${sessionReport.skipped_applications}</p>
             
             <h3>Desired Key Words Overview:</h3>
             ${display_email_keyWords(dkwOverview, dkwAll)}
