@@ -5,20 +5,20 @@ const WebDriver = require('selenium-webdriver');
 const driver = new WebDriver.Builder().forBrowser('chrome').build();
 
 exports.navigate_to_website = async function() {
-    driver.get(`https://www.totaljobs.com/jobs/junior-developer/in-bristol?radius=20&s=header`)
-    // const url = 'https://www.totaljobs.com/';
-    // await driver.get(url);
-    // driver.getTitle()
-    //     .then(title => {
-    //         if (title === 'Jobs | UK Job Search | Find your perfect job - totaljobs') {
-    //             console.log(`successfully navigated to ${url}`);
-    //         } else {
-    //             console.log('page title does not match expected url page title')
-    //         }
-    //     })
-    //     .catch(err => {
-    //         console.log(err)
-    //     });
+    // driver.get(`https://www.totaljobs.com/jobs/junior-developer/in-bath?radius=10&s=header`)
+    const url = 'https://www.totaljobs.com/';
+    await driver.get(url);
+    driver.getTitle()
+        .then(title => {
+            if (title === 'Jobs | UK Job Search | Find your perfect job - totaljobs') {
+                console.log(`successfully navigated to ${url}`);
+            } else {
+                console.log('page title does not match expected url page title')
+            }
+        })
+        .catch(err => {
+            console.log(err)
+        });
 };
 
 exports.navigate_to_loginPage = async function() {
@@ -41,7 +41,7 @@ exports.navigate_to_loginPage = async function() {
 
 exports.jobSeeker_login = async function() {
     const emailLogIn = 'chris.tregaskis.work@gmail.com';
-    const passwordLogIn = 'gSpJ2biL$XDHwEQ';
+    const passwordLogIn = '';
 
     await driver.findElement({ id: 'Form_Email' }).sendKeys(emailLogIn);
     await driver.findElement({ id: 'Form_Password' }).sendKeys(passwordLogIn);
@@ -189,11 +189,14 @@ async function grab_job_detail(jobId, jobAddUrl) {
     let locationSyntax_2 = await driver.findElements({ css: '.travelTime-locationText ul li' });
     let locationSyntax_3 = await driver.findElements({ css: '.location div' });
     if (locationSyntax_1.length > 0) {
-        location = await driver.findElement({ css: '.travelTime-locationText ul li a' }).getText();
+        location = await driver.findElement({ css: '.travelTime-locationText ul li a' });
+        location = await location.getText();
     } else if (locationSyntax_2.length > 0) {
-        location = await driver.findElement({ css: '.travelTime-locationText ul li' }).getText();
+        location = await driver.findElement({ css: '.travelTime-locationText ul li' });
+        location = await location.getText();
     } else if (locationSyntax_3.length > 0) {
-        location = await driver.findElement({ css: '.location div' }).getText();
+        location = await driver.findElement({ css: '.location div' });
+        location = await location.getText();
     } else {
         location = 'NOT_FOUND'
         console.log('SESSION ERROR: location path not found')
@@ -203,7 +206,8 @@ async function grab_job_detail(jobId, jobAddUrl) {
     let contact;
     contactInitial = await driver.findElements({ css: '.contact-reference li'});
     if (contactInitial.length > 0) {
-        contactInitial = await driver.findElement({ css: '.contact-reference li'}).getText();
+        contactInitial = await driver.findElement({ css: '.contact-reference li'});
+        contactInitial = await contactInitial.getText();
         let contactSplit = contactInitial.split(" ");
         let contactShift = contactSplit.shift();
         contact = contactSplit.join(" ");
@@ -216,7 +220,8 @@ async function grab_job_detail(jobId, jobAddUrl) {
     let totalJobsRef;
     totalJobsRefInitial = await driver.findElements({ css: '.contact-reference li:nth-child(2)'});
     if (totalJobsRefInitial.length > 0) {
-        totalJobsRefInitial = await driver.findElement({ css: '.contact-reference li:nth-child(2)'}).getText();
+        totalJobsRefInitial = await driver.findElement({ css: '.contact-reference li:nth-child(2)'});
+        totalJobsRefInitial = await totalJobsRefInitial.getText();
         let totalJobsRefSplit = totalJobsRefInitial.split(" ");
         let totalJobsRefShift = totalJobsRefSplit.shift();
         totalJobsRef = totalJobsRefSplit.join(" ");
@@ -228,7 +233,8 @@ async function grab_job_detail(jobId, jobAddUrl) {
     let jobTitle;
     jobTitle = await driver.findElements({ css: '.job-content-top h1' });
     if (jobTitle.length > 0) {
-        jobTitle = await driver.findElement({ css: '.job-content-top h1' }).getText();
+        jobTitle = await driver.findElement({ css: '.job-content-top h1' });
+        jobTitle = await jobTitle.getText();
     } else {
         jobTitle = 'NOT_FOUND'
         console.log('SESSION ERROR: job title path not found');
@@ -237,7 +243,8 @@ async function grab_job_detail(jobId, jobAddUrl) {
     let salary;
     salary = await driver.findElements({ css: '.salary div' });
     if (salary.length > 0) {
-        salary = await driver.findElement({ css: '.salary div' }).getText();
+        salary = await driver.findElement({ css: '.salary div' });
+        salary = await salary.getText();
     } else {
         salary = 'NOT_FOUND'
         console.log('SESSION ERROR: salary path not found');
@@ -246,7 +253,8 @@ async function grab_job_detail(jobId, jobAddUrl) {
     let company;
     company = await driver.findElements({ css: '.company div a' });
     if (company.length > 0) {
-        company = await driver.findElement({ css: '.company div a' }).getText();
+        company = await driver.findElement({ css: '.company div a' });
+        company = await company.getText();
     } else {
         company = 'NOT_FOUND'
         console.log('SESSION ERROR: company path not found');
@@ -255,7 +263,8 @@ async function grab_job_detail(jobId, jobAddUrl) {
     let jobType;
     jobType = await driver.findElements({ css: '.job-type div' });
     if (jobType.length > 0) {
-        jobType = await driver.findElement({ css: '.job-type div' }).getText();
+        jobType = await driver.findElement({ css: '.job-type div' });
+        jobType = await jobType.getText();
     } else {
         jobType = 'NOT_FOUND'
         console.log('SESSION ERROR: jobType path not found');
@@ -264,7 +273,8 @@ async function grab_job_detail(jobId, jobAddUrl) {
     let jobPosted;
     jobPosted = await driver.findElements({ css: '.date-posted div span'});
     if (jobPosted.length > 0) {
-        jobPosted = await driver.findElement({ css: '.date-posted div span'}).getText();
+        jobPosted = await driver.findElement({ css: '.date-posted div span'});
+        jobPosted = await jobPosted.getText();
     } else {
         jobPosted = 'NOT_FOUND'
         console.log('SESSION ERROR: jobPosted path not found');
@@ -362,6 +372,7 @@ async function log_failed_interest(session_id, session_date, session_time, jobId
         "found_top24": keyWordFinder.found_top24
     }
     let logApplication = await add_application_db(currentApplication);
+    console.log('logging to db...')
     console.log(logApplication)
     if (logApplication.status !== 200) {
         console.log(`SESSION ERROR: unable to log job id: ${jobId}`)
@@ -375,6 +386,7 @@ async function log_undesirable_job(session_id, session_date, session_time, jobAd
         "session_time": session_time,
         "job_title": jobAdd.job_title,
         "totalJobs_id": jobAdd.totalJobs_id,
+        "interested": true,
         "apply_attempted": false,
         "db_id": mongoose.Types.ObjectId(),
         "job_url": jobAdd.job_url,
@@ -383,20 +395,22 @@ async function log_undesirable_job(session_id, session_date, session_time, jobAd
         "found_top24": keyWordFinder.found_top24
     }
     let logApplication = await add_application_db(currentApplication);
+    console.log('logging to db...')
     console.log(logApplication)
     if (logApplication.status !== 200) {
         console.log(`SESSION ERROR: unable to log job id: ${jobAdd.totalJobs_id}`)
     }
 }
 
-async function log_desirable_job(session_id, session_date, session_time, jobAdd, keyWordFinder) {
+async function log_desirable_job(session_id, session_date, session_time, jobAdd, keyWordFinder, appliedJob) {
     let currentApplication = {
         "session_id": session_id,
         "session_date": session_date,
         "session_time": session_time,
         "job_title": jobAdd.job_title,
         "totalJobs_id": jobAdd.totalJobs_id,
-        "apply_attempted": true,
+        "interested": true,
+        "apply_attempted": appliedJob,
         "salary": jobAdd.salary,
         "company": jobAdd.company,
         "job_type": jobAdd.job_type,
@@ -411,9 +425,48 @@ async function log_desirable_job(session_id, session_date, session_time, jobAdd,
         "found_top24": keyWordFinder.found_top24
     }
     let logApplication = await add_application_db(currentApplication);
+    console.log('logging to db...')
     console.log(logApplication)
     if (logApplication.status !== 200) {
         console.log(`SESSION ERROR: unable to log job id: ${jobAdd.totalJobs_id}`)
+    }
+}
+
+async function apply_to_job() {
+    let editApplicationBtnElement;
+    editApplicationBtnElement = await driver.findElements({ xpath: '//*[@id="top-button-panel"]/section/div[2]/div[2]/div/div[2]/div[1]/a' });
+
+    if (editApplicationBtnElement.length > 0) {
+        editApplicationBtnElement = await driver.findElement({ xpath: '//*[@id="top-button-panel"]/section/div[2]/div[2]/div/div[2]/div[1]/a' }).click();
+        let applyPage = await driver.wait(WebDriver.until.elementLocated({ id: 'btnSubmit'}), 4000);
+
+        if (applyPage) {
+            console.log('--------')
+            console.log('Successfully reached apply page');
+            let addCoverLetter;
+            addCoverLetter = await driver.findElements({ css: '.cover-letter-link' });
+            if (addCoverLetter.length > 0) {
+                console.log('adding cover letter...')
+                addCoverLetter = await driver.findElement({ css: '.cover-letter-link' }).click()
+            }
+
+            let updateRecentSalary;
+            updateRecentSalary = await driver.findElements({ id: 'rdoNoRate' });
+            if (updateRecentSalary.length > 0) {
+                console.log('updating recent salary...')
+                updateRecentSalary = await driver.findElement({ css: 'label[for=rdoNoRate]'}).click();
+            }
+
+            return true;
+        } else {
+            console.log('SESSION ERROR: submit button on apply page not found')
+            return false;
+        }
+
+    } else {
+        console.log('--------')
+        console.log('Apply aborted -> edit button on result page not found')
+        return false
     }
 }
 
@@ -462,11 +515,14 @@ async function process_jobAdd(jobId, previouslyAppliedJobs, dkw, udkw, session_i
     let isNotDesirable = jobDesirability.is_not_desirable;
 
     if (isDesirable && !isNotDesirable) {
-        let logDesirableJob = await log_desirable_job(session_id, session_date, session_time, jobAdd, keyWordFinder)
-        appliedJob = true
+        let applyToJob = await apply_to_job();
+        appliedJob = applyToJob;
+        let logDesirableJob = await log_desirable_job(session_id, session_date, session_time, jobAdd, keyWordFinder, appliedJob);
     } else {
         let logUndesirableJob = await log_undesirable_job(session_id, session_date, session_time, jobAdd, keyWordFinder);
     }
+
+
 
     await driver.close();
     let backToMainWindow = await driver.switchTo().window(mainWindow);
@@ -573,16 +629,25 @@ exports.check_nextBtn_status = async function() {
 }
 
 exports.next_results_page = async function() {
-    let nextBtnElement = await driver.findElement({ css: '.pagination .next' }).click();
-    let resultsPage = await driver.wait(WebDriver.until.elementLocated({ xpath: '//*[@id="scroll-to-top"]'}), 4000);
-    if (resultsPage) {
-        console.log('************************************************')
-        console.log('************************************************')
-        console.log('Successfully reached next results page');
-        return true;
+    let nextBtnElement;
+    nextBtnElement = await driver.findElements({ css: '.pagination .next' });
+    if (nextBtnElement.length > 0) {
+        nextBtnElement = await driver.findElement({ css: '.pagination .next' }).click();
+        let resultsPage = await driver.wait(WebDriver.until.elementLocated({ xpath: '//*[@id="scroll-to-top"]'}), 4000);
+
+        if (resultsPage) {
+            console.log('************************************************')
+            console.log('************************************************')
+            console.log('Successfully reached next results page');
+            return true;
+        } else {
+            return false;
+        }
+
     } else {
-        return false;
+        return false
     }
+
 }
 
 async function get_by_sessionId(sessionId) {
@@ -644,7 +709,11 @@ function map_locations(applications) {
                 locations.push('BRISTOL')
             } else if (location.includes('BATH') === true) {
                 locations.push('BATH')
-            } else {
+            } else if (location.includes('SWINDON') === true) {
+                locations.push('SWINDON')
+            } else if (location.includes('GLOUCESTERSHIRE') === true) {
+                locations.push('GLOUCESTERSHIRE')
+            }else {
                 locations.push(location[0])
             }
         }
@@ -681,7 +750,7 @@ exports.produce_session_report = async function(session_id, session_date, sessio
     let top24FoundUnique = remove_duplicates(top24FoundAll);
     let locationsOverview = remove_duplicates(locationsAll);
 
-    let sessionReport = {
+    return {
         "session_id": session_id,
         "session_date": session_date,
         "session_time": session_time,
@@ -698,8 +767,6 @@ exports.produce_session_report = async function(session_id, session_date, sessio
         "locations_overview": locationsOverview,
         "locations_all" : locationsAll
     }
-
-    return sessionReport
 }
 
 async function produce_all_sessions_report() {
@@ -899,7 +966,7 @@ exports.email_session_report = async function(searchParams, sessionReport) {
             <h3>Top 24 Programing Languages Overview For ALL Applications:</h3>
             ${display_email_keyWords(allSessionsReport.total_top24_overview, allSessionsReport.total_top24_all)}
             <br>
-            <h3>Locations Found Overview For ALL Applications:</h3>
+            <h3>Locations Found Overview For ALL APPLIED Applications:</h3>
             ${display_email_keyWords(allSessionsReport.total_locations_overview, allSessionsReport.total_locations_all)}
             <br>
             <br>
@@ -912,10 +979,15 @@ exports.email_session_report = async function(searchParams, sessionReport) {
             console.log(error)
             return false
         } else {
-            console.log(`EMAIL SENT: ${info.response}`)
+            console.log(`JADA REPORT EMAIL SENT: ${info.response}`)
+            console.log('----> session end <----')
             return true
         }
     })
+}
+
+exports.end_session = async function() {
+    let closeWindow = await driver.close()
 }
 
 // async function console_log() {
