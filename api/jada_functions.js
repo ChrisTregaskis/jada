@@ -65,7 +65,9 @@ exports.enter_search = async function(jobTitle, area, radius) {
     console.log('successfully entered job search parameters')
     await driver.findElement({ id: 'search-button' }).click();
 
-    let resultsPage = await driver.wait(WebDriver.until.elementLocated({ xpath: '//*[@id="scroll-to-top"]'}), 2000);
+    let resultsPage = await driver.wait(WebDriver.until.elementLocated({
+        xpath: '//*[@id="scroll-to-top"]'
+    }), 2000);
     if (resultsPage) {
         console.log('successfully reached results page');
         return true;
@@ -106,7 +108,14 @@ async function isInterested(jobId, dkw, udkw, session_id, session_date, session_
     if (isDesirable && !isNotDesirable && !alreadyApplied) {
         return true
     } else {
-        let logFailedInterest = await log_failed_interest(session_id, session_date, session_time, jobId, jobTitle, keyWordFinder)
+        let logFailedInterest = await log_failed_interest(
+            session_id,
+            session_date,
+            session_time,
+            jobId,
+            jobTitle,
+            keyWordFinder
+        )
         return false
     }
 }
@@ -133,9 +142,14 @@ exports.check_interest = async function(potentialJobs, dkw, udkw, session_id, se
 }
 
 function check_dkw(item) {
-    const dkw = ['SOFTWARE', 'ENGINEER', 'ENGINEERING', 'DEVELOPER', 'GIT', 'BASH', 'NODE', 'AGILE', 'NODEJS',
-        'BACKEND', 'FRONTEND', 'PHP', 'OOP', 'JS', 'JAVASCRIPT', 'HTML', 'CSS', 'MYSQL', 'MONGODB', 'RESTFUL', 'API',
-        'GULP', 'GRADUATE', 'JUNIOR'];
+    const dkw = [
+        'SOFTWARE', 'ENGINEER', 'ENGINEERING', 'DEVELOPER',
+        'GIT', 'BASH', 'NODE', 'AGILE',
+        'NODEJS', 'BACKEND', 'FRONTEND', 'PHP',
+        'OOP', 'JS', 'JAVASCRIPT', 'HTML',
+        'CSS', 'MYSQL', 'MONGODB', 'RESTFUL',
+        'API',  'GULP', 'GRADUATE', 'JUNIOR'
+    ];
 
     let itemCheck = dkw.includes(item)
     if (itemCheck) {
@@ -144,7 +158,10 @@ function check_dkw(item) {
 }
 
 function check_udkw(item) {
-    const udkw = ['TRAINEESHIP', 'NET', 'TRAINEE', 'CONSULTANT', 'UX', 'DESIGNER', 'SALES', 'LEAD', 'WINDOWS'];
+    const udkw = [
+        'TRAINEESHIP', 'NET', 'TRAINEE', 'CONSULTANT',
+        'UX', 'DESIGNER', 'SALES', 'LEAD', 'WINDOWS'
+    ];
 
     let itemCheck = udkw.includes(item)
     if (itemCheck) {
@@ -153,9 +170,15 @@ function check_udkw(item) {
 }
 
 function check_top24(item) {
-    const top24ProgLang = ['JAVASCRIPT', 'NODE', 'NODEJS', 'REACT', 'PYTHON', 'HTML', 'CSS', 'C++', 'TYPESCRIPT',
-        'RUST', 'SCHEME', 'JAVA', 'KOTLIN', 'C#', 'PERL', 'PHP', 'SCALA', 'SWIFT', 'MATLAB', 'SQL', 'R', 'GOLANG', 'GO',
-        'RUBY', 'BASH', 'C', 'NET', 'ASSEMBLY'];
+    const top24ProgLang = [
+        'JAVASCRIPT', 'NODE', 'NODEJS', 'REACT',
+        'PYTHON', 'HTML', 'CSS', 'C++',
+        'TYPESCRIPT', 'RUST', 'SCHEME', 'JAVA',
+        'KOTLIN', 'C#', 'PERL', 'PHP',
+        'SCALA', 'SWIFT', 'MATLAB', 'SQL',
+        'R', 'GOLANG', 'GO', 'RUBY',
+        'BASH', 'C', 'NET', 'ASSEMBLY'
+    ];
 
     let itemCheck = top24ProgLang.includes(item)
     if (itemCheck) {
@@ -434,10 +457,14 @@ async function log_desirable_job(session_id, session_date, session_time, jobAdd,
 
 async function apply_to_job() {
     let editApplicationBtnElement;
-    editApplicationBtnElement = await driver.findElements({ xpath: '//*[@id="top-button-panel"]/section/div[2]/div[2]/div/div[2]/div[1]/a' });
+    editApplicationBtnElement = await driver.findElements({
+        xpath: '//*[@id="top-button-panel"]/section/div[2]/div[2]/div/div[2]/div[1]/a'
+    });
 
     if (editApplicationBtnElement.length > 0) {
-        editApplicationBtnElement = await driver.findElement({ xpath: '//*[@id="top-button-panel"]/section/div[2]/div[2]/div/div[2]/div[1]/a' }).click();
+        editApplicationBtnElement = await driver.findElement({
+            xpath: '//*[@id="top-button-panel"]/section/div[2]/div[2]/div/div[2]/div[1]/a'
+        }).click();
         let applyPage = await driver.wait(WebDriver.until.elementLocated({ id: 'btnSubmit'}), 4000);
 
         if (applyPage) {
@@ -517,16 +544,26 @@ async function process_jobAdd(jobId, previouslyAppliedJobs, dkw, udkw, session_i
     if (isDesirable && !isNotDesirable) {
         let applyToJob = await apply_to_job();
         appliedJob = applyToJob;
-        let logDesirableJob = await log_desirable_job(session_id, session_date, session_time, jobAdd, keyWordFinder, appliedJob);
+        let logDesirableJob = await log_desirable_job(
+            session_id,
+            session_date,
+            session_time,
+            jobAdd,
+            keyWordFinder,
+            appliedJob
+        );
     } else {
-        let logUndesirableJob = await log_undesirable_job(session_id, session_date, session_time, jobAdd, keyWordFinder);
+        let logUndesirableJob = await log_undesirable_job(
+            session_id,
+            session_date,
+            session_time,
+            jobAdd,
+            keyWordFinder
+        );
     }
-
-
 
     await driver.close();
     let backToMainWindow = await driver.switchTo().window(mainWindow);
-
     return appliedJob;
 }
 
@@ -573,7 +610,15 @@ exports.process_interested_jobs = async function(interestedJobIds, dkw, udkw, se
 
     for (i = 0; i < interestedJobIds.length; i++) {
         console.log('------------------------------------------------')
-        let appliedJob = await process_jobAdd(interestedJobIds[i], previouslyAppliedJobs, dkw, udkw, session_id, session_date, session_time)
+        let appliedJob = await process_jobAdd(
+            interestedJobIds[i],
+            previouslyAppliedJobs,
+            dkw,
+            udkw,
+            session_id,
+            session_date,
+            session_time
+        );
         console.log('/---- applied job: ')
         console.log(appliedJob)
         if (appliedJob) {
@@ -633,7 +678,9 @@ exports.next_results_page = async function() {
     nextBtnElement = await driver.findElements({ css: '.pagination .next' });
     if (nextBtnElement.length > 0) {
         nextBtnElement = await driver.findElement({ css: '.pagination .next' }).click();
-        let resultsPage = await driver.wait(WebDriver.until.elementLocated({ xpath: '//*[@id="scroll-to-top"]'}), 4000);
+        let resultsPage = await driver.wait(WebDriver.until.elementLocated({
+            xpath: '//*[@id="scroll-to-top"]'
+        }), 4000);
 
         if (resultsPage) {
             console.log('************************************************')
@@ -845,32 +892,32 @@ function display_email_keyWords(kwOverview, kwAll) {
                 kwFoundUpToTwice.push(kwOverview[i].toLowerCase())
             } else {
                 kwOverviewHtmlStringArr.push(`
-            <table width="100%" border="0" cellpadding="0" cellspacing="0" style="border:0;border-collapse:collapse;border-spacing:0;mso-table-lspace:0;mso-table-rspace:0;width:100%">
-                <tr>
-                    <td width="15%" style="border-right:1px solid #c3c8c9; color:#000000;direction:ltr;font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;font-size:14px;line-height:28px;padding-top:20px;vertical-align:top; text-align:right; padding-right:5px; min-width:55px;" valign="top" class="label" >${kwOverview[i].toLowerCase()}</td>
-                    <td width="85%" style="direction:ltr;vertical-align:top" valign="top">
-                        <table border="0" cellpadding="0" cellspacing="0" width="100%" align="left" style="border:0;border-collapse:collapse;border-spacing:0;mso-table-lspace:0;mso-table-rspace:0;table-layout:fixed;width:100%">
-                            <tr>
-                                <td align="left" style="direction:ltr">
-                                    <table style="border:0;border-collapse:collapse;border-spacing:0;mso-table-lspace:0;mso-table-rspace:0;width:${50 + (kwOverviewCount[i] * 10)}px" class="bar"> 
-                                        <tr>
-                                            <td align="left" style="direction:ltr;padding-bottom:15px;padding-left:0;padding-top:15px">
-                                                <table width="100%" border="0" cellpadding="0" cellspacing="0" style="background-color:#17a2b8; border:0;border-collapse:collapse;border-spacing:0;mso-table-lspace:0;mso-table-rspace:0;width:100%" bgcolor="#17a2b8">
-                                                    <tr>
-                                                        <td height="40" style="font-size:0;line-height:0;">&nbsp;</td>
-                                                    </tr>
-                                                </table>
-                                            </td>
-                                            <td width="40" align="left" style="color:#717172;direction:ltr;font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;font-size:14px;line-height:28px;padding-left:8px;padding-top:20px;text-align:left;vertical-align:top;max-width:40px;" valign="top" class="label" >${kwOverviewCount[i]}</td>
-                                        </tr>
-                                    </table>
-                                </td>
-                            </tr>
-                        </table>
-                    </td>
-                </tr>
-            </table>
-        `)
+                    <table width="100%" border="0" cellpadding="0" cellspacing="0" style="border:0;border-collapse:collapse;border-spacing:0;mso-table-lspace:0;mso-table-rspace:0;width:100%">
+                        <tr>
+                            <td width="15%" style="border-right:1px solid #c3c8c9; color:#000000;direction:ltr;font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;font-size:14px;line-height:28px;padding-top:20px;vertical-align:top; text-align:right; padding-right:5px; min-width:55px;" valign="top" class="label" >${kwOverview[i].toLowerCase()}</td>
+                            <td width="85%" style="direction:ltr;vertical-align:top" valign="top">
+                                <table border="0" cellpadding="0" cellspacing="0" width="100%" align="left" style="border:0;border-collapse:collapse;border-spacing:0;mso-table-lspace:0;mso-table-rspace:0;table-layout:fixed;width:100%">
+                                    <tr>
+                                        <td align="left" style="direction:ltr">
+                                            <table style="border:0;border-collapse:collapse;border-spacing:0;mso-table-lspace:0;mso-table-rspace:0;width:${50 + (kwOverviewCount[i] * 10)}px" class="bar"> 
+                                                <tr>
+                                                    <td align="left" style="direction:ltr;padding-bottom:15px;padding-left:0;padding-top:15px">
+                                                        <table width="100%" border="0" cellpadding="0" cellspacing="0" style="background-color:#17a2b8; border:0;border-collapse:collapse;border-spacing:0;mso-table-lspace:0;mso-table-rspace:0;width:100%" bgcolor="#17a2b8">
+                                                            <tr>
+                                                                <td height="40" style="font-size:0;line-height:0;">&nbsp;</td>
+                                                            </tr>
+                                                        </table>
+                                                    </td>
+                                                    <td width="40" align="left" style="color:#717172;direction:ltr;font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;font-size:14px;line-height:28px;padding-left:8px;padding-top:20px;text-align:left;vertical-align:top;max-width:40px;" valign="top" class="label" >${kwOverviewCount[i]}</td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                    </table>
+                `)
             }
         }
     }
@@ -970,7 +1017,6 @@ exports.email_session_report = async function(searchParams, sessionReport) {
             ${display_email_keyWords(allSessionsReport.total_locations_overview, allSessionsReport.total_locations_all)}
             <br>
             <br>
-            
         `
     }
 

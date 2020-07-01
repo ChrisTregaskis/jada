@@ -1,13 +1,20 @@
 const mongoose = require('mongoose');
 const Jada = require('./jada_functions');
-const dkw = ['SOFTWARE', 'ENGINEER', 'ENGINEERING', 'DEVELOPER', 'GIT', 'BASH', 'NODE', 'AGILE', 'NODEJS',
-    'BACKEND', 'FRONTEND', 'PHP', 'OOP', 'JS', 'JAVASCRIPT', 'HTML', 'CSS', 'MYSQL', 'MONGODB', 'RESTFUL', 'API',
-    'GULP', 'GRADUATE', 'JUNIOR'];
-const udkw = ['TRAINEESHIP', 'NET', 'TRAINEE', 'CONSULTANT', 'UX', 'DESIGNER', 'SALES', 'LEAD', 'WINDOWS'];
-
+const dkw = [
+    'SOFTWARE', 'ENGINEER', 'ENGINEERING', 'DEVELOPER',
+    'GIT', 'BASH', 'NODE', 'AGILE',
+    'NODEJS', 'BACKEND', 'FRONTEND', 'PHP',
+    'OOP', 'JS', 'JAVASCRIPT', 'HTML',
+    'CSS', 'MYSQL', 'MONGODB', 'RESTFUL',
+    'API', 'GULP', 'GRADUATE', 'JUNIOR'
+];
+const udkw = [
+    'TRAINEESHIP', 'NET', 'TRAINEE', 'CONSULTANT',
+    'UX', 'DESIGNER', 'SALES', 'LEAD', 'WINDOWS'
+];
 const jobTitle = 'junior software engineer';
-const area = 'Chippenham';
-const radius = 0;
+const area = 'Bath';
+const radius = 5;
 
 run_jada(jobTitle, area, radius);
 
@@ -39,6 +46,7 @@ async function run_jada(jobTitle, area, radius) {
     if (!enteredSearch) { return console.log('SESSION FAILED: first xpath result not found') }
 
     let activeNextBtn = await Jada.check_nextBtn_status();
+
     do {
         resultPage++;
         console.log(resultPage)
@@ -48,13 +56,27 @@ async function run_jada(jobTitle, area, radius) {
         potentialJobsIds.push(...additionalJobs);
         allSessionJobIds.push(...additionalJobs);
 
-        let isInterested = await Jada.check_interest(potentialJobsIds, dkw, udkw, session_id, session_date, session_time);
+        let isInterested = await Jada.check_interest(
+            potentialJobsIds,
+            dkw,
+            udkw,
+            session_id,
+            session_date,
+            session_time
+        );
         interestedJobIds.push(...isInterested);
         console.log('INTERESTED JIds: ---------------- ')
         console.log(interestedJobIds.length)
         console.log(interestedJobIds)
 
-        let additionalJobsAppliedTo = await Jada.process_interested_jobs(interestedJobIds, dkw, udkw, session_id, session_date, session_time);
+        let additionalJobsAppliedTo = await Jada.process_interested_jobs(
+            interestedJobIds,
+            dkw,
+            udkw,
+            session_id,
+            session_date,
+            session_time
+        );
         jobsAppliedTo.push(...additionalJobsAppliedTo);
         console.log('APPLIED TO JIds: ----------------- ')
         console.log(jobsAppliedTo.length)
@@ -64,8 +86,8 @@ async function run_jada(jobTitle, area, radius) {
             let nextPage = await Jada.next_results_page();
             if (!nextPage) { return console.log('SESSION FAILED: next result page button not found') }
             activeNextBtn = await Jada.check_nextBtn_status();
-            console.log(`Next results page button available: ${activeNextBtn}`)
         }
+        console.log(`Next results page button available: ${activeNextBtn}`)
 
     } while (activeNextBtn)
 
