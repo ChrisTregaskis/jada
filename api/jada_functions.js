@@ -41,7 +41,7 @@ exports.navigate_to_loginPage = async function() {
 
 exports.jobSeeker_login = async function() {
     const emailLogIn = 'chris.tregaskis.work@gmail.com';
-    const passwordLogIn = 'gSpJ2biL$XDHwEQ';
+    const passwordLogIn = '';
 
     await driver.findElement({ id: 'Form_Email' }).sendKeys(emailLogIn);
     await driver.findElement({ id: 'Form_Password' }).sendKeys(passwordLogIn);
@@ -971,7 +971,7 @@ exports.email_session_report = async function(searchParams, sessionReport) {
         service: 'gmail',
         auth: {
             user: 'chris.tregaskis.work@gmail.com',
-            pass: '\\n(Mx$c=yaHBb4Va'
+            pass: ''
         }
     });
 
