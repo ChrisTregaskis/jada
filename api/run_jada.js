@@ -12,8 +12,8 @@ const udkw = [
     'TRAINEESHIP', 'NET', 'TRAINEE', 'CONSULTANT',
     'UX', 'DESIGNER', 'SALES', 'LEAD', 'WINDOWS'
 ];
-const jobTitle = 'junior software engineer';
-const area = 'Bath';
+const jobTitle = 'Junior Software Engineer';
+const area = 'Bristol';
 const radius = 5;
 
 run_jada(jobTitle, area, radius);

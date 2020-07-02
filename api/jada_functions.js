@@ -5,7 +5,7 @@ const WebDriver = require('selenium-webdriver');
 const driver = new WebDriver.Builder().forBrowser('chrome').build();
 
 exports.navigate_to_website = async function() {
-    // driver.get(`https://www.totaljobs.com/jobs/junior-developer/in-bath?radius=10&s=header`)
+    // driver.get(`https://www.totaljobs.com/jobs/junior-developer/in-chippenham?radius=0&s=header`)
     const url = 'https://www.totaljobs.com/';
     await driver.get(url);
     driver.getTitle()
@@ -41,7 +41,7 @@ exports.navigate_to_loginPage = async function() {
 
 exports.jobSeeker_login = async function() {
     const emailLogIn = 'chris.tregaskis.work@gmail.com';
-    const passwordLogIn = '';
+    const passwordLogIn = 'gSpJ2biL$XDHwEQ';
 
     await driver.findElement({ id: 'Form_Email' }).sendKeys(emailLogIn);
     await driver.findElement({ id: 'Form_Password' }).sendKeys(passwordLogIn);
@@ -465,7 +465,7 @@ async function apply_to_job() {
         editApplicationBtnElement = await driver.findElement({
             xpath: '//*[@id="top-button-panel"]/section/div[2]/div[2]/div/div[2]/div[1]/a'
         }).click();
-        let applyPage = await driver.wait(WebDriver.until.elementLocated({ id: 'btnSubmit'}), 4000);
+        let applyPage = await driver.wait(WebDriver.until.elementLocated({ id: 'btnSubmit' }), 4000);
 
         if (applyPage) {
             console.log('--------')
@@ -484,7 +484,20 @@ async function apply_to_job() {
                 updateRecentSalary = await driver.findElement({ css: 'label[for=rdoNoRate]'}).click();
             }
 
-            return true;
+            // click submit to apply!!
+            console.log('APPLYING! Clicking submit...')
+            let clickSubmit = await driver.findElement({ id: 'btnSubmit' }).click();
+            let returnToSearch = await driver.wait(WebDriver.until.elementLocated({
+                className: 'return-to-search'
+            }), 10000);
+
+            let submissionSuccessful = await driver.findElements({ className: 'return-to-search' });
+            if (submissionSuccessful.length > 0) {
+                return true
+            } else {
+                return false
+            }
+
         } else {
             console.log('SESSION ERROR: submit button on apply page not found')
             return false;
@@ -630,7 +643,7 @@ exports.process_interested_jobs = async function(interestedJobIds, dkw, udkw, se
 }
 
 exports.getDate = function(separator) {
-    today = new Date();
+    let today = new Date();
     let dd = today.getDate();
     let mm = today.getMonth() + 1;
     let yyyy = today.getFullYear();
@@ -649,7 +662,7 @@ exports.getTime = function() {
     if(hh < 10) hh = '0' + hh;
     if(min < 10) min = '0' + min;
     if(sec < 10) sec = '0' + sec;
-    return time = `${hh}:${min}:${sec}`;
+    return `${hh}:${min}:${sec}`;
 }
 
 exports.check_nextBtn_status = async function() {
@@ -758,7 +771,8 @@ function map_locations(applications) {
                 locations.push('BATH')
             } else if (location.includes('SWINDON') === true) {
                 locations.push('SWINDON')
-            } else if (location.includes('GLOUCESTERSHIRE') === true) {
+            } else if (location.includes('GLOUCESTERSHIRE') === true ||
+                location.includes('GLOUCESTER') === true) {
                 locations.push('GLOUCESTERSHIRE')
             }else {
                 locations.push(location[0])
@@ -957,7 +971,7 @@ exports.email_session_report = async function(searchParams, sessionReport) {
         service: 'gmail',
         auth: {
             user: 'chris.tregaskis.work@gmail.com',
-            pass: ''
+            pass: '\\n(Mx$c=yaHBb4Va'
         }
     });
 
