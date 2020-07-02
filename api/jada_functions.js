@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const fetch = require('node-fetch');
 const nodeMailer = require('nodemailer');
+const volt = require('nodemon.json');
 const WebDriver = require('selenium-webdriver');
 const driver = new WebDriver.Builder().forBrowser('chrome').build();
 
@@ -40,8 +41,8 @@ exports.navigate_to_loginPage = async function() {
 };
 
 exports.jobSeeker_login = async function() {
-    const emailLogIn = 'chris.tregaskis.work@gmail.com';
-    const passwordLogIn = '';
+    const emailLogIn = volt.env.TOTALJOBS_EMAIL;
+    const passwordLogIn = volt.env.TOTALJOBS_PASS;
 
     await driver.findElement({ id: 'Form_Email' }).sendKeys(emailLogIn);
     await driver.findElement({ id: 'Form_Password' }).sendKeys(passwordLogIn);
@@ -484,7 +485,7 @@ async function apply_to_job() {
                 updateRecentSalary = await driver.findElement({ css: 'label[for=rdoNoRate]'}).click();
             }
 
-            // click submit to apply!!
+            // click submit to ------> apply!! <------
             console.log('APPLYING! Clicking submit...')
             let clickSubmit = await driver.findElement({ id: 'btnSubmit' }).click();
             let returnToSearch = await driver.wait(WebDriver.until.elementLocated({
@@ -970,14 +971,14 @@ exports.email_session_report = async function(searchParams, sessionReport) {
     let transporter = nodeMailer.createTransport({
         service: 'gmail',
         auth: {
-            user: 'chris.tregaskis.work@gmail.com',
-            pass: ''
+            user: volt.env.USER_EMAIL,
+            pass: volt.env.USER_PASS
         }
     });
 
     let mailOptions = {
-        from: 'chris.tregaskis.work@gmail.com',
-        to: 'chris.tregaskis.work@gmail.com',
+        from: volt.env.USER_EMAIL,
+        to: volt.env.USER_EMAIL,
         subject: `Jada session report! ${sessionReport.session_date}`,
         html: `
             <h1>Jada Session Report: ${sessionReport.session_date} @ ${sessionReport.session_time}</h1>
