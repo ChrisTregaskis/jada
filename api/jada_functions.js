@@ -1,9 +1,14 @@
 const mongoose = require('mongoose');
 const fetch = require('node-fetch');
 const nodeMailer = require('nodemailer');
-const volt = require('nodemon.json');
 const WebDriver = require('selenium-webdriver');
 const driver = new WebDriver.Builder().forBrowser('chrome').build();
+const Volt = require('./volt');
+const voltContents = Volt.open_volt();
+const totalJobsEmail = voltContents.TOTALJOBS_EMAIL;
+const totalJobsPass = voltContents.TOTALJOBS_PASS;
+const userEmail = voltContents.USER_EMAIL;
+const userPass = voltContents.USER_PASS;
 
 exports.navigate_to_website = async function() {
     // driver.get(`https://www.totaljobs.com/jobs/junior-developer/in-chippenham?radius=0&s=header`)
@@ -30,7 +35,7 @@ exports.navigate_to_loginPage = async function() {
     }
 
     await driver.findElement({ xpath: '//*[@id="jobseekerList"]/li[1]/a' }).click();
-    let loginPage = await driver.wait(WebDriver.until.elementLocated({ id: 'btnLogin' }), 2000);
+    let loginPage = await driver.wait(WebDriver.until.elementLocated({ id: 'btnLogin' }), 20000);
     if (loginPage) {
         console.log('successfully reached login page');
         return true
@@ -41,8 +46,8 @@ exports.navigate_to_loginPage = async function() {
 };
 
 exports.jobSeeker_login = async function() {
-    const emailLogIn = volt.env.TOTALJOBS_EMAIL;
-    const passwordLogIn = volt.env.TOTALJOBS_PASS;
+    const emailLogIn = totalJobsEmail;
+    const passwordLogIn = totalJobsPass;
 
     await driver.findElement({ id: 'Form_Email' }).sendKeys(emailLogIn);
     await driver.findElement({ id: 'Form_Password' }).sendKeys(passwordLogIn);
@@ -50,7 +55,7 @@ exports.jobSeeker_login = async function() {
     console.log('successfully entered login information');
     await driver.findElement({ id: 'btnLogin' }).click();
 
-    let searchPage = await driver.wait(WebDriver.until.elementLocated({ id: 'search-button' }), 2000);
+    let searchPage = await driver.wait(WebDriver.until.elementLocated({ id: 'search-button' }), 20000);
     if (searchPage) {
         console.log('successfully reached search page');
         return true
@@ -68,7 +73,7 @@ exports.enter_search = async function(jobTitle, area, radius) {
 
     let resultsPage = await driver.wait(WebDriver.until.elementLocated({
         xpath: '//*[@id="scroll-to-top"]'
-    }), 2000);
+    }), 20000);
     if (resultsPage) {
         console.log('successfully reached results page');
         return true;
@@ -190,7 +195,7 @@ function check_top24(item) {
 async function open_result(url) {
     await driver.switchTo().newWindow('tab')
     await driver.get(url)
-    let resultPage = await driver.wait(WebDriver.until.elementLocated({ css: '.salary div'}), 4000);
+    let resultPage = await driver.wait(WebDriver.until.elementLocated({ css: '.salary div'}), 20000);
     if (!resultPage) {
         return false;
     } else {
@@ -214,13 +219,28 @@ async function grab_job_detail(jobId, jobAddUrl) {
     let locationSyntax_3 = await driver.findElements({ css: '.location div' });
     if (locationSyntax_1.length > 0) {
         location = await driver.findElement({ css: '.travelTime-locationText ul li a' });
-        location = await location.getText();
+        try {
+            location = await location.getText();
+        } catch (e) {
+            console.log(e)
+            location = 'NOT_FOUND'
+        }
     } else if (locationSyntax_2.length > 0) {
         location = await driver.findElement({ css: '.travelTime-locationText ul li' });
-        location = await location.getText();
+        try {
+            location = await location.getText();
+        } catch (e) {
+            console.log(e)
+            location = 'NOT_FOUND'
+        }
     } else if (locationSyntax_3.length > 0) {
         location = await driver.findElement({ css: '.location div' });
-        location = await location.getText();
+        try {
+            location = await location.getText();
+        } catch (e) {
+            console.log(e)
+            location = 'NOT_FOUND'
+        }
     } else {
         location = 'NOT_FOUND'
         console.log('SESSION ERROR: location path not found')
@@ -231,7 +251,12 @@ async function grab_job_detail(jobId, jobAddUrl) {
     contactInitial = await driver.findElements({ css: '.contact-reference li'});
     if (contactInitial.length > 0) {
         contactInitial = await driver.findElement({ css: '.contact-reference li'});
-        contactInitial = await contactInitial.getText();
+        try {
+            contactInitial = await contactInitial.getText();
+        } catch (e) {
+            console.log(e)
+            contactInitial = 'con: NOT_FOUND'
+        }
         let contactSplit = contactInitial.split(" ");
         let contactShift = contactSplit.shift();
         contact = contactSplit.join(" ");
@@ -245,7 +270,12 @@ async function grab_job_detail(jobId, jobAddUrl) {
     totalJobsRefInitial = await driver.findElements({ css: '.contact-reference li:nth-child(2)'});
     if (totalJobsRefInitial.length > 0) {
         totalJobsRefInitial = await driver.findElement({ css: '.contact-reference li:nth-child(2)'});
-        totalJobsRefInitial = await totalJobsRefInitial.getText();
+        try {
+            totalJobsRefInitial = await totalJobsRefInitial.getText();
+        } catch (e) {
+            console.log(e)
+            totalJobsRefInitial = 'ref: NOT_FOUND'
+        }
         let totalJobsRefSplit = totalJobsRefInitial.split(" ");
         let totalJobsRefShift = totalJobsRefSplit.shift();
         totalJobsRef = totalJobsRefSplit.join(" ");
@@ -258,7 +288,12 @@ async function grab_job_detail(jobId, jobAddUrl) {
     jobTitle = await driver.findElements({ css: '.job-content-top h1' });
     if (jobTitle.length > 0) {
         jobTitle = await driver.findElement({ css: '.job-content-top h1' });
-        jobTitle = await jobTitle.getText();
+        try {
+            jobTitle = await jobTitle.getText();
+        } catch (e) {
+            console.log(e);
+            jobTitle = 'NOT_FOUND'
+        }
     } else {
         jobTitle = 'NOT_FOUND'
         console.log('SESSION ERROR: job title path not found');
@@ -268,7 +303,12 @@ async function grab_job_detail(jobId, jobAddUrl) {
     salary = await driver.findElements({ css: '.salary div' });
     if (salary.length > 0) {
         salary = await driver.findElement({ css: '.salary div' });
-        salary = await salary.getText();
+        try {
+            salary = await salary.getText();
+        } catch (e) {
+            console.log(e);
+            salary = 'NOT_FOUND'
+        }
     } else {
         salary = 'NOT_FOUND'
         console.log('SESSION ERROR: salary path not found');
@@ -278,7 +318,12 @@ async function grab_job_detail(jobId, jobAddUrl) {
     company = await driver.findElements({ css: '.company div a' });
     if (company.length > 0) {
         company = await driver.findElement({ css: '.company div a' });
-        company = await company.getText();
+        try {
+            company = await company.getText();
+        } catch (e) {
+            console.log(e);
+            company = 'NOT_FOUND'
+        }
     } else {
         company = 'NOT_FOUND'
         console.log('SESSION ERROR: company path not found');
@@ -288,7 +333,12 @@ async function grab_job_detail(jobId, jobAddUrl) {
     jobType = await driver.findElements({ css: '.job-type div' });
     if (jobType.length > 0) {
         jobType = await driver.findElement({ css: '.job-type div' });
-        jobType = await jobType.getText();
+        try {
+            jobType = await jobType.getText();
+        } catch (e) {
+            console.log(e);
+            jobType = 'NOT_FOUND'
+        }
     } else {
         jobType = 'NOT_FOUND'
         console.log('SESSION ERROR: jobType path not found');
@@ -298,7 +348,12 @@ async function grab_job_detail(jobId, jobAddUrl) {
     jobPosted = await driver.findElements({ css: '.date-posted div span'});
     if (jobPosted.length > 0) {
         jobPosted = await driver.findElement({ css: '.date-posted div span'});
-        jobPosted = await jobPosted.getText();
+        try {
+            jobPosted = await jobPosted.getText();
+        } catch (e) {
+            console.log(e);
+            jobPosted = 'NOT_FOUND'
+        }
     } else {
         jobPosted = 'NOT_FOUND'
         console.log('SESSION ERROR: jobPosted path not found');
@@ -384,6 +439,7 @@ async function handle_fetch(url, requestMethod, dataToSend) {
 
 async function log_failed_interest(session_id, session_date, session_time, jobId, jobTitle, keyWordFinder) {
     let currentApplication = {
+        "TEST_application": false,
         "session_id": session_id,
         "session_date": session_date,
         "session_time": session_time,
@@ -405,6 +461,7 @@ async function log_failed_interest(session_id, session_date, session_time, jobId
 
 async function log_undesirable_job(session_id, session_date, session_time, jobAdd, keyWordFinder) {
     let currentApplication = {
+        "TEST_application": false,
         "session_id": session_id,
         "session_date": session_date,
         "session_time": session_time,
@@ -428,6 +485,7 @@ async function log_undesirable_job(session_id, session_date, session_time, jobAd
 
 async function log_desirable_job(session_id, session_date, session_time, jobAdd, keyWordFinder, appliedJob) {
     let currentApplication = {
+        "TEST_application": false,
         "session_id": session_id,
         "session_date": session_date,
         "session_time": session_time,
@@ -466,7 +524,7 @@ async function apply_to_job() {
         editApplicationBtnElement = await driver.findElement({
             xpath: '//*[@id="top-button-panel"]/section/div[2]/div[2]/div/div[2]/div[1]/a'
         }).click();
-        let applyPage = await driver.wait(WebDriver.until.elementLocated({ id: 'btnSubmit' }), 4000);
+        let applyPage = await driver.wait(WebDriver.until.elementLocated({ id: 'btnSubmit' }), 20000);
 
         if (applyPage) {
             console.log('--------')
@@ -498,6 +556,8 @@ async function apply_to_job() {
             } else {
                 return false
             }
+
+            // return true // for testing
 
         } else {
             console.log('SESSION ERROR: submit button on apply page not found')
@@ -694,7 +754,7 @@ exports.next_results_page = async function() {
         nextBtnElement = await driver.findElement({ css: '.pagination .next' }).click();
         let resultsPage = await driver.wait(WebDriver.until.elementLocated({
             xpath: '//*[@id="scroll-to-top"]'
-        }), 4000);
+        }), 20000);
 
         if (resultsPage) {
             console.log('************************************************')
@@ -856,6 +916,7 @@ async function produce_all_sessions_report() {
     let locationsOverview = remove_duplicates(locationsAll);
 
     return {
+        "TEST_SESSION": true,
         "total_processed": applications.length,
         "total_applied": successfullyApplied.length,
         "total_skipped": skippedApplications.length,
@@ -971,14 +1032,14 @@ exports.email_session_report = async function(searchParams, sessionReport) {
     let transporter = nodeMailer.createTransport({
         service: 'gmail',
         auth: {
-            user: volt.env.USER_EMAIL,
-            pass: volt.env.USER_PASS
+            user: userEmail,
+            pass: userPass
         }
     });
 
     let mailOptions = {
-        from: volt.env.USER_EMAIL,
-        to: volt.env.USER_EMAIL,
+        from: userEmail,
+        to: userEmail,
         subject: `Jada session report! ${sessionReport.session_date}`,
         html: `
             <h1>Jada Session Report: ${sessionReport.session_date} @ ${sessionReport.session_time}</h1>
