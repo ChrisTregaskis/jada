@@ -439,7 +439,7 @@ async function handle_fetch(url, requestMethod, dataToSend) {
 
 async function log_failed_interest(session_id, session_date, session_time, jobId, jobTitle, keyWordFinder) {
     let currentApplication = {
-        "TEST_application": false,
+        "TEST_application": true,
         "session_id": session_id,
         "session_date": session_date,
         "session_time": session_time,
@@ -461,7 +461,7 @@ async function log_failed_interest(session_id, session_date, session_time, jobId
 
 async function log_undesirable_job(session_id, session_date, session_time, jobAdd, keyWordFinder) {
     let currentApplication = {
-        "TEST_application": false,
+        "TEST_application": true,
         "session_id": session_id,
         "session_date": session_date,
         "session_time": session_time,
@@ -485,7 +485,7 @@ async function log_undesirable_job(session_id, session_date, session_time, jobAd
 
 async function log_desirable_job(session_id, session_date, session_time, jobAdd, keyWordFinder, appliedJob) {
     let currentApplication = {
-        "TEST_application": false,
+        "TEST_application": true,
         "session_id": session_id,
         "session_date": session_date,
         "session_time": session_time,
@@ -544,20 +544,20 @@ async function apply_to_job() {
             }
 
             // click submit to ------> apply!! <------
-            console.log('APPLYING! Clicking submit...')
-            let clickSubmit = await driver.findElement({ id: 'btnSubmit' }).click();
-            let returnToSearch = await driver.wait(WebDriver.until.elementLocated({
-                className: 'return-to-search'
-            }), 10000);
+            // console.log('APPLYING! Clicking submit...')
+            // let clickSubmit = await driver.findElement({ id: 'btnSubmit' }).click();
+            // let returnToSearch = await driver.wait(WebDriver.until.elementLocated({
+            //     className: 'return-to-search'
+            // }), 10000);
+            //
+            // let submissionSuccessful = await driver.findElements({ className: 'return-to-search' });
+            // if (submissionSuccessful.length > 0) {
+            //     return true
+            // } else {
+            //     return false
+            // }
 
-            let submissionSuccessful = await driver.findElements({ className: 'return-to-search' });
-            if (submissionSuccessful.length > 0) {
-                return true
-            } else {
-                return false
-            }
-
-            // return true // for testing
+            return true // for testing
 
         } else {
             console.log('SESSION ERROR: submit button on apply page not found')

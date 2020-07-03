@@ -12,8 +12,10 @@ const udkw = [
     'TRAINEESHIP', 'NET', 'TRAINEE', 'CONSULTANT',
     'UX', 'DESIGNER', 'SALES', 'LEAD', 'WINDOWS'
 ];
+// Before running Jada LIVE, Amend 'TEST_application' to false on all logging application methods (x3)
+// UNCOMMENT apply logic
 const jobTitle = 'Junior Software Engineer';
-const area = 'Bristol';
+const area = 'Kent';
 const radius = 5;
 
 run_jada(jobTitle, area, radius);
