@@ -5,7 +5,7 @@ import PageHeader from "../PageHeader/PageHeader";
 class MainDashboard extends React.Component {
     render() {
         return(
-            <div>
+            <div className="container">
                 <PageHeader/>
             </div>
         )
