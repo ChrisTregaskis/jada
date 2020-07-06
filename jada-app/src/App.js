@@ -1,10 +1,11 @@
 import React from 'react';
 import './App.css';
+import MainDashboard from "./Components/MainDashboard/MainDashboard";
 
 function App() {
   return (
     <div>
-      <h1>Yo Chris</h1>
+      <MainDashboard/>
     </div>
   );
 }
