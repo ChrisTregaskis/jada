@@ -873,6 +873,7 @@ exports.produce_session_report = async function(session_id, session_date, sessio
     let locationsOverview = remove_duplicates(locationsAll);
 
     return {
+        "TEST_SESSION": true,
         "session_id": session_id,
         "session_date": session_date,
         "session_time": session_time,
