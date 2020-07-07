@@ -11,7 +11,17 @@ class MainDashboard extends React.Component {
         this.state = {
             feeds: this.getFeeds(),
             applications: {},
-            sessionDates:[]
+            sessionDates:[],
+            avsData:[{
+                title: {
+                    applied: 'Applied',
+                    skipped: 'Skipped'
+                },
+                data: {
+                    applied: [],
+                    skipped: []
+                }
+            }]
         }
     }
 
@@ -23,9 +33,67 @@ class MainDashboard extends React.Component {
         if (prevState.applications !== this.state.applications) {
             this.updateSessionDates();
         }
+
+        if (prevState.sessionDates !== this.state.sessionDates) {
+            this.updateAvSData()
+        }
     }
 
-    updateSessionDates = () => {
+    sessionDateCount = (sessionDate, allDates) => {
+        return allDates.filter(date => date === sessionDate)
+    }
+
+    updateAvSData = async () => {
+        let applications = this.state.applications;
+        let sessionDates = this.state.sessionDates;
+        let appliedDates = [];
+        let appliedDatesCount = [];
+        let skippedDates = [];
+        let skippedDatesCount = [];
+        let avsData = [{
+            title: {
+                applied: 'Applied',
+                skipped: 'Skipped'
+            },
+            data: {
+                applied: [],
+                skipped: []
+            }
+        }];
+        // change for loop i to 1 to omit first run
+        for (let i = 0; i < applications.length; i++) {
+            if (applications[i].apply_attempted) {
+                appliedDates.push(applications[i].session_date)
+            } else {
+                skippedDates.push(applications[i].session_date)
+            }
+        }
+
+        sessionDates.forEach(date => {
+            appliedDatesCount.push(this.sessionDateCount(date, appliedDates).length)
+        });
+
+        sessionDates.forEach(date => {
+            skippedDatesCount.push(this.sessionDateCount(date, skippedDates).length)
+        });
+        // change for loop i to 1 to omit first run
+        for (let i = 0; i < sessionDates.length; i++) {
+            avsData[0].data.applied.push({
+                "time": sessionDates[i],
+                "value": appliedDatesCount[i]
+            });
+
+            avsData[0].data.skipped.push({
+                "time": sessionDates[i],
+                "value": skippedDatesCount[i]
+            })
+        }
+
+        await this.setState({ avsData: avsData })
+
+    }
+
+    updateSessionDates = async () => {
         let data = [];
         let applications = this.state.applications;
 
@@ -35,14 +103,12 @@ class MainDashboard extends React.Component {
 
         let sessionDates = data.reduce((unique, item) =>
             unique.includes(item) ? unique : [...unique, item],[]);
-        console.log(sessionDates)
-        return sessionDates;
+        await this.setState({ sessionDates: sessionDates })
     }
 
     updateApplications = async () => {
         let updatedApplications = await this.fetchApplications();
         await this.setState({ applications: updatedApplications });
-        console.log(this.state.applications)
     }
 
     fetchApplications = async () => {
@@ -133,8 +199,8 @@ class MainDashboard extends React.Component {
                 <div className="col-12 d-flex">
                     <div className="col-8">
                         <LineChartAvS
-                            data={this.state.feeds[0].data}
-                            title={this.state.feeds[0].title}
+                            data={this.state.avsData[0].data}
+                            title={this.state.avsData[0].title}
                             color="#3E517A"
                         />
                     </div>
