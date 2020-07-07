@@ -205,7 +205,9 @@ class MainDashboard extends React.Component {
                         />
                     </div>
                     <div className="col-4">
-                        <TotalProcessed/>
+                        <TotalProcessed
+                            applications={this.state.applications}
+                        />
                     </div>
 
 
