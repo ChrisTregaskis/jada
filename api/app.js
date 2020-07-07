@@ -3,6 +3,7 @@ const app = express();
 const morgan = require('morgan');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
+const cors = require('cors');
 
 const applicationsRoute = require('../api/routes/applications');
 const sessionsRoute = require('../api/routes/sessions');
@@ -14,6 +15,7 @@ mongoose.connect(
 );
 
 // middleware
+app.use(cors());
 app.use(morgan('dev'));
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
