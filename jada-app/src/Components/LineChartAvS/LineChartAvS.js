@@ -9,6 +9,17 @@ class LineChartAvS extends React.Component {
     }
 
     componentDidMount() {
+        this.produceChart()
+    }
+
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        if (prevProps.data !== this.props.data) {
+            this.myChart.destroy();
+            this.produceChart();
+        }
+    }
+
+    produceChart = () => {
         this.myChart = new Chart (this.chartRef.current, {
             type: 'line',
             options: {
@@ -17,7 +28,7 @@ class LineChartAvS extends React.Component {
                         {
                             type: 'time',
                             time: {
-                                unit: 'week'
+                                unit: 'day'
                             }
                         }
                     ],
@@ -41,15 +52,15 @@ class LineChartAvS extends React.Component {
                     borderColor: '#2ecc71',
                     borderWidth: 1
                 },
-                {
-                    label: this.props.title.skipped,
-                    data: this.props.data.skipped.map(d => d.value),
-                    fill: 'none',
-                    backgroundColor: '#e74c3c',
-                    pointRadius: 2,
-                    borderColor: '#e74c3c',
-                    borderWidth: 1
-                }]
+                    {
+                        label: this.props.title.skipped,
+                        data: this.props.data.skipped.map(d => d.value),
+                        fill: 'none',
+                        backgroundColor: '#e74c3c',
+                        pointRadius: 2,
+                        borderColor: '#e74c3c',
+                        borderWidth: 1
+                    }]
             }
         })
     }
