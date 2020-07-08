@@ -44,21 +44,17 @@ class LineChartAvSConstructor extends React.Component {
             },
             options: {
                 scales: {
-                    xAxes: [
-                        {
-                            type: 'time',
-                            time: {
-                                unit: 'day'
-                            }
+                    xAxes: [{
+                        type: 'time',
+                        time: {
+                            unit: 'day'
                         }
-                    ],
-                    yAxes: [
-                        {
-                            ticks: {
-                                min: 0
-                            }
+                    }],
+                    yAxes: [{
+                        ticks: {
+                            min: 0
                         }
-                    ]
+                    }]
                 }
             }
         })
