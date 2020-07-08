@@ -74,13 +74,9 @@ class MainDashboard extends React.Component {
                         applications={this.state.applications}
                         sessionDates={this.state.sessionDates}
                     />
-                    <div className="col-4">
-                        <TotalProcessed
-                            applications={this.state.applications}
-                        />
-                    </div>
-
-
+                    <TotalProcessed
+                        applications={this.state.applications}
+                    />
                 </div>
 
             </div>
