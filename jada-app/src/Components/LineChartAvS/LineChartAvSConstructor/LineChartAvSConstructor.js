@@ -32,15 +32,15 @@ class LineChartAvSConstructor extends React.Component {
                     borderColor: '#2ecc71',
                     borderWidth: 1
                 },
-                    {
-                        label: this.props.title.skipped,
-                        data: this.props.data.skipped.map(d => d.value),
-                        fill: 'none',
-                        backgroundColor: '#e67e22',
-                        pointRadius: 2,
-                        borderColor: '#e67e22',
-                        borderWidth: 1
-                    }]
+                {
+                    label: this.props.title.skipped,
+                    data: this.props.data.skipped.map(d => d.value),
+                    fill: 'none',
+                    backgroundColor: '#e67e22',
+                    pointRadius: 2,
+                    borderColor: '#e67e22',
+                    borderWidth: 1
+                }]
             },
             options: {
                 scales: {
