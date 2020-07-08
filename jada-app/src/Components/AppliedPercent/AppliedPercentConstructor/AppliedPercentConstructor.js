@@ -6,27 +6,23 @@ class AppliedPercentConstructor extends React.Component {
     constructor(props) {
         super(props);
         this.chartRef = React.createRef();
-
-        this.state = {
-            data: {
-                labels: ['applied', 'skipped'],
-                datasets: [{
-                    data: [43, 57],
-                    backgroundColor: ['#2ecc71']
-                }],
-
-            }
-        }
     }
 
     componentDidMount() {
         this.produceChart()
     }
 
+    componentDidUpdate(prevProps) {
+        if (prevProps.data !== this.props.data) {
+            this.myChart.destroy();
+            this.produceChart();
+        }
+    }
+
     produceChart = () => {
         this.myChart = new Chart (this.chartRef.current, {
             type: 'doughnut',
-            data: this.state.data,
+            data: this.props.data,
             options: {
                 maintainAspectRatio: false,
                 cutoutPercentage: 75,
