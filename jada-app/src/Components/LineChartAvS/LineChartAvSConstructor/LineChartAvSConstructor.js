@@ -21,6 +21,27 @@ class LineChartAvSConstructor extends React.Component {
     produceChart = () => {
         this.myChart = new Chart (this.chartRef.current, {
             type: 'line',
+            data: {
+                labels: this.props.data.applied.map(d => d.time),
+                datasets: [{
+                    label: this.props.title.applied,
+                    data: this.props.data.applied.map(d => d.value),
+                    fill: 'none',
+                    backgroundColor: '#2ecc71',
+                    pointRadius: 2,
+                    borderColor: '#2ecc71',
+                    borderWidth: 1
+                },
+                    {
+                        label: this.props.title.skipped,
+                        data: this.props.data.skipped.map(d => d.value),
+                        fill: 'none',
+                        backgroundColor: '#e67e22',
+                        pointRadius: 2,
+                        borderColor: '#e67e22',
+                        borderWidth: 1
+                    }]
+            },
             options: {
                 scales: {
                     xAxes: [
@@ -39,27 +60,6 @@ class LineChartAvSConstructor extends React.Component {
                         }
                     ]
                 }
-            },
-            data: {
-                labels: this.props.data.applied.map(d => d.time),
-                datasets: [{
-                    label: this.props.title.applied,
-                    data: this.props.data.applied.map(d => d.value),
-                    fill: 'none',
-                    backgroundColor: '#2ecc71',
-                    pointRadius: 2,
-                    borderColor: '#2ecc71',
-                    borderWidth: 1
-                },
-                    {
-                        label: this.props.title.skipped,
-                        data: this.props.data.skipped.map(d => d.value),
-                        fill: 'none',
-                        backgroundColor: '#e74c3c',
-                        pointRadius: 2,
-                        borderColor: '#e74c3c',
-                        borderWidth: 1
-                    }]
             }
         })
     }
