@@ -5,6 +5,7 @@ import TotalProcessed from "../TotalProcessed/TotalProcessed";
 import LineChartAvS from "../LineChartAvS/LineChartAvS";
 import LastUpdatedSession from "../LastUpdatedSession/LastUpdatedSession";
 import AppliedPercent from "../AppliedPercent/AppliedPercent";
+import BarChartAvS from "../BarChartAvS/BarChartAvS";
 
 class MainDashboard extends React.Component {
     constructor(props) {
@@ -81,6 +82,9 @@ class MainDashboard extends React.Component {
                 </div>
                 <div className="col-12 d-flex">
                     <AppliedPercent
+                        applications={this.state.applications}
+                    />
+                    <BarChartAvS
                         applications={this.state.applications}
                     />
                 </div>
