@@ -17,7 +17,6 @@ class TotalProcessed extends React.Component {
         }
     }
 
-
     render() {
         return (
             <div className="col-4">

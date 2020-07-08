@@ -1,6 +1,5 @@
 import React from "react";
 import Chart from 'chart.js';
-import './lineChartAvSConstructor.css';
 
 class LineChartAvSConstructor extends React.Component {
     constructor(props) {

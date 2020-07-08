@@ -1,5 +1,4 @@
 import React from "react";
-import './lineChartAvS.css';
 import LineChartAvSConstructor from "../LineChartAvSConstructor/LineChartAvSConstructor";
 
 class LineChartAvS extends React.Component {
