@@ -19,11 +19,11 @@ class PageHeader extends React.Component {
         let today = new Date();
         let hh = today.getHours();
 
-        if (hh < 11) {
+        if (hh <= 11) {
             this.setState({ greetingMsg: 'Good Morning ' })
-        } else if (hh > 11 && hh < 18) {
+        } else if (hh >= 11 && hh <= 18) {
             this.setState({ greetingMsg: 'Good Afternoon '})
-        } else if (hh > 17) {
+        } else if (hh >= 17) {
             this.setState({ greetingMsg: 'Good Evening '})
         } else {
             this.setState({ greetingMsg: 'Yo '})
