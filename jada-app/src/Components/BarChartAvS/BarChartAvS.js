@@ -7,17 +7,17 @@ class BarChartAvS extends React.Component {
         super(props);
 
         this.state = {
-            data: {
-
-            }
+            avsData:[100, 90]
         }
     }
+
+    
 
     render() {
         return (
             <div className="col-8 barChartAvS">
                 <BarChartAvSConstructor
-                    data={this.state.data}
+                    data={this.state.avsData}
                 />
             </div>
         )
