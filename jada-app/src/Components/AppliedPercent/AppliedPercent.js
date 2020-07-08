@@ -7,27 +7,22 @@ class AppliedPercent extends React.Component {
         super(props);
 
         this.state = {
-            chartData: {}
+            chartData: {},
+            percentApplied: 0
         }
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
         if (prevProps.applications !== this.props.applications) {
             this.updatedChartData()
+            this.updatePercentApplied()
         }
     }
 
-    updatedChartData = () => {
+    calculateAppliedAndSkipped = () => {
         let applications = this.props.applications;
         let applied = 0;
         let skipped = 0;
-        let data = {
-            labels: ['applied', 'skipped'],
-            datasets: [{
-                data: [],
-                backgroundColor: ['#2ecc71']
-            }]
-        }
 
         applications.forEach(application => {
             if (application.apply_attempted) {
@@ -37,12 +32,36 @@ class AppliedPercent extends React.Component {
             }
         })
 
-        data.datasets[0].data.push(applied)
-        data.datasets[0].data.push(skipped)
+        return {
+            "applied": applied,
+            "skipped": skipped
+        }
+    }
+
+    updatedChartData = () => {
+        let appliedAndSkipped = this.calculateAppliedAndSkipped();
+        let data = {
+            labels: ['applied', 'skipped'],
+            datasets: [{
+                data: [],
+                backgroundColor: ['#2ecc71']
+            }]
+        }
+
+        data.datasets[0].data.push(appliedAndSkipped.applied)
+        data.datasets[0].data.push(appliedAndSkipped.skipped)
 
         this.setState({ chartData: data })
     }
 
+    updatePercentApplied = () => {
+        let appliedAndSkipped = this.calculateAppliedAndSkipped();
+        let applied = appliedAndSkipped.applied;
+        let skipped = appliedAndSkipped.skipped;
+        let total = applied + skipped;
+        let percentage = ((applied / total) * 100).toFixed(0);
+        this.setState({ percentApplied: percentage})
+    }
 
     render() {
         return (
@@ -50,6 +69,7 @@ class AppliedPercent extends React.Component {
                 <p className="boxTitle d-flex justify-content-center">APPLIED:</p>
                 <AppliedPercentConstructor
                     data={this.state.chartData}
+                    percentApplied={this.state.percentApplied}
                 />
             </div>
         )

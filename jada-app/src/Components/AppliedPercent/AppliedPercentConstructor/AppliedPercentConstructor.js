@@ -1,11 +1,16 @@
 import React from "react";
 import Chart from "chart.js";
 import './appliedPercentConstructor.css';
+import CountUp from "react-countup";
 
 class AppliedPercentConstructor extends React.Component {
     constructor(props) {
         super(props);
         this.chartRef = React.createRef();
+
+        this.state = {
+            percentApplied: 0
+        }
     }
 
     componentDidMount() {
@@ -16,6 +21,8 @@ class AppliedPercentConstructor extends React.Component {
         if (prevProps.data !== this.props.data) {
             this.myChart.destroy();
             this.produceChart();
+            let percent = parseInt(this.props.percentApplied)
+            this.setState({ percentApplied: percent })
         }
     }
 
@@ -42,12 +49,12 @@ class AppliedPercentConstructor extends React.Component {
         })
     }
 
-
-
     render() {
         return (
             <div className="appliedPieChart">
-                <p className="boxTitle appliedPercentFigure"><span>49</span>%</p>
+                <p className="boxTitle appliedPercentFigure">
+                    <span><CountUp end={this.state.percentApplied}/></span>%
+                </p>
                 <canvas ref={this.chartRef} />
             </div>
         )
