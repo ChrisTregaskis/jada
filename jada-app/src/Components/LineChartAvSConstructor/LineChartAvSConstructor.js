@@ -1,8 +1,8 @@
 import React from "react";
 import Chart from 'chart.js';
-import './lineChartAvS.css';
+import './lineChartAvSConstructor.css';
 
-class LineChartAvS extends React.Component {
+class LineChartAvSConstructor extends React.Component {
     constructor(props) {
         super(props);
         this.chartRef = React.createRef();
@@ -72,4 +72,4 @@ class LineChartAvS extends React.Component {
     }
 }
 
-export default LineChartAvS;
+export default LineChartAvSConstructor;
