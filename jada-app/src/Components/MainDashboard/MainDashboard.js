@@ -4,6 +4,7 @@ import PageHeader from "../PageHeader/PageHeader";
 import TotalProcessed from "../TotalProcessed/TotalProcessed";
 import LineChartAvS from "../LineChartAvS/LineChartAvS";
 import LastUpdatedSession from "../LastUpdatedSession/LastUpdatedSession";
+import AppliedPercent from "../AppliedPercent/AppliedPercent";
 
 class MainDashboard extends React.Component {
     constructor(props) {
@@ -75,6 +76,11 @@ class MainDashboard extends React.Component {
                         sessionDates={this.state.sessionDates}
                     />
                     <TotalProcessed
+                        applications={this.state.applications}
+                    />
+                </div>
+                <div className="col-12 d-flex">
+                    <AppliedPercent
                         applications={this.state.applications}
                     />
                 </div>

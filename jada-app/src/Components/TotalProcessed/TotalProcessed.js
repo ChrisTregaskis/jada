@@ -21,8 +21,8 @@ class TotalProcessed extends React.Component {
         return (
             <div className="col-4">
                 <div className="totalProcessedBox">
-                    <p className="totalProcessedTitle">TOTAL</p>
-                    <p className="totalProcessedTitle">PROCESSED:</p>
+                    <p className="boxTitle">TOTAL</p>
+                    <p className="boxTitle">PROCESSED:</p>
                     <p className="totalProcessedFigure">
                         <CountUp end={this.state.applicationsCount}/>
                     </p>

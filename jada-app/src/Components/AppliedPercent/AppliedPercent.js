@@ -1,4 +1,6 @@
 import React from "react";
+import './appliedPercent.css';
+import AppliedPercentConstructor from "./AppliedPercentConstructor/AppliedPercentConstructor";
 
 class AppliedPercent extends React.Component {
     constructor(props) {
@@ -12,8 +14,9 @@ class AppliedPercent extends React.Component {
 
     render() {
         return (
-            <div>
-
+            <div className="col-4 appliedPercentBox">
+                <p className="boxTitle d-flex justify-content-center">APPLIED:</p>
+                <AppliedPercentConstructor/>
             </div>
         )
     }
