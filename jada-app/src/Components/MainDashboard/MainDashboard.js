@@ -3,13 +3,13 @@ import './mainDashboard.css';
 import PageHeader from "../PageHeader/PageHeader";
 import TotalProcessed from "../TotalProcessed/TotalProcessed";
 import LineChartAvS from "../LineChartAvS/LineChartAvS";
+import LastUpdatedSession from "../LastUpdatedSession/LastUpdatedSession";
 
 class MainDashboard extends React.Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            reportDate: '',
             applications: {},
             sessionDates:[]
         }
@@ -22,10 +22,6 @@ class MainDashboard extends React.Component {
     componentDidUpdate(prevProps, prevState) {
         if (prevState.applications !== this.state.applications) {
             this.updateSessionDates();
-        }
-
-        if (prevState.sessionDates !== this.state.sessionDates) {
-            this.updateReportDate();
         }
     }
 
@@ -66,22 +62,13 @@ class MainDashboard extends React.Component {
         return data.response.applications;
     }
 
-    updateReportDate = async () => {
-        let dbDate = this.state.sessionDates.slice(-1)[0]
-        let longDate = new Date(dbDate).toString()
-        let longDateArr = longDate.split(" ")
-        let shortDateArr = [longDateArr[0], longDateArr[2], longDateArr[1], longDateArr[3]]
-        let date = shortDateArr.join(" ")
-        await this.setState({ reportDate: date })
-    }
-
     render() {
         return(
             <div className="container">
                 <PageHeader/>
-                <h2 className="d-flex justify-content-center lastSessionRun">
-                    As of {this.state.reportDate}
-                </h2>
+                <LastUpdatedSession
+                    sessionDates={this.state.sessionDates}
+                />
                 <div className="col-12 d-flex">
                     <LineChartAvS
                         applications={this.state.applications}
