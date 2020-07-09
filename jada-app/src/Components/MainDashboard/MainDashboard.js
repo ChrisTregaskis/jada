@@ -71,40 +71,26 @@ class MainDashboard extends React.Component {
         return(
             <div className="container">
                 <PageHeader/>
-                <LastUpdatedSession
-                    sessionDates={this.state.sessionDates}
-                />
+                <LastUpdatedSession sessionDates={this.state.sessionDates} />
                 <div className="col-xl-12 d-flex">
                     <LineChartAvS
                         applications={this.state.applications}
                         sessionDates={this.state.sessionDates}
                     />
-                    <TotalProcessed
-                        applications={this.state.applications}
-                    />
+                    <TotalProcessed applications={this.state.applications} />
                 </div>
                 <div className="col-xl-12 d-flex">
-                    <AppliedPercent
-                        applications={this.state.applications}
-                    />
-                    <BarChartAvS
-                        applications={this.state.applications}
-                    />
+                    <AppliedPercent applications={this.state.applications} />
+                    <BarChartAvS applications={this.state.applications} />
                 </div>
                 <h2 className="d-flex justify-content-center">
                     Found KEY Words and Locations
                 </h2>
                 <div className="col-xl-12 d-flex">
-                    <BarChartDKW
-                        applications={this.state.applications}
-                    />
+                    <BarChartDKW applications={this.state.applications} />
                     <div className="col-xl-6 d-flex flex-wrap">
-                        <BarChartUDKW
-                            applications={this.state.applications}
-                        />
-                        <BarChartLocations
-                            applications={this.state.applications}
-                        />
+                        <BarChartUDKW applications={this.state.applications} />
+                        <BarChartLocations applications={this.state.applications} />
                     </div>
                 </div>
 
