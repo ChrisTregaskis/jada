@@ -13,6 +13,7 @@ import PercentJavaScript from "../PercentJavaScript/PercentJavaScript";
 import PercentPHP from "../PercentPHP/PercentPHP";
 import PercentNET from "../PercentNET/PercentNET";
 import PercentPython from "../PercentPython/PercentPython";
+import BarChartTop24 from "../BarChartTop24/BarChartTop24";
 
 class MainDashboard extends React.Component {
     constructor(props) {
@@ -108,6 +109,9 @@ class MainDashboard extends React.Component {
                     <PercentPHP applications={this.state.applications} />
                     <PercentPython applications={this.state.applications} />
                     <PercentNET applications={this.state.applications} />
+                </div>
+                <div className="col-xl-12">
+                    <BarChartTop24 applications={this.state.applications} />
                 </div>
             </div>
         )
