@@ -9,6 +9,7 @@ import BarChartAvS from "../BarChartAvS/BarChartAvS";
 import BarChartDKW from "../BarChartDKW/BarChartDKW";
 import BarChartUDKW from "../BarChartUDKW/BarChartUDKW";
 import BarChartLocations from "../BarChartLocations/BarChartLocations";
+import PercentJavaScript from "../PercentJavaScript/PercentJavaScript";
 
 class MainDashboard extends React.Component {
     constructor(props) {
@@ -93,7 +94,15 @@ class MainDashboard extends React.Component {
                         <BarChartLocations applications={this.state.applications} />
                     </div>
                 </div>
-
+                <h2 className="d-flex justify-content-center">
+                    Overview of Top 24 Programming Languages
+                </h2>
+                <p className="d-flex justify-content-center">
+                    Of the total applications processed...
+                </p>
+                <div className="col-xl-12 d-flex flex-wrap">
+                    <PercentJavaScript applications={this.state.applications} />
+                </div>
             </div>
         )
     }
