@@ -6,6 +6,7 @@ import LineChartAvS from "../LineChartAvS/LineChartAvS";
 import LastUpdatedSession from "../LastUpdatedSession/LastUpdatedSession";
 import AppliedPercent from "../AppliedPercent/AppliedPercent";
 import BarChartAvS from "../BarChartAvS/BarChartAvS";
+import BarChartDKW from "../BarChartDKW/BarChartDKW";
 
 class MainDashboard extends React.Component {
     constructor(props) {
@@ -85,6 +86,14 @@ class MainDashboard extends React.Component {
                         applications={this.state.applications}
                     />
                     <BarChartAvS
+                        applications={this.state.applications}
+                    />
+                </div>
+                <h2 className="d-flex justify-content-center">
+                    Found KEY Words and Locations
+                </h2>
+                <div className="col-xl-12 d-flex">
+                    <BarChartDKW
                         applications={this.state.applications}
                     />
                 </div>
