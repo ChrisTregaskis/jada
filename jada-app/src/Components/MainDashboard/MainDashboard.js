@@ -71,7 +71,7 @@ class MainDashboard extends React.Component {
                 <LastUpdatedSession
                     sessionDates={this.state.sessionDates}
                 />
-                <div className="col-12 d-flex">
+                <div className="col-xl-12 d-flex">
                     <LineChartAvS
                         applications={this.state.applications}
                         sessionDates={this.state.sessionDates}
@@ -80,7 +80,7 @@ class MainDashboard extends React.Component {
                         applications={this.state.applications}
                     />
                 </div>
-                <div className="col-12 d-flex">
+                <div className="col-xl-12 d-flex">
                     <AppliedPercent
                         applications={this.state.applications}
                     />

@@ -98,7 +98,7 @@ class LineChartAvS extends React.Component {
 
     render() {
         return(
-            <div className="col-8">
+            <div className="col-xl-8">
                 <LineChartAvSConstructor
                     data={this.state.avsData[0].data}
                     title={this.state.avsData[0].title}

@@ -21,7 +21,7 @@ class BarChartAvS extends React.Component {
         let applications = this.props.applications;
         let applied = 0;
         let skipped = 0;
-        
+
         applications.forEach(application => {
             if (application.apply_attempted) {
                 applied = applied + 1
@@ -46,7 +46,7 @@ class BarChartAvS extends React.Component {
 
     render() {
         return (
-            <div className="col-8 barChartAvS">
+            <div className="col-xl-8 barChartAvS">
                 <BarChartAvSConstructor
                     data={this.state.avsData}
                 />

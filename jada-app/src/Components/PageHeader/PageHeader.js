@@ -35,7 +35,7 @@ class PageHeader extends React.Component {
         let greeting = this.state.greetingMsg + 'Chris';
         return (
             <div>
-                <div className="col-12 pageHeader d-flex justify-content-between">
+                <div className="col-xl-12 pageHeader d-flex justify-content-between">
                     <p className="greeting d-flex align-items-center">{greeting}</p>
                     <h1 className="title">JADA</h1>
                 </div>

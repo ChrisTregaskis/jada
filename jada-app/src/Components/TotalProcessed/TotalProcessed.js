@@ -19,7 +19,7 @@ class TotalProcessed extends React.Component {
 
     render() {
         return (
-            <div className="col-4">
+            <div className="col-xl-4">
                 <div className="totalProcessedBox">
                     <p className="boxTitle">TOTAL</p>
                     <p className="boxTitle">PROCESSED:</p>
