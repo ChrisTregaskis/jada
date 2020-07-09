@@ -12,6 +12,7 @@ import BarChartLocations from "../BarChartLocations/BarChartLocations";
 import PercentJavaScript from "../PercentJavaScript/PercentJavaScript";
 import PercentPHP from "../PercentPHP/PercentPHP";
 import PercentNET from "../PercentNET/PercentNET";
+import PercentPython from "../PercentPython/PercentPython";
 
 class MainDashboard extends React.Component {
     constructor(props) {
@@ -105,6 +106,7 @@ class MainDashboard extends React.Component {
                 <div className="col-xl-12 d-flex flex-wrap">
                     <PercentJavaScript applications={this.state.applications} />
                     <PercentPHP applications={this.state.applications} />
+                    <PercentPython applications={this.state.applications} />
                     <PercentNET applications={this.state.applications} />
                 </div>
             </div>
