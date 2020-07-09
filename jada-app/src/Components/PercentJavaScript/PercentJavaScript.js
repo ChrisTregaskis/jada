@@ -27,7 +27,7 @@ class PercentJavaScript extends React.Component {
             labels: [keyWord, 'other'],
             datasets: [{
                 data: [],
-                backgroundColor: ['#2ecc71']
+                backgroundColor: ['#f1c40f']
             }]
         }
         data.datasets[0].data.push(percent)
@@ -66,7 +66,7 @@ class PercentJavaScript extends React.Component {
     render() {
         return (
             <div className="col-xl-3 percentageBox">
-                <p className="boxTitle d-flex justify-content-center">JAVASCRIPT:</p>
+                <p className="boxTitle d-flex justify-content-center">JAVASCRIPT</p>
                 <PercentBoxConstructor
                     data={this.state.chartData}
                     percentFound={this.state.percentFound}
