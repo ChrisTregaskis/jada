@@ -8,6 +8,7 @@ import AppliedPercent from "../AppliedPercent/AppliedPercent";
 import BarChartAvS from "../BarChartAvS/BarChartAvS";
 import BarChartDKW from "../BarChartDKW/BarChartDKW";
 import BarChartUDKW from "../BarChartUDKW/BarChartUDKW";
+import BarChartLocations from "../BarChartLocations/BarChartLocations";
 
 class MainDashboard extends React.Component {
     constructor(props) {
@@ -99,6 +100,9 @@ class MainDashboard extends React.Component {
                     />
                     <div className="col-xl-6 d-flex flex-wrap">
                         <BarChartUDKW
+                            applications={this.state.applications}
+                        />
+                        <BarChartLocations
                             applications={this.state.applications}
                         />
                     </div>
