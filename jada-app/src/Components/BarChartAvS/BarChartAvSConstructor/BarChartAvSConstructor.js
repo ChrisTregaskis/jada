@@ -23,9 +23,9 @@ class BarChartAvSConstructor extends React.Component {
         let height;
 
         if (avsData[0] > avsData[1]) {
-            height = avsData[0] + (avsData[0] * 0.3)
+            height = avsData[0] + (avsData[0] * 0.2)
         } else {
-            height = avsData[1] + (avsData[1] * 0.3)
+            height = avsData[1] + (avsData[1] * 0.2)
         }
 
         this.myChart = new Chart (this.chartRef.current, {
