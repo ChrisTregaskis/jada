@@ -1,6 +1,5 @@
 import React from "react";
 import './barChartAvS.css'
-import BarChartAvSConstructor from "./BarChartAvSConstructor/BarChartAvSConstructor";
 import BarChartConstructor from "../BarChartConstructor/BarChartConstructor";
 
 class BarChartAvS extends React.Component {
