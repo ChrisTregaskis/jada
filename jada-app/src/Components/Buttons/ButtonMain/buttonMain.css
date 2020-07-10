@@ -1,0 +1,51 @@
+:root {
+    --base-color: #022F40;
+    --hover-color: #fff;
+}
+
+.horizontal {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    width: 300px;
+    height: 60px;
+    margin: 40px;
+    border: 2px solid var(--base-color);
+    font-size: 1.7rem;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.horizontal > .text {
+    position: relative;
+    color: transparent;
+    background-image: linear-gradient(90deg, var(--hover-color) 0%, var(--hover-color) 50%, var(--base-color) 50%, var(--base-color) 100%);
+    background-repeat: repeat;
+    background-size: 200%;
+    background-position: 100% 0;
+    -webkit-background-clip: text;
+    transition: background-position 300ms;
+}
+
+.horizontal::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: var(--base-color);
+    transform-origin: 100% 0;
+    transform: scale3d(0, 1, 1);
+    transition: transform 300ms;
+}
+
+.horizontal:hover .text {
+    background-position: 0 0;
+}
+
+.horizontal:hover::before {
+    transform-origin: 0 0;
+    transform: scale3d(1, 1, 1);
+}
