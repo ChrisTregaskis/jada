@@ -6,7 +6,10 @@ class TableConstructor extends React.Component {
         super(props);
 
         this.state = {
-            tableData: {}
+            tableData: {
+                headers: [],
+                datasets: []
+            }
         }
     }
 
