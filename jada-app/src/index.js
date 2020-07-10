@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import MainDashboard from "./Components/MainDashboard/MainDashboard";
-import TablesPage from "./Components/TablesPage/TablesPage";
+import TablesPage from "./Components/Pages/TablesPage/TablesPage";
 import { Route, BrowserRouter as Router, Switch } from 'react-router-dom';
 
 class Routing extends React.Component {
