@@ -1,6 +1,6 @@
 import React from "react";
 import './tablesPage.css';
-import PageHeader from "../../PageHeader/PageHeader";
+import PageHeader from "../../StandAloneComponents/PageHeader/PageHeader";
 import LastUpdatedSession from "../../StandAloneComponents/LastUpdatedSession/LastUpdatedSession";
 import ButtonMain from "../../Buttons/ButtonMain/ButtonMain";
 import TableApplications from "../../Tables/TableApplications/TableApplications";

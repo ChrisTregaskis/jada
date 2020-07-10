@@ -1,6 +1,6 @@
 import React from "react";
 import './mainDashboard.css';
-import PageHeader from "../../PageHeader/PageHeader";
+import PageHeader from "../../StandAloneComponents/PageHeader/PageHeader";
 import TotalProcessed from "../../TotalProcessed/TotalProcessed";
 import LineChartAvS from "../../Charts/LineChartAvS/LineChartAvS";
 import LastUpdatedSession from "../../StandAloneComponents/LastUpdatedSession/LastUpdatedSession";
