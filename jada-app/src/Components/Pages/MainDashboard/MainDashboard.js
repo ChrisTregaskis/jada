@@ -1,7 +1,7 @@
 import React from "react";
 import './mainDashboard.css';
 import PageHeader from "../../StandAloneComponents/PageHeader/PageHeader";
-import TotalProcessed from "../../TotalProcessed/TotalProcessed";
+import TotalProcessed from "../../StandAloneComponents/TotalProcessed/TotalProcessed";
 import LineChartAvS from "../../Charts/LineChartAvS/LineChartAvS";
 import LastUpdatedSession from "../../StandAloneComponents/LastUpdatedSession/LastUpdatedSession";
 import AppliedPercent from "../../Charts/AppliedPercent/AppliedPercent";
