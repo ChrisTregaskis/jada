@@ -34,7 +34,7 @@ class TableConstructor extends React.Component {
             let data = tableRowObj[headerData[i]];
 
             if (typeof(data) === "undefined") {
-                data = "Not Set"
+                data = "Not Set In Application Data"
                 tdData.push(<td key={data}>{data}</td>)
             } else if (typeof(data) === "boolean") {
                 if (data) {
