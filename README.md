@@ -10,6 +10,7 @@ And so, here I set out to build a system I call JADA... (Job Applications Digita
 - Logs each processed job with key details that can be queried and avoids duplicating applying for roles
 - Emails session and all applications reports after each run, including basic charts of key programming words and locations
 - Displays a fontend dashboard using React and chartJS, breaking down key insights for processed applications thereby helping inform performance
+- A table of all applications to easily find by id or reference on frontend
 
 **JADA also achieves the following:**
 - Enables me to spend my time coding instead of applying to code (still makes me chuckle!) 
