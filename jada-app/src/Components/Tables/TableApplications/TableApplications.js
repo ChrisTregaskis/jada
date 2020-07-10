@@ -6,26 +6,30 @@ class TableApplications extends React.Component {
         super(props);
 
         this.state = {
-            applications: {},
+            applications: [],
             tableData: {
-                headers: ['job_title', 'totalJobs_id', 'totalJobs_ref', 'apply_attempted', 'session_date'],
-                datasets: [
-                    {
-                        "job_title": "Junior Software Developer in Test (SDET)",
-                        "totalJobs_id": "90293562",
-                        "totalJobs_ref": "Totaljobs/GA-40",
-                        "apply_attempted": true,
-                        "session_date": "2020-07-02"
-                    },
-                    {
-                        "job_title": "Technology Graduate",
-                        "totalJobs_id": "90323904",
-                        "apply_attempted": false,
-                        "session_date": "2020-07-02"
-                    }
-                ]
+                headers: [],
+                datasets: []
             }
         }
+    }
+
+    componentDidUpdate(prevProps) {
+        if (prevProps.applications !== this.state.applications) {
+            this.setState({ applications: this.props.applications })
+            this.updateTableData();
+        }
+    }
+
+    updateTableData = () => {
+        let applications = this.props.applications;
+        let tableData = {
+            headers: ['job_title', 'totalJobs_id', 'totalJobs_ref', 'apply_attempted', 'session_date'],
+            datasets: []
+        }
+
+        tableData.datasets.push(...applications);
+        this.setState({ tableData: tableData })
     }
 
     render() {
