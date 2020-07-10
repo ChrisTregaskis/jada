@@ -37,8 +37,8 @@ class LastUpdatedSession extends React.Component {
     render() {
         return(
             <div>
-                <h2 className="d-flex justify-content-center lastSessionRun">
-                    As of {this.state.reportDate}
+                <h2 className="lastSessionRun">
+                    Last run session: {this.state.reportDate}
                 </h2>
             </div>
         )
