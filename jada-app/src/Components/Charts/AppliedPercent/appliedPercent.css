@@ -1,0 +1,6 @@
+.appliedPercentBox {
+    height: 345px;
+    background: linear-gradient(to top, rgb(248,248,248), transparent);
+    margin: 40px 0;
+    padding: 35px;
+}

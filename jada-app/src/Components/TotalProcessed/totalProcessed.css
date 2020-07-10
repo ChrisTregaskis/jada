@@ -1,0 +1,19 @@
+.totalProcessedBox {
+    background: linear-gradient(to top, rgb(248,248,248), transparent);
+    border-radius: 5px;
+    padding: 45px;
+    height: 100%;
+}
+
+.totalProcessedBox p,
+.totalProcessedBox h2 {
+    margin-bottom: 0;
+}
+
+.totalProcessedFigure {
+    font-size: 8rem;
+    position: absolute;
+    bottom: 15px;
+    right: 45px;
+    font-weight: 200;
+}
