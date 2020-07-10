@@ -3,7 +3,7 @@ import './mainDashboard.css';
 import PageHeader from "../../PageHeader/PageHeader";
 import TotalProcessed from "../../TotalProcessed/TotalProcessed";
 import LineChartAvS from "../../Charts/LineChartAvS/LineChartAvS";
-import LastUpdatedSession from "../../LastUpdatedSession/LastUpdatedSession";
+import LastUpdatedSession from "../../StandAloneComponents/LastUpdatedSession/LastUpdatedSession";
 import AppliedPercent from "../../Charts/AppliedPercent/AppliedPercent";
 import BarChartAvS from "../../Charts/BarChartAvS/BarChartAvS";
 import BarChartDKW from "../../Charts/BarChartDKW/BarChartDKW";
