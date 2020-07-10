@@ -1,6 +1,6 @@
 import React from "react";
 import './barChartLocations.css';
-import BarChartConstructor from "../BarChartConstructor/BarChartConstructor";
+import BarChartConstructor from "../../Constructors/BarChartConstructor/BarChartConstructor";
 
 class BarChartLocations extends React.Component {
     constructor(props) {

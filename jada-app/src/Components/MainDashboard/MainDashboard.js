@@ -2,18 +2,18 @@ import React from "react";
 import './mainDashboard.css';
 import PageHeader from "../PageHeader/PageHeader";
 import TotalProcessed from "../TotalProcessed/TotalProcessed";
-import LineChartAvS from "../LineChartAvS/LineChartAvS";
+import LineChartAvS from "../Charts/LineChartAvS/LineChartAvS";
 import LastUpdatedSession from "../LastUpdatedSession/LastUpdatedSession";
-import AppliedPercent from "../AppliedPercent/AppliedPercent";
-import BarChartAvS from "../BarChartAvS/BarChartAvS";
-import BarChartDKW from "../BarChartDKW/BarChartDKW";
-import BarChartUDKW from "../BarChartUDKW/BarChartUDKW";
-import BarChartLocations from "../BarChartLocations/BarChartLocations";
-import PercentJavaScript from "../PercentJavaScript/PercentJavaScript";
-import PercentPHP from "../PercentPHP/PercentPHP";
-import PercentNET from "../PercentNET/PercentNET";
-import PercentPython from "../PercentPython/PercentPython";
-import BarChartTop24 from "../BarChartTop24/BarChartTop24";
+import AppliedPercent from "../Charts/AppliedPercent/AppliedPercent";
+import BarChartAvS from "../Charts/BarChartAvS/BarChartAvS";
+import BarChartDKW from "../Charts/BarChartDKW/BarChartDKW";
+import BarChartUDKW from "../Charts/BarChartUDKW/BarChartUDKW";
+import BarChartLocations from "../Charts/BarChartLocations/BarChartLocations";
+import PercentJavaScript from "../Charts/PercentJavaScript/PercentJavaScript";
+import PercentPHP from "../Charts/PercentPHP/PercentPHP";
+import PercentNET from "../Charts/PercentNET/PercentNET";
+import PercentPython from "../Charts/PercentPython/PercentPython";
+import BarChartTop24 from "../Charts/BarChartTop24/BarChartTop24";
 
 class MainDashboard extends React.Component {
     constructor(props) {

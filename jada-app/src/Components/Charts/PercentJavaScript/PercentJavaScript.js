@@ -1,7 +1,7 @@
 import React from "react";
-import PercentBoxConstructor from "../PercentBoxConstructor/PercentBoxConstructor";
+import PercentBoxConstructor from "../../Constructors/PercentBoxConstructor/PercentBoxConstructor";
 
-class PercentNET extends React.Component {
+class PercentJavaScript extends React.Component {
     constructor(props) {
         super(props);
 
@@ -27,7 +27,7 @@ class PercentNET extends React.Component {
             labels: [keyWord, 'other'],
             datasets: [{
                 data: [],
-                backgroundColor: ['#e67e22']
+                backgroundColor: ['#f1c40f']
             }]
         }
         data.datasets[0].data.push(percent)
@@ -41,11 +41,11 @@ class PercentNET extends React.Component {
         let filteredKeyWord = [];
 
         applications.forEach(applications => {
-            allKeyWords.push(...applications.found_udkw)
+            allKeyWords.push(...applications.found_dkw)
         });
 
         for (let i=0; i < allKeyWords.length; i++) {
-            if (allKeyWords[i] === keyWord) {
+            if (allKeyWords[i] === keyWord || allKeyWords[i] === 'JS') {
                 filteredKeyWord.push(allKeyWords[i])
             }
         }
@@ -56,7 +56,7 @@ class PercentNET extends React.Component {
     updatePercentFound = async () => {
         let applications = this.props.applications;
         let total = applications.length;
-        let keyWord = 'NET';
+        let keyWord = 'JAVASCRIPT';
         let totalJS = this.updatedKeyWordCount(keyWord)
         let percent = ((totalJS / total) * 100).toFixed(0);
         await this.setState({ percentFound: percent })
@@ -66,7 +66,7 @@ class PercentNET extends React.Component {
     render() {
         return (
             <div className="col-xl-3 percentageBox">
-                <p className="boxTitle d-flex justify-content-center">.NET</p>
+                <p className="boxTitle d-flex justify-content-center">JAVASCRIPT</p>
                 <PercentBoxConstructor
                     data={this.state.chartData}
                     percentFound={this.state.percentFound}
@@ -77,4 +77,4 @@ class PercentNET extends React.Component {
 
 }
 
-export default PercentNET;
+export default PercentJavaScript;

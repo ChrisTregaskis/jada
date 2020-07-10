@@ -1,6 +1,6 @@
 import React from "react";
 import './barChartAvS.css'
-import BarChartConstructor from "../BarChartConstructor/BarChartConstructor";
+import BarChartConstructor from "../../Constructors/BarChartConstructor/BarChartConstructor";
 
 class BarChartAvS extends React.Component {
     constructor(props) {
@@ -40,7 +40,7 @@ class BarChartAvS extends React.Component {
     updateAvSData = () => {
         let appliedAndSkipped = this.calculateAppliedAndSkipped();
         let avsData = {
-            labels: ['applied', 'skipped'],
+            labels: ['Applied', 'Skipped'],
             datasets: [{
                 backgroundColor: ['#2ecc71', '#e67e22'],
                 data: []
@@ -50,7 +50,6 @@ class BarChartAvS extends React.Component {
         avsData.datasets[0].data.push(appliedAndSkipped.applied)
         avsData.datasets[0].data.push(appliedAndSkipped.skipped)
         this.setState({ avsData: avsData })
-        console.log(avsData)
     }
 
     render() {

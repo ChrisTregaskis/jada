@@ -1,6 +1,7 @@
 import React from "react";
 import './barChartDKW.css';
-import BarChartHorizontalConstructor from "../BarChartHorizontalContructor/BarChartHorizontalConstructor";
+import BarChartHorizontalConstructor
+    from "../../Constructors/BarChartHorizontalContructor/BarChartHorizontalConstructor";
 
 class BarChartDKW extends React.Component {
     constructor(props) {

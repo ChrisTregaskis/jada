@@ -1,7 +1,7 @@
 import React from "react";
-import PercentBoxConstructor from "../PercentBoxConstructor/PercentBoxConstructor";
+import PercentBoxConstructor from "../../Constructors/PercentBoxConstructor/PercentBoxConstructor";
 
-class PercentPython extends React.Component {
+class PercentNET extends React.Component {
     constructor(props) {
         super(props);
 
@@ -27,7 +27,7 @@ class PercentPython extends React.Component {
             labels: [keyWord, 'other'],
             datasets: [{
                 data: [],
-                backgroundColor: ['#3498db']
+                backgroundColor: ['#e67e22']
             }]
         }
         data.datasets[0].data.push(percent)
@@ -41,7 +41,7 @@ class PercentPython extends React.Component {
         let filteredKeyWord = [];
 
         applications.forEach(applications => {
-            allKeyWords.push(...applications.found_top24)
+            allKeyWords.push(...applications.found_udkw)
         });
 
         for (let i=0; i < allKeyWords.length; i++) {
@@ -56,7 +56,7 @@ class PercentPython extends React.Component {
     updatePercentFound = async () => {
         let applications = this.props.applications;
         let total = applications.length;
-        let keyWord = 'PYTHON';
+        let keyWord = 'NET';
         let totalJS = this.updatedKeyWordCount(keyWord)
         let percent = ((totalJS / total) * 100).toFixed(0);
         await this.setState({ percentFound: percent })
@@ -66,7 +66,7 @@ class PercentPython extends React.Component {
     render() {
         return (
             <div className="col-xl-3 percentageBox">
-                <p className="boxTitle d-flex justify-content-center">PYTHON</p>
+                <p className="boxTitle d-flex justify-content-center">.NET</p>
                 <PercentBoxConstructor
                     data={this.state.chartData}
                     percentFound={this.state.percentFound}
@@ -74,6 +74,7 @@ class PercentPython extends React.Component {
             </div>
         )
     }
+
 }
 
-export default PercentPython;
+export default PercentNET;

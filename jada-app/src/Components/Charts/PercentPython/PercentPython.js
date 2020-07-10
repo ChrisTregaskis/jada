@@ -1,7 +1,7 @@
 import React from "react";
-import PercentBoxConstructor from "../PercentBoxConstructor/PercentBoxConstructor";
+import PercentBoxConstructor from "../../Constructors/PercentBoxConstructor/PercentBoxConstructor";
 
-class PercentPHP extends React.Component {
+class PercentPython extends React.Component {
     constructor(props) {
         super(props);
 
@@ -27,7 +27,7 @@ class PercentPHP extends React.Component {
             labels: [keyWord, 'other'],
             datasets: [{
                 data: [],
-                backgroundColor: ['#9b59b6']
+                backgroundColor: ['#3498db']
             }]
         }
         data.datasets[0].data.push(percent)
@@ -41,7 +41,7 @@ class PercentPHP extends React.Component {
         let filteredKeyWord = [];
 
         applications.forEach(applications => {
-            allKeyWords.push(...applications.found_dkw)
+            allKeyWords.push(...applications.found_top24)
         });
 
         for (let i=0; i < allKeyWords.length; i++) {
@@ -56,7 +56,7 @@ class PercentPHP extends React.Component {
     updatePercentFound = async () => {
         let applications = this.props.applications;
         let total = applications.length;
-        let keyWord = 'PHP';
+        let keyWord = 'PYTHON';
         let totalJS = this.updatedKeyWordCount(keyWord)
         let percent = ((totalJS / total) * 100).toFixed(0);
         await this.setState({ percentFound: percent })
@@ -66,7 +66,7 @@ class PercentPHP extends React.Component {
     render() {
         return (
             <div className="col-xl-3 percentageBox">
-                <p className="boxTitle d-flex justify-content-center">PHP</p>
+                <p className="boxTitle d-flex justify-content-center">PYTHON</p>
                 <PercentBoxConstructor
                     data={this.state.chartData}
                     percentFound={this.state.percentFound}
@@ -76,4 +76,4 @@ class PercentPHP extends React.Component {
     }
 }
 
-export default PercentPHP;
+export default PercentPython;

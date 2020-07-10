@@ -1,7 +1,7 @@
 import React from "react";
-import PercentBoxConstructor from "../PercentBoxConstructor/PercentBoxConstructor";
+import PercentBoxConstructor from "../../Constructors/PercentBoxConstructor/PercentBoxConstructor";
 
-class PercentJavaScript extends React.Component {
+class PercentPHP extends React.Component {
     constructor(props) {
         super(props);
 
@@ -27,7 +27,7 @@ class PercentJavaScript extends React.Component {
             labels: [keyWord, 'other'],
             datasets: [{
                 data: [],
-                backgroundColor: ['#f1c40f']
+                backgroundColor: ['#9b59b6']
             }]
         }
         data.datasets[0].data.push(percent)
@@ -45,7 +45,7 @@ class PercentJavaScript extends React.Component {
         });
 
         for (let i=0; i < allKeyWords.length; i++) {
-            if (allKeyWords[i] === keyWord || allKeyWords[i] === 'JS') {
+            if (allKeyWords[i] === keyWord) {
                 filteredKeyWord.push(allKeyWords[i])
             }
         }
@@ -56,7 +56,7 @@ class PercentJavaScript extends React.Component {
     updatePercentFound = async () => {
         let applications = this.props.applications;
         let total = applications.length;
-        let keyWord = 'JAVASCRIPT';
+        let keyWord = 'PHP';
         let totalJS = this.updatedKeyWordCount(keyWord)
         let percent = ((totalJS / total) * 100).toFixed(0);
         await this.setState({ percentFound: percent })
@@ -66,7 +66,7 @@ class PercentJavaScript extends React.Component {
     render() {
         return (
             <div className="col-xl-3 percentageBox">
-                <p className="boxTitle d-flex justify-content-center">JAVASCRIPT</p>
+                <p className="boxTitle d-flex justify-content-center">PHP</p>
                 <PercentBoxConstructor
                     data={this.state.chartData}
                     percentFound={this.state.percentFound}
@@ -74,7 +74,6 @@ class PercentJavaScript extends React.Component {
             </div>
         )
     }
-
 }
 
-export default PercentJavaScript;
+export default PercentPHP;
