@@ -2,6 +2,7 @@ import React from "react";
 import './tablesPage.css';
 import PageHeader from "../PageHeader/PageHeader";
 import LastUpdatedSession from "../LastUpdatedSession/LastUpdatedSession";
+import ButtonMain from "../Buttons/ButtonMain/ButtonMain";
 
 class TablesPage extends React.Component {
     constructor(props) {
@@ -64,7 +65,14 @@ class TablesPage extends React.Component {
         return (
             <div className="container">
                 <PageHeader />
-                <LastUpdatedSession sessionDates={this.state.sessionDates} />
+                <div className="col-xl-12 d-flex justify-content-around">
+                    <LastUpdatedSession sessionDates={this.state.sessionDates} />
+                    <ButtonMain
+                        buttonText="MAIN DASHBOARD"
+                        cssClass="d-flex justify-content-center"
+                        location="http://localhost:3000/"
+                    />
+                </div>
             </div>
         );
     }
