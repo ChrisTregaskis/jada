@@ -29,7 +29,14 @@ class BarChartConstructor extends React.Component {
                     text: this.props.title
                 },
                 responsive: true,
-                maintainAspectRatio: false
+                maintainAspectRatio: false,
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            suggestedMin: 0
+                        }
+                    }]
+                }
             }
         })
     }
