@@ -3,6 +3,7 @@ import './tablesPage.css';
 import PageHeader from "../../PageHeader/PageHeader";
 import LastUpdatedSession from "../../LastUpdatedSession/LastUpdatedSession";
 import ButtonMain from "../../Buttons/ButtonMain/ButtonMain";
+import TableApplications from "../../Tables/TableApplications/TableApplications";
 
 class TablesPage extends React.Component {
     constructor(props) {
@@ -74,7 +75,7 @@ class TablesPage extends React.Component {
                     />
                 </div>
                 <div className="col-xl-12">
-
+                    <TableApplications applications={this.state.applications} />
                 </div>
             </div>
         );
