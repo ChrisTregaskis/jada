@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import MainDashboard from "./Components/MainDashboard/MainDashboard";
+import MainDashboard from "./Components/Pages/MainDashboard/MainDashboard";
 import TablesPage from "./Components/Pages/TablesPage/TablesPage";
 import { Route, BrowserRouter as Router, Switch } from 'react-router-dom';
 
