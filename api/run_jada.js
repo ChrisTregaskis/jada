@@ -10,7 +10,7 @@ const dkw = [
 ];
 const udkw = [
     'TRAINEESHIP', 'NET', 'TRAINEE', 'CONSULTANT',
-    'UX', 'DESIGNER', 'SALES', 'WINDOWS'
+    'UX', 'DESIGNER', 'SALES', 'LEAD', 'WINDOWS'
 ];
 
 // BEFORE RUNNING <---> SWITCH FROM TEST BUILD USING CL
