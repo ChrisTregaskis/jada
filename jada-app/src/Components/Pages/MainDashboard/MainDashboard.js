@@ -1,19 +1,20 @@
 import React from "react";
 import './mainDashboard.css';
-import PageHeader from "../PageHeader/PageHeader";
-import TotalProcessed from "../TotalProcessed/TotalProcessed";
-import LineChartAvS from "../Charts/LineChartAvS/LineChartAvS";
-import LastUpdatedSession from "../LastUpdatedSession/LastUpdatedSession";
-import AppliedPercent from "../Charts/AppliedPercent/AppliedPercent";
-import BarChartAvS from "../Charts/BarChartAvS/BarChartAvS";
-import BarChartDKW from "../Charts/BarChartDKW/BarChartDKW";
-import BarChartUDKW from "../Charts/BarChartUDKW/BarChartUDKW";
-import BarChartLocations from "../Charts/BarChartLocations/BarChartLocations";
-import PercentJavaScript from "../Charts/PercentJavaScript/PercentJavaScript";
-import PercentPHP from "../Charts/PercentPHP/PercentPHP";
-import PercentNET from "../Charts/PercentNET/PercentNET";
-import PercentPython from "../Charts/PercentPython/PercentPython";
-import BarChartTop24 from "../Charts/BarChartTop24/BarChartTop24";
+import PageHeader from "../../StandAloneComponents/PageHeader/PageHeader";
+import TotalProcessed from "../../StandAloneComponents/TotalProcessed/TotalProcessed";
+import LineChartAvS from "../../Charts/LineChartAvS/LineChartAvS";
+import LastUpdatedSession from "../../StandAloneComponents/LastUpdatedSession/LastUpdatedSession";
+import AppliedPercent from "../../Charts/AppliedPercent/AppliedPercent";
+import BarChartAvS from "../../Charts/BarChartAvS/BarChartAvS";
+import BarChartDKW from "../../Charts/BarChartDKW/BarChartDKW";
+import BarChartUDKW from "../../Charts/BarChartUDKW/BarChartUDKW";
+import BarChartLocations from "../../Charts/BarChartLocations/BarChartLocations";
+import PercentJavaScript from "../../Charts/PercentJavaScript/PercentJavaScript";
+import PercentPHP from "../../Charts/PercentPHP/PercentPHP";
+import PercentNET from "../../Charts/PercentNET/PercentNET";
+import PercentPython from "../../Charts/PercentPython/PercentPython";
+import BarChartTop24 from "../../Charts/BarChartTop24/BarChartTop24";
+import ButtonMain from "../../Buttons/ButtonMain/ButtonMain";
 
 class MainDashboard extends React.Component {
     constructor(props) {
@@ -76,7 +77,14 @@ class MainDashboard extends React.Component {
         return(
             <div className="container">
                 <PageHeader/>
-                <LastUpdatedSession sessionDates={this.state.sessionDates} />
+                <div className="col-xl-12 d-flex justify-content-around">
+                    <LastUpdatedSession sessionDates={this.state.sessionDates} />
+                    <ButtonMain
+                        buttonText="ALL APPLICATIONS"
+                        cssClass="d-flex justify-content-center"
+                        location="http://localhost:3000/tables"
+                    />
+                </div>
                 <div className="col-xl-12 d-flex">
                     <LineChartAvS
                         applications={this.state.applications}

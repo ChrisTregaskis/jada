@@ -6,7 +6,7 @@ class LastUpdatedSession extends React.Component {
         super(props);
 
         this.state = {
-            reportDate: ''
+            reportDate: 'loading...'
         }
     }
 
@@ -25,8 +25,19 @@ class LastUpdatedSession extends React.Component {
         await this.setState({ sessionDates: this.props.sessionDates })
     }
 
+    findMostRecentData = () => {
+        let dbDate = this.props.sessionDates;
+        let latestDate = '1901-01-01';
+        dbDate.forEach(date => {
+            if (date > latestDate) {
+                latestDate = date;
+            }
+        })
+        return latestDate
+    }
+
     updateReportDate = async () => {
-        let dbDate = this.props.sessionDates.slice(-1)[0]
+        let dbDate = this.findMostRecentData()
         let longDate = new Date(dbDate).toString()
         let longDateArr = longDate.split(" ")
         let shortDateArr = [longDateArr[0], longDateArr[2], longDateArr[1], longDateArr[3]]
@@ -37,8 +48,8 @@ class LastUpdatedSession extends React.Component {
     render() {
         return(
             <div>
-                <h2 className="d-flex justify-content-center lastSessionRun">
-                    As of {this.state.reportDate}
+                <h2 className="lastSessionRun">
+                    Last run session: {this.state.reportDate}
                 </h2>
             </div>
         )
