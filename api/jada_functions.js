@@ -166,7 +166,7 @@ function check_dkw(item) {
 function check_udkw(item) {
     const udkw = [
         'TRAINEESHIP', 'NET', 'TRAINEE', 'CONSULTANT',
-        'UX', 'DESIGNER', 'SALES', 'LEAD', 'WINDOWS'
+        'UX', 'DESIGNER', 'SALES', 'WINDOWS'
     ];
 
     let itemCheck = udkw.includes(item)
