@@ -1,7 +1,7 @@
 import React from "react";
-import './tableConstructor.css';
+import './applicationsTableConstructor.css';
 
-class TableConstructor extends React.Component {
+class ApplicationsTableConstructor extends React.Component {
     constructor(props) {
         super(props);
 
@@ -89,4 +89,4 @@ class TableConstructor extends React.Component {
 
 }
 
-export default TableConstructor;
+export default ApplicationsTableConstructor;

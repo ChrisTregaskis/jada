@@ -1,5 +1,5 @@
 import React from "react";
-import TableConstructor from "../../Constructors/TableConstructor/TableConstructor";
+import ApplicationsTableConstructor from "../../Constructors/ApplicationsTableConstructor/ApplicationsTableConstructor";
 
 class TableApplications extends React.Component {
     constructor(props) {
@@ -44,7 +44,7 @@ class TableApplications extends React.Component {
     render() {
         return (
             <div>
-                <TableConstructor
+                <ApplicationsTableConstructor
                     tableData={this.state.tableData}
                 />
             </div>
