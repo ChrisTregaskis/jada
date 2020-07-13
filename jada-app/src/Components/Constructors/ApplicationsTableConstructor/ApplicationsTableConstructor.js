@@ -66,7 +66,7 @@ class ApplicationsTableConstructor extends React.Component {
         for (let i=0; i < tableRowsData.length; i++) {
             let tdData = this.generateTDForRows(headerData, tableRowsData[i])
             tableRows.push(
-                <tr key={i} id={tableRowsData[i]._id} onClick={this.openModal}>
+                <tr key={i} id={tableRowsData[i]._id} onClick={this.openModal} className="applicationsTableRow">
                     {tdData}
                 </tr>
             )
