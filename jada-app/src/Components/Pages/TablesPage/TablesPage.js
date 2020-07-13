@@ -4,7 +4,6 @@ import PageHeader from "../../StandAloneComponents/PageHeader/PageHeader";
 import LastUpdatedSession from "../../StandAloneComponents/LastUpdatedSession/LastUpdatedSession";
 import ButtonMain from "../../Buttons/ButtonMain/ButtonMain";
 import TableApplications from "../../Tables/TableApplications/TableApplications";
-import ApplicationModal from "../../Modals/ApplicationModal/ApplicationModal";
 
 class TablesPage extends React.Component {
     constructor(props) {
@@ -75,7 +74,6 @@ class TablesPage extends React.Component {
                         location="http://localhost:3000/"
                     />
                 </div>
-                <ApplicationModal />
                 <div className="col-xl-12">
                     <TableApplications applications={this.state.applications} />
                 </div>
