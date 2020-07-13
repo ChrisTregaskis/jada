@@ -1,5 +1,6 @@
 import React from "react";
 import '../ButtonMain/buttonMain.css';
+import './buttonMainToggle.css';
 
 class ButtonMainToggle extends React.Component {
     constructor(props) {
@@ -13,7 +14,8 @@ class ButtonMainToggle extends React.Component {
     render() {
         return (
             <div>
-                <div onClick={this.props.handleClick} className="buttonMain">
+                <div onClick={this.props.handleClick}
+                     className="buttonMain buttonMainToggle">
                     <span className="text">{this.state.buttonText}</span>
                 </div>
             </div>
