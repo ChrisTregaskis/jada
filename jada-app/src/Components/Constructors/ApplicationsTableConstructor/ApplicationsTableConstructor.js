@@ -1,5 +1,7 @@
 import React from "react";
 import './applicationsTableConstructor.css';
+import ApplicationModal from "../../Modals/ApplicationModal/ApplicationModal";
+import BackgroundOverlay from "../../StandAloneComponents/BackgroundOverlay/BackgroundOverlay";
 
 class ApplicationsTableConstructor extends React.Component {
     constructor(props) {
@@ -8,7 +10,9 @@ class ApplicationsTableConstructor extends React.Component {
         this.state = {
             tableData: {
                 headers: [],
-                datasets: []
+                datasets: [],
+                modalActive: false,
+                applicationId: ''
             }
         }
     }
@@ -52,6 +56,8 @@ class ApplicationsTableConstructor extends React.Component {
         return tdData
     }
 
+    // For dynamic data, must include headers and
+    // dataset obj must include _id as well as headers
     generateRows = () => {
         let tableRows = [];
         let tableRowsData = this.props.tableData.datasets;
@@ -60,7 +66,7 @@ class ApplicationsTableConstructor extends React.Component {
         for (let i=0; i < tableRowsData.length; i++) {
             let tdData = this.generateTDForRows(headerData, tableRowsData[i])
             tableRows.push(
-                <tr key={i}>
+                <tr key={i} id={tableRowsData[i]._id} onClick={this.openModal}>
                     {tdData}
                 </tr>
             )
@@ -69,9 +75,28 @@ class ApplicationsTableConstructor extends React.Component {
         return tableRows
     }
 
+    toggleModalActive = () => {
+        this.setState({ modalActive: !this.state.modalActive })
+    }
+
+    openModal = (e) => {
+        e.persist()
+        let objId = e.target.parentNode.id
+        this.setState({ applicationId: objId })
+        this.toggleModalActive()
+    }
+
     render() {
         return (
             <div className="col-xl-12">
+                <BackgroundOverlay
+                    modalActive={this.state.modalActive}
+                />
+                <ApplicationModal
+                    modalActive={this.state.modalActive}
+                    applicationId={this.state.applicationId}
+                    toggleModalActive={this.toggleModalActive}
+                />
                 <table className="table table-bordered table-hover">
                     <thead>
                         <tr>
