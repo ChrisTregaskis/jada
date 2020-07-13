@@ -66,13 +66,17 @@ class TablesPage extends React.Component {
         return (
             <div className="container">
                 <PageHeader />
-                <div className="col-xl-12 d-flex justify-content-around">
+                <div className="d-flex justify-content-center">
                     <LastUpdatedSession sessionDates={this.state.sessionDates} />
-                    <ButtonMain
-                        buttonText="MAIN DASHBOARD"
-                        cssClass="d-flex justify-content-center"
-                        location="http://localhost:3000/"
-                    />
+                </div>
+                <div className="d-flex justify-content-around tablePageButtons">
+                    <div className="buttonMainTablesPage">
+                        <ButtonMain
+                            buttonText="MAIN DASHBOARD"
+                            cssClass="d-flex justify-content-center"
+                            location="http://localhost:3000/"
+                        />
+                    </div>
                 </div>
                 <div className="col-xl-12">
                     <TableApplications applications={this.state.applications} />
