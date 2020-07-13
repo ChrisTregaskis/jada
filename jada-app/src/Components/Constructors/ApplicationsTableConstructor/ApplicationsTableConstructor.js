@@ -12,7 +12,7 @@ class ApplicationsTableConstructor extends React.Component {
                 headers: [],
                 datasets: [],
                 modalActive: false,
-                applicationId: ''
+                applicationData: {}
             }
         }
     }
@@ -79,10 +79,30 @@ class ApplicationsTableConstructor extends React.Component {
         this.setState({ modalActive: !this.state.modalActive })
     }
 
-    openModal = (e) => {
+    getApplication = async (id) => {
+        const url = `http://localhost:8080/applications/${id}`;
+        let data = await fetch(url, {
+            method: 'GET',
+            headers: {
+                "Content-Type": "application/json"
+            }
+        });
+
+        data = await data.json();
+        // if (data.response.status !== 200) {
+        //     console.log('ERROR: unable to get application data')
+        //     console.log(data.response.status)
+        //     return {}
+        // }
+
+        return data;
+    }
+
+    openModal = async (e) => {
         e.persist()
         let objId = e.target.parentNode.id
-        this.setState({ applicationId: objId })
+        let application = await this.getApplication(objId)
+        await this.setState({ applicationData: application })
         this.toggleModalActive()
     }
 
@@ -94,7 +114,7 @@ class ApplicationsTableConstructor extends React.Component {
                 />
                 <ApplicationModal
                     modalActive={this.state.modalActive}
-                    applicationId={this.state.applicationId}
+                    applicationData={this.state.applicationData}
                     toggleModalActive={this.toggleModalActive}
                 />
                 <table className="table table-bordered table-hover">
