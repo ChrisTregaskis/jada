@@ -17,11 +17,10 @@ class ButtonMain extends React.Component {
     }
 
     render() {
-        // let cssClass = this.state.cssClass;
-        let cssClass = '';
+        let cssClass = this.state.cssClass;
         return (
             <div className={cssClass}>
-                <div onClick={this.handleClick} className='horizontal'>
+                <div onClick={this.handleClick} className='buttonMain'>
                     <span className="text">{this.state.buttonText}</span>
                 </div>
             </div>

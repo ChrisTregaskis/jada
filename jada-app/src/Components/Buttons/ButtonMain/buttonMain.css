@@ -3,7 +3,7 @@
     --hover-color: #fff;
 }
 
-.horizontal {
+.buttonMain {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -17,7 +17,7 @@
     border-radius: 5px;
 }
 
-.horizontal > .text {
+.buttonMain > .text {
     position: relative;
     color: transparent;
     background-image: linear-gradient(90deg, var(--hover-color) 0%, var(--hover-color) 50%, var(--base-color) 50%, var(--base-color) 100%);
@@ -28,7 +28,7 @@
     transition: background-position 300ms;
 }
 
-.horizontal::before {
+.buttonMain::before {
     content: '';
     position: absolute;
     top: 0;
@@ -41,11 +41,11 @@
     transition: transform 300ms;
 }
 
-.horizontal:hover .text {
+.buttonMain:hover .text {
     background-position: 0 0;
 }
 
-.horizontal:hover::before {
+.buttonMain:hover::before {
     transform-origin: 0 0;
     transform: scale3d(1, 1, 1);
 }
