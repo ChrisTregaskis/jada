@@ -31,7 +31,15 @@
 
 .applicationsModal .jobTitle {
     font-weight: bold;
-    margin: 10px 0;
+    margin-top: 10px;
+    margin-bottom: 5px;
+}
+
+.applicationsModal .jobUrl {
+    text-align: center;
+    margin-top: 0;
+    margin-bottom: 15px;
+    font-size: 0.7rem;
 }
 
 .applicationDetail {
