@@ -1,14 +1,18 @@
 import React from "react";
-import './tableConstructor.css';
+import './applicationsTableConstructor.css';
+import ApplicationModal from "../../Modals/ApplicationModal/ApplicationModal";
+import BackgroundOverlay from "../../StandAloneComponents/BackgroundOverlay/BackgroundOverlay";
 
-class TableConstructor extends React.Component {
+class ApplicationsTableConstructor extends React.Component {
     constructor(props) {
         super(props);
 
         this.state = {
             tableData: {
                 headers: [],
-                datasets: []
+                datasets: [],
+                modalActive: false,
+                applicationData: {}
             }
         }
     }
@@ -52,6 +56,8 @@ class TableConstructor extends React.Component {
         return tdData
     }
 
+    // For dynamic data, must include headers and
+    // dataset obj must include _id as well as headers
     generateRows = () => {
         let tableRows = [];
         let tableRowsData = this.props.tableData.datasets;
@@ -60,7 +66,7 @@ class TableConstructor extends React.Component {
         for (let i=0; i < tableRowsData.length; i++) {
             let tdData = this.generateTDForRows(headerData, tableRowsData[i])
             tableRows.push(
-                <tr key={i}>
+                <tr key={i} id={tableRowsData[i]._id} onClick={this.openModal} className="applicationsTableRow">
                     {tdData}
                 </tr>
             )
@@ -69,9 +75,49 @@ class TableConstructor extends React.Component {
         return tableRows
     }
 
+    toggleModalActive = () => {
+        this.setState({ modalActive: !this.state.modalActive })
+    }
+
+    getApplication = async (id) => {
+        const url = `http://localhost:8080/applications/${id}`;
+        let data = await fetch(url, {
+            method: 'GET',
+            headers: {
+                "Content-Type": "application/json"
+            }
+        });
+
+        let responseStatus = data.status;
+        data = await data.json();
+        if (responseStatus !== 200) {
+            console.log('ERROR: unable to get application data')
+            console.log(data.response.status)
+            return {}
+        }
+
+        return data;
+    }
+
+    openModal = async (e) => {
+        e.persist()
+        let objId = e.target.parentNode.id
+        let application = await this.getApplication(objId)
+        await this.setState({ applicationData: application })
+        this.toggleModalActive()
+    }
+
     render() {
         return (
             <div className="col-xl-12">
+                <BackgroundOverlay
+                    modalActive={this.state.modalActive}
+                />
+                <ApplicationModal
+                    modalActive={this.state.modalActive}
+                    applicationData={this.state.applicationData}
+                    toggleModalActive={this.toggleModalActive}
+                />
                 <table className="table table-bordered table-hover">
                     <thead>
                         <tr>
@@ -89,4 +135,4 @@ class TableConstructor extends React.Component {
 
 }
 
-export default TableConstructor;
+export default ApplicationsTableConstructor;

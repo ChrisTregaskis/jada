@@ -1,0 +1,64 @@
+.applicationsModal {
+    height: 600px;
+    width: 800px;
+    border-color: #022F40;
+    background-color: #fff;
+    border-width: 5px;
+    padding: 10px;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 5px;
+    box-shadow: 0 2.8px 2.2px rgba(0, 0, 0, 0.034),
+    0 6.7px 5.3px rgba(0, 0, 0, 0.048),
+    0 12.5px 10px rgba(0, 0, 0, 0.06),
+    0 22.3px 17.9px rgba(0, 0, 0, 0.072),
+    0 41.8px 33.4px rgba(0, 0, 0, 0.086),
+    0 100px 80px rgba(0, 0, 0, 0.12);
+}
+
+.applicationsModal h1 {
+    font-family: 'Monoton', cursive;
+    margin: 0;
+    color: #022F40;
+}
+
+.applicationsModal li {
+    list-style: none;
+    margin: 5px 0;
+}
+
+.applicationsModal .jobTitle {
+    font-weight: bold;
+    margin-top: 10px;
+    margin-bottom: 5px;
+}
+
+.applicationsModal .jobUrl {
+    text-align: center;
+    margin-top: 0;
+    margin-bottom: 15px;
+    font-size: 0.7rem;
+}
+
+.applicationDetail {
+    font-weight: bold;
+}
+
+.modalButtonBox {
+    height: 50px;
+    width: 150px;
+    position: absolute;
+    left: 50%;
+    transform: translate(-50%, 20px);
+    bottom: 35px;
+}
+
+.hidden {
+    display: none;
+}
+
+.displayed {
+    display: block;
+}
