@@ -4,6 +4,7 @@ import PageHeader from "../../StandAloneComponents/PageHeader/PageHeader";
 import LastUpdatedSession from "../../StandAloneComponents/LastUpdatedSession/LastUpdatedSession";
 import ButtonMain from "../../Buttons/ButtonMain/ButtonMain";
 import TableApplications from "../../Tables/TableApplications/TableApplications";
+import ButtonMainToggle from "../../Buttons/ButtonMainToggle/ButtonMainToggle";
 
 class TablesPage extends React.Component {
     constructor(props) {
@@ -62,6 +63,18 @@ class TablesPage extends React.Component {
         return data.response.applications;
     }
 
+    toggleViewAll = () => {
+        console.log('clicked! - view all')
+    }
+
+    toggleViewApplied = () => {
+        console.log('clicked! - view applied')
+    }
+
+    toggleViewSkipped = () => {
+        console.log('clicked! - view skipped')
+    }
+
     render() {
         return (
             <div className="container">
@@ -70,6 +83,24 @@ class TablesPage extends React.Component {
                     <LastUpdatedSession sessionDates={this.state.sessionDates} />
                 </div>
                 <div className="d-flex justify-content-around tablePageButtons">
+                    <div className="buttonMainTablesPage">
+                        <ButtonMainToggle
+                            buttonText="ALL"
+                            handleClick={this.toggleViewAll}
+                        />
+                    </div>
+                    <div className="buttonMainTablesPage">
+                        <ButtonMainToggle
+                            buttonText="APPLIED"
+                            handleClick={this.toggleViewApplied}
+                        />
+                    </div>
+                    <div className="buttonMainTablesPage">
+                        <ButtonMainToggle
+                            buttonText="SKIPPED"
+                            handleClick={this.toggleViewSkipped}
+                        />
+                    </div>
                     <div className="buttonMainTablesPage">
                         <ButtonMain
                             buttonText="MAIN DASHBOARD"
