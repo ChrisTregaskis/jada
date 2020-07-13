@@ -34,16 +34,16 @@ class ApplicationModal extends React.Component {
     }
 
     reformatKeyWords = (keyWords) => {
-        let reformatedKeyWords = [];
+        let reformattedKeyWords = [];
         for (let i = 0; i < keyWords.length; i++) {
             let kw = keyWords[i];
             if (kw !== 'DEVELOPER' && kw !== 'SOFTWARE' &&
                 kw !== 'ENGINEER' && kw !== 'ENGINEERING') {
-                reformatedKeyWords.push(kw)
+                reformattedKeyWords.push(kw)
             }
         }
-        this.removeDuplicates(reformatedKeyWords)
-        return reformatedKeyWords.join(", ").toLowerCase();
+        this.removeDuplicates(reformattedKeyWords)
+        return reformattedKeyWords.join(", ").toLowerCase();
     }
 
     removeDuplicates = (array) => {
@@ -57,17 +57,21 @@ class ApplicationModal extends React.Component {
         let appliedTime = application.session_time.substring(0,5);
         let applied = application.apply_attempted.toString().toUpperCase();
         let interested = application.interested.toString().toUpperCase();
-        let dkw = this.reformatKeyWords(application.found_dkw);
-        let udkw = this.reformatKeyWords(application.found_udkw);
-        let top24 = this.reformatKeyWords(application.found_top24);
+        let dkwFormatted = this.reformatKeyWords(application.found_dkw);
+        let dkw = (dkwFormatted < 1) ? '-' : dkwFormatted
+        let udkwFormatted = this.reformatKeyWords(application.found_udkw);
+        let udkw = (udkwFormatted < 1) ? '-' : udkwFormatted;
+        let top24Formatted = this.reformatKeyWords(application.found_top24);
+        let top24 = (top24Formatted < 1) ? '-' : top24Formatted;
         let key = application.totalJobs_id;
         let reference = application.totalJobs_ref;
-        let salary = application.salary;
-        let jobType = application.job_type;
-        let jobPosted = application.job_posted;
-        let jobContact = application.job_contact;
 
         if (application.apply_attempted) {
+            let salary = (application.salary.length < 1) ? 'Not quoted' : application.salary;
+            let jobType = (application.job_type.length < 1) ? 'Not quoted' : application.job_type;
+            let jobPosted = (application.job_posted.length < 1) ? 'Not quoted' : application.job_posted;
+            let jobContact = (application.job_contact.length < 1) ? 'Not quoted' : application.job_contact;
+
             displayData.push(
                 <ul key={key}>
                     <li key={key + 1} className="d-flex justify-content-center jobTitle">{application.job_title}</li>
