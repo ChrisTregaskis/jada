@@ -88,12 +88,13 @@ class ApplicationsTableConstructor extends React.Component {
             }
         });
 
+        let responseStatus = data.status;
         data = await data.json();
-        // if (data.response.status !== 200) {
-        //     console.log('ERROR: unable to get application data')
-        //     console.log(data.response.status)
-        //     return {}
-        // }
+        if (responseStatus !== 200) {
+            console.log('ERROR: unable to get application data')
+            console.log(data.response.status)
+            return {}
+        }
 
         return data;
     }
