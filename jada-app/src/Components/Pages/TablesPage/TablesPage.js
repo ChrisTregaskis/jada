@@ -12,6 +12,7 @@ class TablesPage extends React.Component {
 
         this.state = {
             applications: {},
+            currentApplications: {},
             sessionDates:[]
         }
     }
@@ -41,7 +42,10 @@ class TablesPage extends React.Component {
 
     updateApplications = async () => {
         let updatedApplications = await this.fetchApplications();
-        await this.setState({ applications: updatedApplications });
+        await this.setState({
+            applications: updatedApplications,
+            currentApplications: updatedApplications
+        });
     }
 
     fetchApplications = async () => {
@@ -64,15 +68,31 @@ class TablesPage extends React.Component {
     }
 
     toggleViewAll = () => {
-        console.log('clicked! - view all')
+        this.setState({ currentApplications: this.state.applications });
     }
 
     toggleViewApplied = () => {
         console.log('clicked! - view applied')
+        let applications = this.state.applications
+        let currentApplications = [];
+        applications.forEach(application => {
+            if (application.apply_attempted) {
+                currentApplications.push(application)
+            }
+        })
+
+        this.setState({ currentApplications: currentApplications });
     }
 
-    toggleViewSkipped = () => {
-        console.log('clicked! - view skipped')
+    toggleViewSkipped = () => {let applications = this.state.applications;
+        let currentApplications = [];
+        applications.forEach(application => {
+            if (application.apply_attempted === false) {
+                currentApplications.push(application)
+            }
+        })
+
+        this.setState({ currentApplications: currentApplications });
     }
 
     render() {
@@ -110,7 +130,7 @@ class TablesPage extends React.Component {
                     </div>
                 </div>
                 <div className="col-xl-12">
-                    <TableApplications applications={this.state.applications} />
+                    <TableApplications applications={this.state.currentApplications} />
                 </div>
             </div>
         );
