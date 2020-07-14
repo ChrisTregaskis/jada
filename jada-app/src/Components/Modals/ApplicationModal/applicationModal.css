@@ -1,6 +1,6 @@
 .applicationsModal {
     height: 600px;
-    width: 800px;
+    width: 700px;
     border-color: #022F40;
     background-color: #fff;
     border-width: 5px;
@@ -47,12 +47,15 @@
 }
 
 .modalButtonBox {
-    height: 50px;
-    width: 150px;
     position: absolute;
     left: 50%;
     transform: translate(-50%, 20px);
     bottom: 35px;
+}
+
+.modalButtonBox span {
+    padding: 0 25px;
+    font-size: 1.4rem;
 }
 
 .hidden {

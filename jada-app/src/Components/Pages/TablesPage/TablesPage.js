@@ -4,6 +4,7 @@ import PageHeader from "../../StandAloneComponents/PageHeader/PageHeader";
 import LastUpdatedSession from "../../StandAloneComponents/LastUpdatedSession/LastUpdatedSession";
 import ButtonMain from "../../Buttons/ButtonMain/ButtonMain";
 import TableApplications from "../../Tables/TableApplications/TableApplications";
+import ButtonMainToggle from "../../Buttons/ButtonMainToggle/ButtonMainToggle";
 
 class TablesPage extends React.Component {
     constructor(props) {
@@ -11,6 +12,7 @@ class TablesPage extends React.Component {
 
         this.state = {
             applications: {},
+            currentApplications: {},
             sessionDates:[]
         }
     }
@@ -40,7 +42,10 @@ class TablesPage extends React.Component {
 
     updateApplications = async () => {
         let updatedApplications = await this.fetchApplications();
-        await this.setState({ applications: updatedApplications });
+        await this.setState({
+            applications: updatedApplications,
+            currentApplications: updatedApplications
+        });
     }
 
     fetchApplications = async () => {
@@ -62,20 +67,70 @@ class TablesPage extends React.Component {
         return data.response.applications;
     }
 
+    toggleViewAll = () => {
+        this.setState({ currentApplications: this.state.applications });
+    }
+
+    toggleViewApplied = () => {
+        console.log('clicked! - view applied')
+        let applications = this.state.applications
+        let currentApplications = [];
+        applications.forEach(application => {
+            if (application.apply_attempted) {
+                currentApplications.push(application)
+            }
+        })
+
+        this.setState({ currentApplications: currentApplications });
+    }
+
+    toggleViewSkipped = () => {let applications = this.state.applications;
+        let currentApplications = [];
+        applications.forEach(application => {
+            if (application.apply_attempted === false) {
+                currentApplications.push(application)
+            }
+        })
+
+        this.setState({ currentApplications: currentApplications });
+    }
+
     render() {
         return (
             <div className="container">
                 <PageHeader />
-                <div className="col-xl-12 d-flex justify-content-around">
+                <div className="d-flex justify-content-center">
                     <LastUpdatedSession sessionDates={this.state.sessionDates} />
-                    <ButtonMain
-                        buttonText="MAIN DASHBOARD"
-                        cssClass="d-flex justify-content-center"
-                        location="http://localhost:3000/"
-                    />
+                </div>
+                <div className="d-flex justify-content-around tablePageButtons">
+                    <div className="buttonMainTablesPage">
+                        <ButtonMainToggle
+                            buttonText="ALL"
+                            handleClick={this.toggleViewAll}
+                        />
+                    </div>
+                    <div className="buttonMainTablesPage">
+                        <ButtonMainToggle
+                            buttonText="APPLIED"
+                            handleClick={this.toggleViewApplied}
+                        />
+                    </div>
+                    <div className="buttonMainTablesPage">
+                        <ButtonMainToggle
+                            buttonText="SKIPPED"
+                            handleClick={this.toggleViewSkipped}
+                        />
+                    </div>
+                    <div className="buttonMainTablesPage">
+                        <ButtonMain
+                            buttonText="MAIN DASHBOARD"
+                            cssClass="d-flex justify-content-center"
+                            location="http://localhost:3000/"
+                        />
+                    </div>
                 </div>
                 <div className="col-xl-12">
-                    <TableApplications applications={this.state.applications} />
+                    <TableApplications applications={this.state.currentApplications} />
                 </div>
             </div>
         );

@@ -15,7 +15,7 @@ class TableApplications extends React.Component {
     }
 
     componentDidUpdate(prevProps) {
-        if (prevProps.applications !== this.state.applications) {
+        if (prevProps.applications !== this.props.applications) {
             this.setState({ applications: this.props.applications })
             this.updateTableData();
         }

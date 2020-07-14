@@ -79,11 +79,13 @@ class MainDashboard extends React.Component {
                 <PageHeader/>
                 <div className="col-xl-12 d-flex justify-content-around">
                     <LastUpdatedSession sessionDates={this.state.sessionDates} />
-                    <ButtonMain
-                        buttonText="ALL APPLICATIONS"
-                        cssClass="d-flex justify-content-center"
-                        location="http://localhost:3000/tables"
-                    />
+                    <div className="btnMainDashboard">
+                        <ButtonMain
+                            buttonText="ALL APPLICATIONS"
+                            cssClass="d-flex justify-content-center"
+                            location="http://localhost:3000/tables"
+                        />
+                    </div>
                 </div>
                 <div className="col-xl-12 d-flex">
                     <LineChartAvS
