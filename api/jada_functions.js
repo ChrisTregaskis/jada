@@ -548,7 +548,7 @@ async function apply_to_job() {
             // let clickSubmit = await driver.findElement({ id: 'btnSubmit' }).click();
             // let returnToSearch = await driver.wait(WebDriver.until.elementLocated({
             //     className: 'return-to-search'
-            // }), 10000);
+            // }), 20000);
             //
             // let submissionSuccessful = await driver.findElements({ className: 'return-to-search' });
             // if (submissionSuccessful.length > 0) {
