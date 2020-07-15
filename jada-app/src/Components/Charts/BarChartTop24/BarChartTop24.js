@@ -23,7 +23,26 @@ class BarChartTop24 extends React.Component {
     }
 
     languageCount = (language, languageArr) => {
-        return languageArr.filter(word => word === language)
+        let languageFound = languageArr.filter(word => word === language);
+        return languageFound.length
+    }
+
+    javaScriptCount = () => {
+        let applications = this.props.applications;
+        let jS = [];
+        let dkw = [];
+
+        applications.forEach(application => {
+            dkw.push(...application.found_dkw)
+        })
+
+        for (let i=0; i < dkw.length; i++) {
+            if (dkw[i] === 'JAVASCRIPT' || dkw[i] === 'JS') {
+                jS.push(dkw[i])
+            }
+        }
+
+        return jS.length
     }
 
     mapLanguages = (applications) => {
@@ -37,6 +56,19 @@ class BarChartTop24 extends React.Component {
     removeDuplicates = (array) => {
         return array.reduce((unique, item) =>
             unique.includes(item) ? unique : [...unique, item],[]);
+    }
+
+    updateTop24CountForJS = (languageSingle, currentCounts) => {
+        let updatedCounts = [];
+        updatedCounts.push(...currentCounts);
+        let jsCount = this.javaScriptCount();
+        for (let i=0; i < languageSingle.length; i++) {
+            if (languageSingle[i] === 'JAVASCRIPT') {
+                updatedCounts[i] = jsCount
+            }
+        }
+
+        return updatedCounts
     }
 
     updateTop24Data = () => {
@@ -54,13 +86,16 @@ class BarChartTop24 extends React.Component {
         let languagesSingle = this.removeDuplicates(languagesAll);
 
         languagesSingle.forEach(language => {
-            languagesCount.push(this.languageCount(language, languagesAll).length)
+            languagesCount.push(this.languageCount(language, languagesAll))
         })
 
+        let updatedLanguagesCount = this.updateTop24CountForJS(languagesSingle, languagesCount)
+
         languageData.labels.push(...languagesSingle);
-        languageData.datasets[0].data.push(...languagesCount)
+        languageData.datasets[0].data.push(...updatedLanguagesCount)
 
         this.setState({ data: languageData })
+
     }
 
     render() {

@@ -24,7 +24,8 @@ class BarChartUDKW extends React.Component {
     }
 
     keyWordCount = (keyWord, array) => {
-        return array.filter(word => word === keyWord)
+        let keyWordFound = array.filter(word => word === keyWord);
+        return keyWordFound.length
     }
 
     mapKeyWord = (applications) => {
@@ -55,7 +56,7 @@ class BarChartUDKW extends React.Component {
         let keyWordsSingle = this.removeDuplicates(keyWordsAll)
 
         keyWordsSingle.forEach(keyWord => {
-            keyWordsCount.push(this.keyWordCount(keyWord, keyWordsAll).length)
+            keyWordsCount.push(this.keyWordCount(keyWord, keyWordsAll))
         })
 
         keyWordData.labels.push(...keyWordsSingle)

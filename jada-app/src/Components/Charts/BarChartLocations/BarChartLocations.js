@@ -23,7 +23,8 @@ class BarChartLocations extends React.Component {
     }
 
     locationCount = (location, locationsArr) => {
-        return locationsArr.filter(item => item === location)
+        let locationFound = locationsArr.filter(word => word === location);
+        return locationFound.length
     }
 
     mapLocations = (applications) => {
@@ -70,7 +71,7 @@ class BarChartLocations extends React.Component {
         let locationsSingle = this.removeDuplicates(locationsAll)
 
         locationsSingle.forEach(location => {
-            locationsCount.push(this.locationCount(location, locationsAll).length)
+            locationsCount.push(this.locationCount(location, locationsAll))
         })
 
         for (let i=0; i < locationsSingle.length; i++) {
