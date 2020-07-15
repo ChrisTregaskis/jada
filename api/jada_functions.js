@@ -1073,27 +1073,6 @@ exports.email_session_report = async function(searchParams, sessionReport) {
             ${display_email_keyWords(sessionReport.locations_overview, sessionReport.locations_all)}
             <br>
             <br>
-
-            <h1>Jada - All Sessions Report</h1>
-            <br>
-            <h3>All applications processed overview:</h3>
-            <p>Total processed: ${allSessionsReport.total_processed}</p>
-            <p>Total applied: ${allSessionsReport.total_applied}</p>
-            <p>Total skipped: ${allSessionsReport.total_skipped}</p>
-            
-            <h3>Desired Key Words Overview For ALL Applications:</h3>
-            ${display_email_keyWords(allSessionsReport.total_dkw_overview, allSessionsReport.total_dkw_all)}
-            <br>
-            <h3>Undesired Key Words Overview For ALL Applications:</h3>
-            ${display_email_keyWords(allSessionsReport.total_udkw_overview, allSessionsReport.total_udkw_all)}
-            <br>
-            <h3>Top 24 Programing Languages Overview For ALL Applications:</h3>
-            ${display_email_keyWords(allSessionsReport.total_top24_overview, allSessionsReport.total_top24_all)}
-            <br>
-            <h3>Locations Found Overview For ALL APPLIED Applications:</h3>
-            ${display_email_keyWords(allSessionsReport.total_locations_overview, allSessionsReport.total_locations_all)}
-            <br>
-            <br>
         `
     }
 
