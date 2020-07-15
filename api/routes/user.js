@@ -1,10 +1,7 @@
 const express = require('express');
 const router = express.Router();
+const UsersController = require('../controllers/users');
 
-router.get('/', (req, res, next) => {
-    res.status(200).json({
-        message: 'route working!'
-    })
-})
+router.get('/signup', UsersController.users_sign_up);
 
 module.exports = router;
