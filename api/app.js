@@ -7,6 +7,7 @@ const cors = require('cors');
 
 const applicationsRoute = require('../api/routes/applications');
 const sessionsRoute = require('../api/routes/sessions');
+const userRoute = require('../api/routes/user');
 
 // db connection
 mongoose.connect(
@@ -23,6 +24,7 @@ app.use(bodyParser.json());
 // route paths
 app.use('/applications', applicationsRoute);
 app.use('/sessions', sessionsRoute);
+app.use('/user', userRoute);
 
 // if no route found
 app.use((req, res, next) => {
