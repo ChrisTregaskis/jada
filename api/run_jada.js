@@ -16,7 +16,7 @@ const udkw = [
 // BEFORE RUNNING <---> SWITCH FROM TEST BUILD USING CL
 const jobTitle = 'Junior Software Engineer';
 const area = 'Kent';
-const radius = 5;
+const radius = 0;
 
 run_jada(jobTitle, area, radius);
 
