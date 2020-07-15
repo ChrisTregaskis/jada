@@ -17,14 +17,16 @@ const udkw = [
 const jobTitle = 'Junior Software Engineer';
 const area = 'Kent';
 const radius = 0;
+const userId = 'obj_id'
 
-run_jada(jobTitle, area, radius);
+run_jada(userId, jobTitle, area, radius);
 
-async function run_jada(jobTitle, area, radius) {
+async function run_jada(userId, jobTitle, area, radius) {
+    console.log(`User Id: ${userId}`)
     console.log(`Job Title: ${jobTitle}`)
     console.log(`Area: ${area}`)
     console.log(`Radius: ${radius}`)
-    let searchParams = { "job_title": jobTitle, "location": area, "radius": radius }
+    let searchParams = { "user_id": userId, "job_title": jobTitle, "location": area, "radius": radius }
     const radiusOptions = [0, 5, 10, 20, 30];
     let session_date = Jada.getDate('-')
     let session_id = Jada.getDate('') + mongoose.Types.ObjectId();
