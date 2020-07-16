@@ -95,7 +95,7 @@ exports.populate_potential_jobs = async function() {
     return additionalJobs;
 }
 
-async function isInterested(jobId, dkw, udkw, session_id, session_date, session_time) {
+async function isInterested(jobId, dkw, udkw, user_id, session_id, session_date, session_time) {
     let jobTitle = await driver.findElement({ xpath: '//*[@id="' + jobId + '"]/div/div/div[1]/a/h2'}).getText();
     let jobTitleWebElement = await driver.findElement({ xpath: '//*[@id="' + jobId + '"]'});
     let jobTitleClasses = await jobTitleWebElement.getAttribute('class');
@@ -115,6 +115,7 @@ async function isInterested(jobId, dkw, udkw, session_id, session_date, session_
         return true
     } else {
         let logFailedInterest = await log_failed_interest(
+            user_id,
             session_id,
             session_date,
             session_time,
@@ -126,7 +127,7 @@ async function isInterested(jobId, dkw, udkw, session_id, session_date, session_
     }
 }
 
-exports.check_interest = async function(potentialJobs, dkw, udkw, session_id, session_date, session_time) {
+exports.check_interest = async function(potentialJobs, dkw, udkw, user_id, session_id, session_date, session_time) {
     console.log('-------> checking job initial interest: <-------')
     let interestedRoles = [];
     let viewedResults = await get_applied_jobIds();
@@ -136,7 +137,15 @@ exports.check_interest = async function(potentialJobs, dkw, udkw, session_id, se
         console.log(`Current job id: ${potentialJobs[i]}`)
         console.log(`Has been viewed: ${hasBeenViewed}`)
         if (!hasBeenViewed) {
-            let interested = await isInterested(potentialJobs[i], dkw, udkw, session_id, session_date, session_time)
+            let interested = await isInterested(
+                potentialJobs[i],
+                dkw,
+                udkw,
+                user_id,
+                session_id,
+                session_date,
+                session_time
+            );
             console.log('/---- Interested: ')
             console.log(interested)
             if (interested) {
@@ -432,14 +441,16 @@ async function handle_fetch(url, requestMethod, dataToSend) {
     } else if (responseData.status === 500) {
         console.log('SESSION ERROR: handle fetch unsuccessful');
         console.log(`Response status: ${responseData.status}`);
-        console.log(`Response message: ${responseData.message}`);
+        console.log(`Response error:`);
+        console.log(responseData.error)
     }
     return responseData
 }
 
-async function log_failed_interest(session_id, session_date, session_time, jobId, jobTitle, keyWordFinder) {
+async function log_failed_interest(user_id, session_id, session_date, session_time, jobId, jobTitle, keyWordFinder) {
     let currentApplication = {
         "TEST_application": true,
+        "user_id": user_id,
         "session_id": session_id,
         "session_date": session_date,
         "session_time": session_time,
@@ -459,9 +470,10 @@ async function log_failed_interest(session_id, session_date, session_time, jobId
     }
 }
 
-async function log_undesirable_job(session_id, session_date, session_time, jobAdd, keyWordFinder) {
+async function log_undesirable_job(user_id, session_id, session_date, session_time, jobAdd, keyWordFinder) {
     let currentApplication = {
         "TEST_application": true,
+        "user_id": user_id,
         "session_id": session_id,
         "session_date": session_date,
         "session_time": session_time,
@@ -483,9 +495,10 @@ async function log_undesirable_job(session_id, session_date, session_time, jobAd
     }
 }
 
-async function log_desirable_job(session_id, session_date, session_time, jobAdd, keyWordFinder, appliedJob) {
+async function log_desirable_job(user_id, session_id, session_date, session_time, jobAdd, keyWordFinder, appliedJob) {
     let currentApplication = {
         "TEST_application": true,
+        "user_id": user_id,
         "session_id": session_id,
         "session_date": session_date,
         "session_time": session_time,
@@ -571,7 +584,7 @@ async function apply_to_job() {
     }
 }
 
-async function process_jobAdd(jobId, previouslyAppliedJobs, dkw, udkw, session_id, session_date, session_time) {
+async function process_jobAdd(jobId, previouslyAppliedJobs, dkw, udkw, user_id, session_id, session_date, session_time) {
     console.log('************************************************');
     let mainWindow = await driver.getWindowHandle();
     let appliedJob = false;
@@ -619,6 +632,7 @@ async function process_jobAdd(jobId, previouslyAppliedJobs, dkw, udkw, session_i
         let applyToJob = await apply_to_job();
         appliedJob = applyToJob;
         let logDesirableJob = await log_desirable_job(
+            user_id,
             session_id,
             session_date,
             session_time,
@@ -628,6 +642,7 @@ async function process_jobAdd(jobId, previouslyAppliedJobs, dkw, udkw, session_i
         );
     } else {
         let logUndesirableJob = await log_undesirable_job(
+            user_id,
             session_id,
             session_date,
             session_time,
@@ -657,9 +672,10 @@ async function get_all_applications() {
         console.log(`Response message: ${responseData.message}`);
         return [];
     } else if (responseData.status === 500) {
-        console.log('SESSION ERROR: handle fetch unsuccessful');
+        console.log('SESSION ERROR: handle fetch unsuccessful for all applications');
         console.log(`Response status: ${responseData.status}`);
-        console.log(`Response message: ${responseData.message}`);
+        console.log(`Response error:`);
+        console.log(responseData.error)
     }
 
     let applications = await responseData.response.applications;
@@ -677,7 +693,7 @@ async function get_applied_jobIds() {
     return processedIds
 }
 
-exports.process_interested_jobs = async function(interestedJobIds, dkw, udkw, session_id, session_date, session_time) {
+exports.process_interested_jobs = async function(interestedJobIds, dkw, udkw, user_id, session_id, session_date, session_time) {
     console.log('--------> processing interested jobs: <--------')
     let appliedJobs = [];
     let previouslyAppliedJobs = await get_applied_jobIds();
@@ -689,6 +705,7 @@ exports.process_interested_jobs = async function(interestedJobIds, dkw, udkw, se
             previouslyAppliedJobs,
             dkw,
             udkw,
+            user_id,
             session_id,
             session_date,
             session_time
@@ -786,9 +803,10 @@ async function get_by_sessionId(sessionId) {
         console.log(`Response message: ${responseData.message}`);
         return [];
     } else if (responseData.status === 500) {
-        console.log('SESSION ERROR: handle fetch unsuccessful');
+        console.log('SESSION ERROR: handle fetch unsuccessful by session Id');
         console.log(`Response status: ${responseData.status}`);
-        console.log(`Response message: ${responseData.message}`);
+        console.log(`Response error:`);
+        console.log(responseData.error)
     }
 
     let applications = await responseData.response.applications;
@@ -848,7 +866,7 @@ function remove_duplicates(array) {
         unique.includes(item) ? unique : [...unique, item],[]);
 }
 
-exports.produce_session_report = async function(session_id, session_date, session_time, allSessionJobIds) {
+exports.produce_session_report = async function(user_id, session_id, session_date, session_time, allSessionJobIds) {
     let applications = await get_by_sessionId(session_id)
     let successfullyApplied = applications.filter((application) => {
         if (application.apply_attempted === true) {
@@ -874,6 +892,7 @@ exports.produce_session_report = async function(session_id, session_date, sessio
 
     return {
         "TEST_SESSION": true,
+        "user_id": user_id,
         "session_id": session_id,
         "session_date": session_date,
         "session_time": session_time,
@@ -892,46 +911,6 @@ exports.produce_session_report = async function(session_id, session_date, sessio
     }
 }
 
-async function produce_all_sessions_report() {
-    let applications = await get_all_applications();
-    let successfullyApplied = applications.filter((application) => {
-        if (application.apply_attempted === true) {
-            return application
-        }
-    });
-
-    let skippedApplications = applications.filter((application) => {
-        if (application.apply_attempted === false) {
-            return application
-        }
-    })
-
-    let dkwFoundAll = map_dkw(applications);
-    let udkwFoundAll = map_udkw(applications);
-    let top24FoundAll = map_top24(applications);
-    let locationsAll = map_locations(applications);
-
-    let dkwFoundUnique = remove_duplicates(dkwFoundAll);
-    let udkwFoundUnique = remove_duplicates(udkwFoundAll);
-    let top24FoundUnique = remove_duplicates(top24FoundAll);
-    let locationsOverview = remove_duplicates(locationsAll);
-
-    return {
-        "TEST_SESSION": true,
-        "total_processed": applications.length,
-        "total_applied": successfullyApplied.length,
-        "total_skipped": skippedApplications.length,
-        "total_dkw_overview": dkwFoundUnique,
-        "total_dkw_all": dkwFoundAll,
-        "total_udkw_overview":udkwFoundUnique,
-        "total_udkw_all": udkwFoundAll,
-        "total_top24_overview": top24FoundUnique,
-        "total_top24_all": top24FoundAll,
-        "total_locations_overview": locationsOverview,
-        "total_locations_all" : locationsAll
-    }
-}
-
 exports.save_session = async function(sessionReport) {
     let responseData = await handle_fetch(
         'http://localhost:8080/sessions',
@@ -940,7 +919,7 @@ exports.save_session = async function(sessionReport) {
     )
 
     if (responseData.status !== 200) {
-        console.log(`SESSION ERROR: unable to log job id: ${sessionReport.session_id}`)
+        console.log(`SESSION ERROR: unable to log session id: ${sessionReport.session_id}`)
         return false
     } else if (responseData.status === 200) {
         console.log('Successfully logged session report...')
@@ -1029,7 +1008,6 @@ function display_email_keyWords(kwOverview, kwAll) {
 }
 
 exports.email_session_report = async function(searchParams, sessionReport) {
-    let allSessionsReport = await produce_all_sessions_report();
     let transporter = nodeMailer.createTransport({
         service: 'gmail',
         auth: {
@@ -1052,6 +1030,7 @@ exports.email_session_report = async function(searchParams, sessionReport) {
             <p>Radius: ${searchParams.radius}</p>
             
             <h3>Session results:</h3>
+            <p>User Id: ${sessionReport.user_id}</p>
             <p>Session Id: ${sessionReport.session_id}</p>
             <p>Session date: ${sessionReport.session_date}</p>
             <p>Session time: ${sessionReport.session_time}</p>
