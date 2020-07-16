@@ -304,6 +304,23 @@ exports.delete_application = (req, res, next) => {
         });
 }
 
+exports.delete_applications_by_user_id = (req, res, next) => {
+    const id = req.params.userId;
+    Application
+        .deleteMany({ user_id: id })
+        .exec()
+        .then(result => {
+            res.status(200).json({
+                status: 200,
+                user_id: id,
+                message: `Deleted ${result.deletedCount}`
+            })
+        })
+        .catch(err => {
+            res.status(500).json({ error: err })
+        });
+}
+
 exports.delete_applications = (req, res, next) => {
     let deleteTest = req.body.deleteTest;
     console.log(deleteTest)
