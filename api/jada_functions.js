@@ -130,7 +130,7 @@ async function isInterested(jobId, dkw, udkw, user_id, session_id, session_date,
 exports.check_interest = async function(potentialJobs, dkw, udkw, user_id, session_id, session_date, session_time) {
     console.log('-------> checking job initial interest: <-------')
     let interestedRoles = [];
-    let viewedResults = await get_applied_jobIds();
+    let viewedResults = await get_applied_jobIds(user_id);
     for (i = 0; i < potentialJobs.length; i++) {
         let hasBeenViewed = viewedResults.includes(potentialJobs[i]);
         console.log('------------------------------------------------')
@@ -682,8 +682,32 @@ async function get_all_applications() {
     return applications
 }
 
-async function get_applied_jobIds() {
-    let applications = await get_all_applications();
+async function get_applications_by_user_id(user_id) {
+    console.log(`Grabbing all applications for user: ${user_id}`)
+    let applications;
+    let response = await fetch(`http://localhost:8080/applications/user/${user_id}`, {
+        method: 'GET',
+        headers: {
+            "Content-Type" : "application/json"
+        }
+    })
+    let responseData = await response.json();
+    if (responseData.status === 404) {
+        console.log(`Response status: ${responseData.status}`);
+        console.log(`Response message: ${responseData.message}`);
+        return [];
+    } else if (responseData.status === 500) {
+        console.log('SESSION ERROR: handle fetch unsuccessful for all applications');
+        console.log(`Response status: ${responseData.status}`);
+        console.log(`Response error:`);
+        console.log(responseData.error)
+    }
+    applications = await responseData.response.applications;
+    return applications
+}
+
+async function get_applied_jobIds(user_id) {
+    let applications = await get_applications_by_user_id(user_id);
     let processedIds = applications.map(application => {
         return application.totalJobs_id
     })
@@ -696,7 +720,7 @@ async function get_applied_jobIds() {
 exports.process_interested_jobs = async function(interestedJobIds, dkw, udkw, user_id, session_id, session_date, session_time) {
     console.log('--------> processing interested jobs: <--------')
     let appliedJobs = [];
-    let previouslyAppliedJobs = await get_applied_jobIds();
+    let previouslyAppliedJobs = await get_applied_jobIds(user_id);
 
     for (i = 0; i < interestedJobIds.length; i++) {
         console.log('------------------------------------------------')
