@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const sessionSchema = mongoose.Schema({
     _id: mongoose.Schema.Types.ObjectId,
     TEST_SESSION: { type: Boolean, required: true},
+    user_id: { type: String, required: true },
     session_id: { type: String, required: true },
     session_date: { type: String, required: true },
     session_time: { type: String, required: true },

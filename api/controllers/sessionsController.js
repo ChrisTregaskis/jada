@@ -13,6 +13,7 @@ exports.get_all_sessions = (req, res, next) => {
                     return {
                         _id: doc._id,
                         TEST_SESSION: doc.TEST_SESSION,
+                        user_id: doc.user_id,
                         session_id: doc.session_id,
                         session_date: doc.session_date,
                         session_time: doc.session_time,
@@ -59,6 +60,7 @@ exports.get_session = (req, res, next) => {
                 res.status(200).json({
                     _id: doc._id,
                     TEST_SESSION: doc.TEST_SESSION,
+                    user_id: doc.user_id,
                     session_id: doc.session_id,
                     session_date: doc.session_date,
                     session_time: doc.session_time,
@@ -94,6 +96,7 @@ exports.log_session = (req, res, next) => {
     const session = new Session ({
         _id: new mongoose.Types.ObjectId(),
         TEST_SESSION: req.body.TEST_SESSION,
+        user_id: req.body.user_id,
         session_id: req.body.session_id,
         session_date: req.body.session_date,
         session_time: req.body.session_time,
@@ -120,6 +123,7 @@ exports.log_session = (req, res, next) => {
                 loggedSession: {
                     _id: result._id,
                     TEST_SESSION: result.TEST_SESSION,
+                    user_id: result.user_id,
                     session_id: result.session_id,
                     session_date: result.session_date,
                     session_time: result.session_time,

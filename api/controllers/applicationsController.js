@@ -13,6 +13,7 @@ exports.get_all_applications = (req, res, next) => {
                     return {
                         _id: doc._id,
                         TEST_application: doc.TEST_application,
+                        user_id: doc.user_id,
                         session_id: doc.session_id,
                         session_date: doc.session_date,
                         session_time: doc.session_time,
@@ -67,6 +68,7 @@ exports.get_by_session_id = (req, res, next) => {
                     return {
                         _id: doc._id,
                         TEST_application: doc.TEST_application,
+                        user_id: doc.u,
                         session_id: doc.session_id,
                         session_date: doc.session_date,
                         session_time: doc.session_time,
@@ -112,6 +114,7 @@ exports.log_application = (req, res, next) => {
     const application = new Application ({
         _id: new mongoose.Types.ObjectId(),
         TEST_application: req.body.TEST_application,
+        user_id: req.body.user_id,
         session_id: req.body.session_id,
         session_date: req.body.session_date,
         session_time: req.body.session_time,
@@ -141,6 +144,7 @@ exports.log_application = (req, res, next) => {
                 loggedApplication: {
                     _id: result._id,
                     TEST_application: result.TEST_application,
+                    user_id: result.user_id,
                     session_id: result.session_id,
                     session_date: result.session_date,
                     session_time: result.session_time,
@@ -185,6 +189,7 @@ exports.get_application = (req, res, next) => {
                 res.status(200).json({
                     _id: doc._id,
                     TEST_application: doc.TEST_application,
+                    user_id: doc.user_id,
                     session_id: doc.session_id,
                     session_date: doc.session_date,
                     session_time: doc.session_time,
