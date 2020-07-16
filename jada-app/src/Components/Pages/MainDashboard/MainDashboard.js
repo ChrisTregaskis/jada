@@ -21,6 +21,7 @@ class MainDashboard extends React.Component {
         super(props);
 
         this.state = {
+            user_id: "5f102df825d2553212c30ede",
             applications: {},
             sessionDates:[]
         }
@@ -55,7 +56,7 @@ class MainDashboard extends React.Component {
     }
 
     fetchApplications = async () => {
-        const url = 'http://localhost:8080/applications/';
+        const url = `http://localhost:8080/applications/user/${this.state.user_id}`;
         let data = await fetch(url, {
             method: 'GET',
             headers: {
