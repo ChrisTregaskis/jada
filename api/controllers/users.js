@@ -16,6 +16,8 @@ exports.users_sign_up = (req, res, next) => {
                         } else {
                             const user = new User({
                                 _id: new mongoose.Types.ObjectId(),
+                                first_name: req.body.first_name,
+                                last_name: req.body.last_name,
                                 email: req.body.email,
                                 password: hash
                             });
@@ -23,7 +25,15 @@ exports.users_sign_up = (req, res, next) => {
                                 .save()
                                 .then(result => {
                                   console.log(result)
-                                  res.status(201).json({ message: 'User created' })
+                                  res.status(201).json({
+                                      message: 'User created',
+                                      user: {
+                                          _id: result._id,
+                                          first_name: result.first_name,
+                                          last_name: result.last_name,
+                                          email: result.email
+                                      }
+                                  })
                                 })
                                 .catch(err => {
                                   res.status(500).json({ error: err })
