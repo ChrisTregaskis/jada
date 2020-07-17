@@ -1,6 +1,11 @@
 .appliedPercentBox {
-    height: 345px;
+    height: 315px;
     background: linear-gradient(to top, rgb(248,248,248), transparent);
-    margin: 40px 0;
     padding: 35px;
+    text-align: center;
+}
+
+.appliedPercentBox h4 {
+    font-size: 24px;
+     margin-bottom: 14px;
 }
