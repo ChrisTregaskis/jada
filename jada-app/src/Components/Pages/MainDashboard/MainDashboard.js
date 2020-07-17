@@ -103,7 +103,7 @@ class MainDashboard extends React.Component {
                 <h2 className="d-flex justify-content-center">
                     Found KEY Words and Locations
                 </h2>
-                <div className="col-xl-12 d-flex">
+                <div className="col-xl-12 d-flex dashboardSection">
                     <BarChartDKW applications={this.state.applications} />
                     <div className="col-xl-6 d-flex flex-wrap">
                         <BarChartUDKW applications={this.state.applications} />
