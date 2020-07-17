@@ -29,7 +29,14 @@ class BarChartHorizontalConstructor extends React.Component {
                     text: this.props.title
                 },
                 responsive: true,
-                maintainAspectRatio: false
+                maintainAspectRatio: false,
+                scales: {
+                    xAxes: [{
+                        ticks: {
+                            suggestedMin: 0
+                        }
+                    }]
+                }
             }
         });
     }
