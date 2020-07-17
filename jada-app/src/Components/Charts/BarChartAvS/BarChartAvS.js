@@ -1,6 +1,7 @@
 import React from "react";
 import './barChartAvS.css'
-import BarChartConstructor from "../../Constructors/BarChartConstructor/BarChartConstructor";
+import BarChartHorizontalConstructor
+    from "../../Constructors/BarChartHorizontalContructor/BarChartHorizontalConstructor";
 
 class BarChartAvS extends React.Component {
     constructor(props) {
@@ -54,8 +55,8 @@ class BarChartAvS extends React.Component {
 
     render() {
         return (
-            <div className="col-xl-8 barChartAvS">
-                <BarChartConstructor
+            <div className="col-xl-6 barChartAvS">
+                <BarChartHorizontalConstructor
                     data={this.state.avsData}
                     title='Applied vrs Skipped'
                     displayTitle={this.state.displayTitle}
