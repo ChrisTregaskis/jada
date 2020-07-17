@@ -19,6 +19,9 @@ And so, here I set out to build a system I call JADA... (Job Applications Digita
 - Lifts the mental toll of no return for the hard work put in
 - I have more life and energy for each day
 
+**Currently:**
+- I am building in user functionality to enable others to use JADA
+
 The API structure is set up using Node.js, MongoDB and Mongoose among a few other packages. Its using the Model, Controller, Route pattern and is simple to follow.
 
 For ease I've got a `run_jada.js` file and a `jada_functions.js` file. I have repurposed Selenium in order to automatically drive the browser and run JADA logic. 
