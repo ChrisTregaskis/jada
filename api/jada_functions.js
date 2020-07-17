@@ -449,7 +449,6 @@ async function handle_fetch(url, requestMethod, dataToSend) {
 
 async function log_failed_interest(user_id, session_id, session_date, session_time, jobId, jobTitle, keyWordFinder) {
     let currentApplication = {
-        "TEST_application": true,
         "user_id": user_id,
         "session_id": session_id,
         "session_date": session_date,
@@ -472,7 +471,6 @@ async function log_failed_interest(user_id, session_id, session_date, session_ti
 
 async function log_undesirable_job(user_id, session_id, session_date, session_time, jobAdd, keyWordFinder) {
     let currentApplication = {
-        "TEST_application": true,
         "user_id": user_id,
         "session_id": session_id,
         "session_date": session_date,
@@ -497,7 +495,6 @@ async function log_undesirable_job(user_id, session_id, session_date, session_ti
 
 async function log_desirable_job(user_id, session_id, session_date, session_time, jobAdd, keyWordFinder, appliedJob) {
     let currentApplication = {
-        "TEST_application": true,
         "user_id": user_id,
         "session_id": session_id,
         "session_date": session_date,
@@ -915,7 +912,6 @@ exports.produce_session_report = async function(user_id, session_id, session_dat
     let locationsOverview = remove_duplicates(locationsAll);
 
     return {
-        "TEST_SESSION": true,
         "user_id": user_id,
         "session_id": session_id,
         "session_date": session_date,
