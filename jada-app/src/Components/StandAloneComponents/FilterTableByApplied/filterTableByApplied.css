@@ -1,0 +1,13 @@
+.tableSelectorBtn {
+    height: 42px;
+    width: 227px;
+    background-color: #FFFFFF;
+    color: #000;
+    border-color: #022F40;
+    margin-bottom: 40px;
+}
+
+.tableSelectorBtn:hover {
+    background-color: #022F40;
+}
+
