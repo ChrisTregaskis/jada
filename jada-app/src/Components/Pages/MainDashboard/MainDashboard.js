@@ -100,9 +100,9 @@ class MainDashboard extends React.Component {
                     <AppliedPercent applications={this.state.applications} />
                     <BarChartAvS applications={this.state.applications} />
                 </div>
-                <h2 className="d-flex justify-content-center">
+                <h1 className="d-flex justify-content-center sectionTitle">
                     Found KEY Words and Locations
-                </h2>
+                </h1>
                 <div className="col-xl-12 d-flex dashboardSection">
                     <BarChartDKW applications={this.state.applications} />
                     <div className="col-xl-6 d-flex flex-wrap">
@@ -110,9 +110,9 @@ class MainDashboard extends React.Component {
                         <BarChartLocations applications={this.state.applications} />
                     </div>
                 </div>
-                <h2 className="d-flex justify-content-center">
+                <h1 className="d-flex justify-content-center sectionTitle">
                     Overview of Top 24 Programming Languages
-                </h2>
+                </h1>
                 <p className="d-flex justify-content-center">
                     Of the total applications processed...
                 </p>

@@ -2,13 +2,18 @@
     margin: 40px 0;
 }
 
+.sectionTitle {
+    margin-top: 40px;
+}
+
 .boxTitle {
     font-weight: 300;
-    font-size: 2.1rem;
+    font-size: 24px;
+    margin-bottom: 10px;
 }
 
 .percentageBox {
-    height: 345px;
+    height: 315px;
     background: linear-gradient(to top, rgb(248,248,248), transparent);
     margin: 40px 0;
     padding: 35px;
