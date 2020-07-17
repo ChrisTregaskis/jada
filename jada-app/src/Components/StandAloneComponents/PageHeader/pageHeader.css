@@ -1,12 +1,12 @@
 .pageHeader {
     background-color: #022F40;
     border-radius: 4px;
-    margin-top: 20px;
+    margin: 20px 0;
     color: #FFF;
 }
 
 .greeting {
-    font-size: 1.3rem;
+    font-size: 24px;
     margin: 0;
 }
 
