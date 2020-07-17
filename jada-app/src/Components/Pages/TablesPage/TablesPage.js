@@ -126,7 +126,7 @@ class TablesPage extends React.Component {
                         <ButtonMain
                             buttonText="MAIN DASHBOARD"
                             cssClass="d-flex justify-content-center"
-                            location="http://localhost:3000/"
+                            location="http://localhost:3000/dashboard"
                         />
                     </div>
                 </div>
