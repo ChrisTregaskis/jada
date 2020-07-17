@@ -15,16 +15,18 @@ const udkw = [
 
 // BEFORE RUNNING <---> SWITCH FROM TEST BUILD USING CL
 const jobTitle = 'Junior Software Engineer';
-const area = 'Kent';
+const area = 'Dorset';
 const radius = 0;
+const user_id = '5f102df825d2553212c30ede';
 
-run_jada(jobTitle, area, radius);
+run_jada(user_id, jobTitle, area, radius);
 
-async function run_jada(jobTitle, area, radius) {
+async function run_jada(user_id, jobTitle, area, radius) {
+    console.log(`User Id: ${user_id}`)
     console.log(`Job Title: ${jobTitle}`)
     console.log(`Area: ${area}`)
     console.log(`Radius: ${radius}`)
-    let searchParams = { "job_title": jobTitle, "location": area, "radius": radius }
+    let searchParams = { "user_id": user_id, "job_title": jobTitle, "location": area, "radius": radius }
     const radiusOptions = [0, 5, 10, 20, 30];
     let session_date = Jada.getDate('-')
     let session_id = Jada.getDate('') + mongoose.Types.ObjectId();
@@ -62,6 +64,7 @@ async function run_jada(jobTitle, area, radius) {
             potentialJobsIds,
             dkw,
             udkw,
+            user_id,
             session_id,
             session_date,
             session_time
@@ -75,6 +78,7 @@ async function run_jada(jobTitle, area, radius) {
             interestedJobIds,
             dkw,
             udkw,
+            user_id,
             session_id,
             session_date,
             session_time
@@ -93,7 +97,13 @@ async function run_jada(jobTitle, area, radius) {
 
     } while (activeNextBtn)
 
-    let sessionReport = await Jada.produce_session_report(session_id, session_date, session_time, allSessionJobIds);
+    let sessionReport = await Jada.produce_session_report(
+        user_id,
+        session_id,
+        session_date,
+        session_time,
+        allSessionJobIds
+    );
     let savedSessionReport = await Jada.save_session(sessionReport)
 
     if (savedSessionReport) {
