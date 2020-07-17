@@ -14,18 +14,26 @@
     border: 2px solid var(--base-color);
     font-size: 1.7rem;
     cursor: pointer;
-    border-radius: 5px;
+    border-radius: 30px;
+    overflow: hidden;
 }
 
 .buttonMain > .text {
     position: relative;
     color: transparent;
-    background-image: linear-gradient(90deg, var(--hover-color) 0%, var(--hover-color) 50%, var(--base-color) 50%, var(--base-color) 100%);
+    background-image: linear-gradient(
+            90deg,
+            var(--hover-color) 0%,
+            var(--hover-color) 50%,
+            var(--base-color) 50%,
+            var(--base-color) 100%
+    );
     background-repeat: repeat;
     background-size: 200%;
     background-position: 100% 0;
     -webkit-background-clip: text;
     transition: background-position 300ms;
+    border-radius: 30px;
 }
 
 .buttonMain::before {
@@ -39,13 +47,16 @@
     transform-origin: 100% 0;
     transform: scale3d(0, 1, 1);
     transition: transform 300ms;
+    border-radius: 30px;
 }
 
 .buttonMain:hover .text {
     background-position: 0 0;
+    border-radius: 30px;
 }
 
 .buttonMain:hover::before {
     transform-origin: 0 0;
     transform: scale3d(1, 1, 1);
+    border-radius: 30px;
 }
