@@ -12,7 +12,6 @@ exports.get_all_applications = (req, res, next) => {
                 applications: docs.map(doc => {
                     return {
                         _id: doc._id,
-                        TEST_application: doc.TEST_application,
                         user_id: doc.user_id,
                         session_id: doc.session_id,
                         session_date: doc.session_date,
@@ -67,7 +66,6 @@ exports.get_by_session_id = (req, res, next) => {
                 applications: docs.map(doc => {
                     return {
                         _id: doc._id,
-                        TEST_application: doc.TEST_application,
                         user_id: doc.user_id,
                         session_id: doc.session_id,
                         session_date: doc.session_date,
@@ -122,7 +120,6 @@ exports.get_by_user_id = (req, res, next) => {
                 applications: docs.map(doc => {
                     return {
                         _id: doc._id,
-                        TEST_application: doc.TEST_application,
                         user_id: doc.user_id,
                         session_id: doc.session_id,
                         session_date: doc.session_date,
@@ -168,7 +165,6 @@ exports.get_by_user_id = (req, res, next) => {
 exports.log_application = (req, res, next) => {
     const application = new Application ({
         _id: new mongoose.Types.ObjectId(),
-        TEST_application: req.body.TEST_application,
         user_id: req.body.user_id,
         session_id: req.body.session_id,
         session_date: req.body.session_date,
@@ -198,7 +194,6 @@ exports.log_application = (req, res, next) => {
                 message: "Application successfully logged",
                 loggedApplication: {
                     _id: result._id,
-                    TEST_application: result.TEST_application,
                     user_id: result.user_id,
                     session_id: result.session_id,
                     session_date: result.session_date,
@@ -243,7 +238,6 @@ exports.get_application = (req, res, next) => {
             if (doc) {
                 res.status(200).json({
                     _id: doc._id,
-                    TEST_application: doc.TEST_application,
                     user_id: doc.user_id,
                     session_id: doc.session_id,
                     session_date: doc.session_date,
@@ -319,32 +313,4 @@ exports.delete_applications_by_user_id = (req, res, next) => {
         .catch(err => {
             res.status(500).json({ error: err })
         });
-}
-
-exports.delete_applications = (req, res, next) => {
-    let deleteTest = req.body.deleteTest;
-    console.log(deleteTest)
-    if (deleteTest) {
-        Application
-            .deleteMany({ "TEST_application": true })
-            .exec()
-            .then(result => {
-                res.status(200).json({
-                    status: 200,
-                    message: `Deleted ${result.deletedCount}`
-                })
-            })
-            .catch(err => {
-                res.status(500).json({
-                    status: 500,
-                    error: err
-                })
-            })
-    } else {
-        res.status(500).json({
-            status: 500,
-            message: 'Delete test applications set to false. No applications deleted'
-        })
-    }
-
 }

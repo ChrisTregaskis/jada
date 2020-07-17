@@ -2,7 +2,6 @@ const mongoose = require('mongoose');
 
 const applicationSchema = mongoose.Schema({
     _id: mongoose.Schema.Types.ObjectId,
-    TEST_application: { type: Boolean, required: true},
     user_id: { type: String, required: true },
     obj_date: { type: Date, default: Date.now() },
     session_id: { type: String, required: true },
