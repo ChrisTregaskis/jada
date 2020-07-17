@@ -1,0 +1,10 @@
+.loginBox {
+    height: 500px;
+    width: 400px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: rgba(248,248,248, 0.96);
+    border-radius: 5px;
+}
