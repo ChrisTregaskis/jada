@@ -1,6 +1,5 @@
-.buttonMainTablesPage span {
-    padding: 0 25px;
-    font-size: 1.4rem;
+.btnMainTablesPage {
+    width: 200px;
 }
 
 .tablePageButtons {
