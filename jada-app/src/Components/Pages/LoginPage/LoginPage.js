@@ -3,10 +3,7 @@ import './loginPage.css';
 import LoginBox from "../../StandAloneComponents/LoginBox/LoginBox";
 
 class LoginPage extends React.Component {
-    constructor(props) {
-        super(props);
 
-    }
 
 
     render() {
