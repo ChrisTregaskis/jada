@@ -33,6 +33,7 @@ class MainDashboard extends React.Component {
         if (this.state.bearerToken === null) {
             return window.location.replace('http://localhost:3000/')
         } else {
+            this.timedRemoveToken();
             this.updateApplications();
         }
     }
@@ -41,6 +42,12 @@ class MainDashboard extends React.Component {
         if (prevState.applications !== this.state.applications) {
             this.updateSessionDates();
         }
+    }
+
+    timedRemoveToken = () => {
+        setTimeout(() => {
+            localStorage.removeItem('bearerToken')
+        }, 300000)
     }
 
     updateSessionDates = async () => {
