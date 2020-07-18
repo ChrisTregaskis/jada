@@ -45,11 +45,13 @@ class LoginBox extends React.Component {
         e.preventDefault()
         let email = this.state.email
         let password = this.state.password
+
+        // add email & password validation
+
         let logInPackage = {
             "email": email,
             "password": password
         }
-        // add email & password validation
         let response = await this.requestToken(
             'http://localhost:8080/user/login',
             'POST',
@@ -57,9 +59,12 @@ class LoginBox extends React.Component {
         );
 
         this.setState({ email: '', password: '' })
-
+        
         if (!response.success) {
-            this.setState({ errorMessage: 'Email and password do not match' })
+            this.setState({ errorMessage: 'Credentials incorrect, please try again.' })
+            setTimeout(() => {
+                this.setState({ errorMessage: '' })
+            }, 5000)
         } else if (response.success) {
             await this.updateToken(response.token)
             window.location.replace('http://localhost:3000/dashboard')
@@ -89,6 +94,7 @@ class LoginBox extends React.Component {
                         </div>
                         <button>Log in</button>
                     </form>
+                    <p>{this.state.errorMessage}</p>
                 </div>
             </div>
         );

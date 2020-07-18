@@ -14,18 +14,30 @@ class TablesPage extends React.Component {
             user_id: "5f102d3ce9647c31b2f1e92b",
             applications: {},
             currentApplications: {},
-            sessionDates:[]
+            sessionDates:[],
+            bearerToken: localStorage.getItem('bearerToken')
         }
     }
 
     componentDidMount() {
-        this.updateApplications();
+        if (this.state.bearerToken === null) {
+            return window.location.replace('http://localhost:3000/')
+        } else {
+            this.updateApplications();
+        }
     }
 
     componentDidUpdate(prevProps, prevState) {
         if (prevState.applications !== this.state.applications) {
+            this.timedRemoveToken();
             this.updateSessionDates();
         }
+    }
+
+    timedRemoveToken = () => {
+        setTimeout(() => {
+            localStorage.removeItem('bearerToken')
+        }, 300000)
     }
 
     updateSessionDates = async () => {

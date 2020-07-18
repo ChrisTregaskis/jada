@@ -15,6 +15,7 @@ import PercentNET from "../../Charts/PercentNET/PercentNET";
 import PercentPython from "../../Charts/PercentPython/PercentPython";
 import BarChartTop24 from "../../Charts/BarChartTop24/BarChartTop24";
 import ButtonMain from "../../Buttons/ButtonMain/ButtonMain";
+import ButtonMainToggle from "../../Buttons/ButtonMainToggle/ButtonMainToggle";
 
 class MainDashboard extends React.Component {
     constructor(props) {
@@ -23,18 +24,30 @@ class MainDashboard extends React.Component {
         this.state = {
             user_id: "5f102d3ce9647c31b2f1e92b",
             applications: {},
-            sessionDates:[]
+            sessionDates:[],
+            bearerToken: localStorage.getItem('bearerToken')
         }
     }
 
     componentDidMount() {
-        this.updateApplications();
+        if (this.state.bearerToken === null) {
+            return window.location.replace('http://localhost:3000/')
+        } else {
+            this.timedRemoveToken();
+            this.updateApplications();
+        }
     }
 
     componentDidUpdate(prevProps, prevState) {
         if (prevState.applications !== this.state.applications) {
             this.updateSessionDates();
         }
+    }
+
+    timedRemoveToken = () => {
+        setTimeout(() => {
+            localStorage.removeItem('bearerToken')
+        }, 300000)
     }
 
     updateSessionDates = async () => {
@@ -74,6 +87,11 @@ class MainDashboard extends React.Component {
         return data.response.applications;
     }
 
+    logOut = () => {
+        localStorage.removeItem('bearerToken');
+        window.location.replace('http://localhost:3000/');
+    }
+
     render() {
         return(
             <div className="container">
@@ -90,6 +108,11 @@ class MainDashboard extends React.Component {
                                 buttonText="ALL APPLICATIONS"
                                 cssClass="d-flex justify-content-center"
                                 location="http://localhost:3000/tables"
+                            />
+                            <ButtonMainToggle
+                                buttonText="LOG OUT"
+                                cssClass="d-flex justify-content-center my-2"
+                                handleClick={this.logOut}
                             />
                         </div>
                     </div>
