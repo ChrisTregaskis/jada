@@ -13,6 +13,7 @@ And so, here I set out to build a system I call JADA... (Job Applications Digita
 - Emails session reports after each run, including basic charts of key programming words and locations
 - Displays a fontend dashboard using React and chartJS, breaking down key insights for processed applications thereby helping inform performance
 - Displays a table of all applications to easily find by id or reference. When clicked, a modal appears with all relevant information including url to original job application.
+- Now requires user login to access dashboard and table data. Handled using JWT and localStorage
 
 **JADA also achieves the following:**
 - Enables me to spend my time coding instead of applying to code (still makes me chuckle!) 
