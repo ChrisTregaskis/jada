@@ -19,14 +19,12 @@ class TotalProcessed extends React.Component {
 
     render() {
         return (
-            <div className="col-xl-4">
-                <div className="totalProcessedBox">
-                    <p className="boxTitle">TOTAL</p>
-                    <p className="boxTitle">PROCESSED:</p>
-                    <p className="totalProcessedFigure">
-                        <CountUp end={this.state.applicationsCount}/>
-                    </p>
-                </div>
+            <div className="col-xl-3 totalProcessedBox">
+                <h4 className="boxTitle">TOTAL</h4>
+                <h4 className="boxTitle">PROCESSED:</h4>
+                <p className="totalProcessedFigure">
+                    <CountUp end={this.state.applicationsCount}/>
+                </p>
             </div>
         )
     }

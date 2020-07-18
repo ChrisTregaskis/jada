@@ -21,7 +21,7 @@ class MainDashboard extends React.Component {
         super(props);
 
         this.state = {
-            user_id: "5f102df825d2553212c30ede",
+            user_id: "5f102d3ce9647c31b2f1e92b",
             applications: {},
             sessionDates:[]
         }
@@ -78,40 +78,41 @@ class MainDashboard extends React.Component {
         return(
             <div className="container">
                 <PageHeader/>
-                <div className="col-xl-12 d-flex justify-content-around">
-                    <LastUpdatedSession sessionDates={this.state.sessionDates} />
-                    <div className="btnMainDashboard">
-                        <ButtonMain
-                            buttonText="ALL APPLICATIONS"
-                            cssClass="d-flex justify-content-center"
-                            location="http://localhost:3000/tables"
-                        />
-                    </div>
-                </div>
-                <div className="col-xl-12 d-flex">
+                <div className="col-xl-12 d-flex dashboardSection">
                     <LineChartAvS
                         applications={this.state.applications}
                         sessionDates={this.state.sessionDates}
                     />
-                    <TotalProcessed applications={this.state.applications} />
+                    <div className="col-xl-4">
+                        <LastUpdatedSession sessionDates={this.state.sessionDates} />
+                        <div className="btnMainDashboard">
+                            <ButtonMain
+                                buttonText="ALL APPLICATIONS"
+                                cssClass="d-flex justify-content-center"
+                                location="http://localhost:3000/tables"
+                            />
+                        </div>
+                    </div>
+
                 </div>
-                <div className="col-xl-12 d-flex">
+                <div className="col-xl-12 d-flex dashboardSection">
+                    <TotalProcessed applications={this.state.applications} />
                     <AppliedPercent applications={this.state.applications} />
                     <BarChartAvS applications={this.state.applications} />
                 </div>
-                <h2 className="d-flex justify-content-center">
+                <h1 className="d-flex justify-content-center sectionTitle">
                     Found KEY Words and Locations
-                </h2>
-                <div className="col-xl-12 d-flex">
+                </h1>
+                <div className="col-xl-12 d-flex dashboardSection">
                     <BarChartDKW applications={this.state.applications} />
                     <div className="col-xl-6 d-flex flex-wrap">
                         <BarChartUDKW applications={this.state.applications} />
                         <BarChartLocations applications={this.state.applications} />
                     </div>
                 </div>
-                <h2 className="d-flex justify-content-center">
+                <h1 className="d-flex justify-content-center sectionTitle">
                     Overview of Top 24 Programming Languages
-                </h2>
+                </h1>
                 <p className="d-flex justify-content-center">
                     Of the total applications processed...
                 </p>

@@ -4,14 +4,14 @@ import PageHeader from "../../StandAloneComponents/PageHeader/PageHeader";
 import LastUpdatedSession from "../../StandAloneComponents/LastUpdatedSession/LastUpdatedSession";
 import ButtonMain from "../../Buttons/ButtonMain/ButtonMain";
 import TableApplications from "../../Tables/TableApplications/TableApplications";
-import ButtonMainToggle from "../../Buttons/ButtonMainToggle/ButtonMainToggle";
+import FilterTableByApplied from "../../StandAloneComponents/FilterTableByApplied/FilterTableByApplied";
 
 class TablesPage extends React.Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            user_id: "5f102df825d2553212c30ede",
+            user_id: "5f102d3ce9647c31b2f1e92b",
             applications: {},
             currentApplications: {},
             sessionDates:[]
@@ -100,37 +100,24 @@ class TablesPage extends React.Component {
         return (
             <div className="container">
                 <PageHeader />
-                <div className="d-flex justify-content-center">
+                <div className="col-xl-12 d-flex justify-content-between align-items-center">
                     <LastUpdatedSession sessionDates={this.state.sessionDates} />
-                </div>
-                <div className="d-flex justify-content-around tablePageButtons">
-                    <div className="buttonMainTablesPage">
-                        <ButtonMainToggle
-                            buttonText="ALL"
-                            handleClick={this.toggleViewAll}
-                        />
-                    </div>
-                    <div className="buttonMainTablesPage">
-                        <ButtonMainToggle
-                            buttonText="APPLIED"
-                            handleClick={this.toggleViewApplied}
-                        />
-                    </div>
-                    <div className="buttonMainTablesPage">
-                        <ButtonMainToggle
-                            buttonText="SKIPPED"
-                            handleClick={this.toggleViewSkipped}
-                        />
-                    </div>
-                    <div className="buttonMainTablesPage">
+                    <div className="btnMainTablesPage">
                         <ButtonMain
                             buttonText="MAIN DASHBOARD"
-                            cssClass="d-flex justify-content-center"
-                            location="http://localhost:3000/"
+                            cssClass=""
+                            location="http://localhost:3000/dashboard"
                         />
                     </div>
                 </div>
                 <div className="col-xl-12">
+                    <FilterTableByApplied
+                        toggleViewAll={this.toggleViewAll}
+                        toggleViewApplied={this.toggleViewApplied}
+                        toggleViewSkipped={this.toggleViewSkipped}
+                    />
+                </div>
+                <div className="col-xl-12 px-0">
                     <TableApplications applications={this.state.currentApplications} />
                 </div>
             </div>

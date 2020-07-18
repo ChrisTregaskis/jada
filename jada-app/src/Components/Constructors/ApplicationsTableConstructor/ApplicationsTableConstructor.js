@@ -109,7 +109,7 @@ class ApplicationsTableConstructor extends React.Component {
 
     render() {
         return (
-            <div className="col-xl-12">
+            <div className="col-xl-12 px-0">
                 <BackgroundOverlay
                     modalActive={this.state.modalActive}
                 />
@@ -118,7 +118,7 @@ class ApplicationsTableConstructor extends React.Component {
                     applicationData={this.state.applicationData}
                     toggleModalActive={this.toggleModalActive}
                 />
-                <table className="table table-bordered table-hover">
+                <table className="table table-bordered table-hover px-0">
                     <thead>
                         <tr>
                             {this.generateHeader()}

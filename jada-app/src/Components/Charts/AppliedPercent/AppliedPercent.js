@@ -65,8 +65,8 @@ class AppliedPercent extends React.Component {
 
     render() {
         return (
-            <div className="col-xl-4 appliedPercentBox">
-                <p className="boxTitle d-flex justify-content-center">APPLIED:</p>
+            <div className="col-xl-3 appliedPercentBox">
+                <h4 className="boxTitle">APPLIED:</h4>
                 <AppliedPercentConstructor
                     data={this.state.chartData}
                     percentApplied={this.state.percentApplied}

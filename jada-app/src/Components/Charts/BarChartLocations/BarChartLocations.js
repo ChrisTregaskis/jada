@@ -1,6 +1,7 @@
 import React from "react";
 import './barChartLocations.css';
-import BarChartConstructor from "../../Constructors/BarChartConstructor/BarChartConstructor";
+import BarChartHorizontalConstructor
+    from "../../Constructors/BarChartHorizontalContructor/BarChartHorizontalConstructor";
 
 class BarChartLocations extends React.Component {
     constructor(props) {
@@ -87,7 +88,7 @@ class BarChartLocations extends React.Component {
     render() {
         return (
             <div className="col-xl-12 barChartLocations">
-                <BarChartConstructor
+                <BarChartHorizontalConstructor
                     data={this.state.data}
                     title="Locations"
                     displayTitle={this.state.displayTitle}

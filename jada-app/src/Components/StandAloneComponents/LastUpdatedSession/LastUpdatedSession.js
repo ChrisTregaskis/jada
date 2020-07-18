@@ -48,9 +48,9 @@ class LastUpdatedSession extends React.Component {
     render() {
         return(
             <div>
-                <h2 className="lastSessionRun">
+                <h4 className="lastSessionRun">
                     Last run session: {this.state.reportDate}
-                </h2>
+                </h4>
             </div>
         )
     }

@@ -52,12 +52,18 @@ exports.users_login = (req, res, next) => {
         .exec()
         .then(user => {
             if (user.length < 1) {
-                return res.status(401).json({ message: 'Auth failed' });
+                return res.status(401).json({
+                    success: false,
+                    message: 'Auth failed'
+                });
             }
 
             bcrypt.compare(req.body.password, user[0].password, (err, result) => {
                 if (err) {
-                    return res.status(401).json({ message: 'Auth failed' })
+                    return res.status(401).json({
+                        success: false,
+                        message: 'Auth failed'
+                    })
                 }
 
                 if (result) {
@@ -66,12 +72,16 @@ exports.users_login = (req, res, next) => {
                         userId: user[0]._id
                     }, process.env.JWT_KEY, { expiresIn: "1h" })
                     return res.status(200).json({
+                        success: true,
                         message: 'Auth successful',
                         token: token
                     });
                 }
 
-                res.status(401).json({ message: 'Auth failed' })
+                res.status(401).json({
+                    success: false,
+                    message: 'Auth failed'
+                })
             })
         })
         .catch(err => {
