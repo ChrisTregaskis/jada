@@ -11,7 +11,7 @@ class TablesPage extends React.Component {
         super(props);
 
         this.state = {
-            user_id: "5f102d3ce9647c31b2f1e92b",
+            user_id: localStorage.getItem('user_id'),
             applications: {},
             currentApplications: {},
             sessionDates:[],
