@@ -78,7 +78,8 @@ class MainDashboard extends React.Component {
         let data = await fetch(url, {
             method: 'GET',
             headers: {
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + this.state.bearerToken
             }
         });
 
