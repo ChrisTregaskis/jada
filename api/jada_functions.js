@@ -10,6 +10,21 @@ const totalJobsPass = voltContents.TOTALJOBS_PASS;
 const userEmail = voltContents.USER_EMAIL;
 const userPass = voltContents.USER_PASS;
 
+exports.check_token = async function(user_id, token) {
+    let success;
+    const url = `http://localhost:8080/user/${user_id}`;
+    let data = await fetch(url, {
+        method: 'GET',
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
+        }
+    });
+    data = await data.json();
+    success = (data.success)
+    return success
+}
+
 exports.navigate_to_website = async function() {
     // driver.get(`https://www.totaljobs.com/jobs/junior-developer/in-chippenham?radius=0&s=header`)
     const url = 'https://www.totaljobs.com/';

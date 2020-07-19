@@ -18,10 +18,11 @@ const jobTitle = 'Junior Software Engineer';
 const area = 'Dorset';
 const radius = 0;
 const user_id = '5f102df825d2553212c30ede';
+const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRlc3QyQHRlc3QuY29tIiwidXNlcklkIjoiNWYxMDJkZjgyNWQyNTUzMjEyYzMwZWRlIiwiaWF0IjoxNTk1MTYwOTQ2LCJleHAiOjE1OTUxNjQ1NDZ9.ZzhLJS-0f1Yu8FbNx5xLEiCZvcUNxziBKajlqkMENxU';
 
-run_jada(user_id, jobTitle, area, radius);
+run_jada(user_id, token, jobTitle, area, radius);
 
-async function run_jada(user_id, jobTitle, area, radius) {
+async function run_jada(user_id, token, jobTitle, area, radius) {
     console.log(`User Id: ${user_id}`)
     console.log(`Job Title: ${jobTitle}`)
     console.log(`Area: ${area}`)
@@ -39,15 +40,30 @@ async function run_jada(user_id, jobTitle, area, radius) {
     let radiusValid = radiusOptions.includes(radius);
     if (!radiusValid) { return console.log('SESSION FAILED: invalid radius option') }
 
+    let tokenValid = await Jada.check_token(user_id, token)
+    if (!tokenValid) {
+        Jada.end_session();
+        return console.log('SESSION FAILED: user invalid token')
+    }
+
     await Jada.navigate_to_website();
     let navigateToLogin = await Jada.navigate_to_loginPage();
-    if (!navigateToLogin) { return console.log('SESSION FAILED: navigate to login page failed') }
+    if (!navigateToLogin) {
+        Jada.end_session();
+        return console.log('SESSION FAILED: navigate to login page failed')
+    }
 
     let login = await Jada.jobSeeker_login();
-    if (!login) { return console.log('SESSION FAILED: logged in user search button not found') }
+    if (!login) {
+        Jada.end_session();
+        return console.log('SESSION FAILED: logged in user search button not found')
+    }
 
     let enteredSearch = await Jada.enter_search(jobTitle, area, radius);
-    if (!enteredSearch) { return console.log('SESSION FAILED: first xpath result not found') }
+    if (!enteredSearch) {
+        Jada.end_session();
+        return console.log('SESSION FAILED: first xpath result not found')
+    }
 
     let activeNextBtn = await Jada.check_nextBtn_status();
 
