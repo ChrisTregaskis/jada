@@ -99,6 +99,7 @@ exports.get_user_by_id = (req, res, next) => {
             if (doc) {
                 res.status(200).json({
                     status: 200,
+                    success: true,
                     user: {
                         _id: doc._id,
                         email: doc.email,
@@ -109,6 +110,7 @@ exports.get_user_by_id = (req, res, next) => {
             } else {
                 res.status(404).json({
                     status: 404,
+                    success: false,
                     message: 'no valid entry found for user id'
                 })
             }
@@ -116,6 +118,7 @@ exports.get_user_by_id = (req, res, next) => {
         .catch(err => {
             res.status(500).json({
                 status: 500,
+                success: false,
                 error: err
             })
         })
