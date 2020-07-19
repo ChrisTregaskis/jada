@@ -90,6 +90,37 @@ exports.users_login = (req, res, next) => {
         })
 };
 
+exports.get_user_by_id = (req, res, next) => {
+    const userId = req.params.userId
+    User
+        .findById(userId)
+        .exec()
+        .then(doc => {
+            if (doc) {
+                res.status(200).json({
+                    status: 200,
+                    user: {
+                        _id: doc._id,
+                        email: doc.email,
+                        first_name: doc.first_name,
+                        last_name: doc.last_name
+                    }
+                })
+            } else {
+                res.status(404).json({
+                    status: 404,
+                    message: 'no valid entry found for user id'
+                })
+            }
+        })
+        .catch(err => {
+            res.status(500).json({
+                status: 500,
+                error: err
+            })
+        })
+}
+
 exports.users_delete_user = (req, res, next) => {
     User.deleteOne({ _id: req.params.userId })
       .exec()
