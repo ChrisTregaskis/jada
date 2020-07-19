@@ -29,13 +29,21 @@ class PageHeader extends React.Component {
             }
         })
         data = await data.json();
-        return data
+        if (data.status !== 200) {
+            return { success: false }
+        } else {
+            return  data
+        }
     }
 
     updateUserName = async () => {
         let userData = await this.fetchUserData()
-        let first_name = userData.user.first_name;
-        this.setState({ userName: first_name })
+
+        if (userData.status === 200) {
+            let first_name = userData.user.first_name;
+            this.setState({ userName: first_name })
+        }
+
     }
 
     getTime = () => {
