@@ -13,19 +13,16 @@ class FilterTableByApplied extends React.Component {
     toggleViewAll = async () => {
         await this.setState({ currentView: 'View all applications' });
         this.props.toggleViewAll();
-        console.log('View ALL')
     }
 
     toggleViewApplied = async () => {
         await this.setState({ currentView: 'View applied applications' });
         this.props.toggleViewApplied();
-        console.log('View APPLIED')
     }
 
     toggleViewSkipped = async () => {
         await this.setState({ currentView: 'View skipped applications' });
         this.props.toggleViewSkipped();
-        console.log('View SKIPPED')
     }
 
     render() {
