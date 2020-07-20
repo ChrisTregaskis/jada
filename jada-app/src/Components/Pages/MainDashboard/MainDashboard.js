@@ -82,11 +82,9 @@ class MainDashboard extends React.Component {
                 "Authorization": "Bearer " + this.state.bearerToken
             }
         });
-
+        let responseStatus = data.status;
         data = await data.json();
-        if (data.response.status !== 200) {
-            console.log('ERROR: unable to get application data')
-            console.log(data.response.status)
+        if (responseStatus !== 200) {
             return {}
         }
 
