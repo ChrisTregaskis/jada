@@ -21,7 +21,12 @@ exports.check_token = async function(user_id, token) {
         }
     });
     data = await data.json();
-    success = (data.success)
+    console.log(data)
+    if (data.success === true) {
+        success = true
+    } else {
+        success = false
+    }
     return success
 }
 
@@ -110,7 +115,7 @@ exports.populate_potential_jobs = async function() {
     return additionalJobs;
 }
 
-async function isInterested(jobId, dkw, udkw, user_id, session_id, session_date, session_time) {
+async function isInterested(jobId, sessionData) {
     let jobTitle = await driver.findElement({ xpath: '//*[@id="' + jobId + '"]/div/div/div[1]/a/h2'}).getText();
     let jobTitleWebElement = await driver.findElement({ xpath: '//*[@id="' + jobId + '"]'});
     let jobTitleClasses = await jobTitleWebElement.getAttribute('class');
@@ -122,7 +127,7 @@ async function isInterested(jobId, dkw, udkw, user_id, session_id, session_date,
     let jobTitleUpperCase = jobTitle.toUpperCase();
     let keyWordFinder = key_word_finder(jobTitleUpperCase);
 
-    let jobDesirability = check_desirability(jobTitleUpperCase, dkw, udkw);
+    let jobDesirability = check_desirability(jobTitleUpperCase, sessionData.dkw, sessionData.udkw);
     let isDesirable = jobDesirability.is_desirable;
     let isNotDesirable = jobDesirability.is_not_desirable;
 
@@ -130,10 +135,7 @@ async function isInterested(jobId, dkw, udkw, user_id, session_id, session_date,
         return true
     } else {
         let logFailedInterest = await log_failed_interest(
-            user_id,
-            session_id,
-            session_date,
-            session_time,
+            sessionData,
             jobId,
             jobTitle,
             keyWordFinder
@@ -142,25 +144,17 @@ async function isInterested(jobId, dkw, udkw, user_id, session_id, session_date,
     }
 }
 
-exports.check_interest = async function(potentialJobs, dkw, udkw, user_id, session_id, session_date, session_time) {
+exports.check_interest = async function(potentialJobs, sessionData) {
     console.log('-------> checking job initial interest: <-------')
     let interestedRoles = [];
-    let viewedResults = await get_applied_jobIds(user_id);
+    let viewedResults = await get_applied_jobIds(sessionData.user_id);
     for (i = 0; i < potentialJobs.length; i++) {
         let hasBeenViewed = viewedResults.includes(potentialJobs[i]);
         console.log('------------------------------------------------')
         console.log(`Current job id: ${potentialJobs[i]}`)
         console.log(`Has been viewed: ${hasBeenViewed}`)
         if (!hasBeenViewed) {
-            let interested = await isInterested(
-                potentialJobs[i],
-                dkw,
-                udkw,
-                user_id,
-                session_id,
-                session_date,
-                session_time
-            );
+            let interested = await isInterested(potentialJobs[i], sessionData);
             console.log('/---- Interested: ')
             console.log(interested)
             if (interested) {
@@ -462,12 +456,12 @@ async function handle_fetch(url, requestMethod, dataToSend) {
     return responseData
 }
 
-async function log_failed_interest(user_id, session_id, session_date, session_time, jobId, jobTitle, keyWordFinder) {
+async function log_failed_interest(sessionData, jobId, jobTitle, keyWordFinder) {
     let currentApplication = {
-        "user_id": user_id,
-        "session_id": session_id,
-        "session_date": session_date,
-        "session_time": session_time,
+        "user_id": sessionData.user_id,
+        "session_id": sessionData.session_id,
+        "session_date": sessionData.session_date,
+        "session_time": sessionData.session_time,
         "job_title": jobTitle,
         "totalJobs_id": jobId,
         "apply_attempted": false,
@@ -484,12 +478,12 @@ async function log_failed_interest(user_id, session_id, session_date, session_ti
     }
 }
 
-async function log_undesirable_job(user_id, session_id, session_date, session_time, jobAdd, keyWordFinder) {
+async function log_undesirable_job(sessionData, jobAdd, keyWordFinder) {
     let currentApplication = {
-        "user_id": user_id,
-        "session_id": session_id,
-        "session_date": session_date,
-        "session_time": session_time,
+        "user_id": sessionData.user_id,
+        "session_id": sessionData.session_id,
+        "session_date": sessionData.session_date,
+        "session_time": sessionData.session_time,
         "job_title": jobAdd.job_title,
         "totalJobs_id": jobAdd.totalJobs_id,
         "interested": true,
@@ -508,12 +502,12 @@ async function log_undesirable_job(user_id, session_id, session_date, session_ti
     }
 }
 
-async function log_desirable_job(user_id, session_id, session_date, session_time, jobAdd, keyWordFinder, appliedJob) {
+async function log_desirable_job(sessionData, jobAdd, keyWordFinder, appliedJob) {
     let currentApplication = {
-        "user_id": user_id,
-        "session_id": session_id,
-        "session_date": session_date,
-        "session_time": session_time,
+        "user_id": sessionData.user_id,
+        "session_id": sessionData.session_id,
+        "session_date": sessionData.session_date,
+        "session_time": sessionData.session_time,
         "job_title": jobAdd.job_title,
         "totalJobs_id": jobAdd.totalJobs_id,
         "interested": true,
@@ -596,7 +590,7 @@ async function apply_to_job() {
     }
 }
 
-async function process_jobAdd(jobId, previouslyAppliedJobs, dkw, udkw, user_id, session_id, session_date, session_time) {
+async function process_jobAdd(jobId, previouslyAppliedJobs, sessionData) {
     console.log('************************************************');
     let mainWindow = await driver.getWindowHandle();
     let appliedJob = false;
@@ -636,7 +630,7 @@ async function process_jobAdd(jobId, previouslyAppliedJobs, dkw, udkw, user_id, 
     let keyWordFinder = key_word_finder(toUpperCaseJD);
 
     // check desirability, log and apply accordingly
-    let jobDesirability = check_desirability(toUpperCaseJD, dkw, udkw)
+    let jobDesirability = check_desirability(toUpperCaseJD, sessionData.dkw, sessionData.udkw)
     let isDesirable = jobDesirability.is_desirable;
     let isNotDesirable = jobDesirability.is_not_desirable;
 
@@ -644,20 +638,14 @@ async function process_jobAdd(jobId, previouslyAppliedJobs, dkw, udkw, user_id, 
         let applyToJob = await apply_to_job();
         appliedJob = applyToJob;
         let logDesirableJob = await log_desirable_job(
-            user_id,
-            session_id,
-            session_date,
-            session_time,
+            sessionData,
             jobAdd,
             keyWordFinder,
             appliedJob
         );
     } else {
         let logUndesirableJob = await log_undesirable_job(
-            user_id,
-            session_id,
-            session_date,
-            session_time,
+            sessionData,
             jobAdd,
             keyWordFinder
         );
@@ -729,23 +717,14 @@ async function get_applied_jobIds(user_id) {
     return processedIds
 }
 
-exports.process_interested_jobs = async function(interestedJobIds, dkw, udkw, user_id, session_id, session_date, session_time) {
+exports.process_interested_jobs = async function(interestedJobIds, sessionData) {
     console.log('--------> processing interested jobs: <--------')
     let appliedJobs = [];
-    let previouslyAppliedJobs = await get_applied_jobIds(user_id);
+    let previouslyAppliedJobs = await get_applied_jobIds(sessionData.user_id);
 
     for (i = 0; i < interestedJobIds.length; i++) {
         console.log('------------------------------------------------')
-        let appliedJob = await process_jobAdd(
-            interestedJobIds[i],
-            previouslyAppliedJobs,
-            dkw,
-            udkw,
-            user_id,
-            session_id,
-            session_date,
-            session_time
-        );
+        let appliedJob = await process_jobAdd(interestedJobIds[i], previouslyAppliedJobs, sessionData);
         console.log('/---- applied job: ')
         console.log(appliedJob)
         if (appliedJob) {
@@ -902,8 +881,8 @@ function remove_duplicates(array) {
         unique.includes(item) ? unique : [...unique, item],[]);
 }
 
-exports.produce_session_report = async function(user_id, session_id, session_date, session_time, allSessionJobIds) {
-    let applications = await get_by_sessionId(session_id)
+exports.produce_session_report = async function(sessionData, allSessionJobIds) {
+    let applications = await get_by_sessionId(sessionData.session_id)
     let successfullyApplied = applications.filter((application) => {
         if (application.apply_attempted === true) {
             return application
@@ -927,17 +906,17 @@ exports.produce_session_report = async function(user_id, session_id, session_dat
     let locationsOverview = remove_duplicates(locationsAll);
 
     return {
-        "user_id": user_id,
-        "session_id": session_id,
-        "session_date": session_date,
-        "session_time": session_time,
+        "user_id": sessionData.user_id,
+        "session_id": sessionData.session_id,
+        "session_date": sessionData.session_date,
+        "session_time": sessionData.session_time,
         "total_processed": allSessionJobIds.length,
         "newly_processed": applications.length,
         "successfully_applied": successfullyApplied.length,
         "skipped_applications": skippedApplications.length,
         "dkw_overview": dkwFoundUnique,
         "dkw_all": dkwFoundAll,
-        "udkw_overview":udkwFoundUnique,
+        "udkw_overview": udkwFoundUnique,
         "udkw_all": udkwFoundAll,
         "top24_overview": top24FoundUnique,
         "top24_all": top24FoundAll,
@@ -1060,9 +1039,9 @@ exports.email_session_report = async function(searchParams, sessionReport) {
             <br>
             <h3>Yo Chris, here is your session report...</h3>
             <h3>Session search parameters:</h3>
-            <p>Job title: ${searchParams.job_title}</p>
-            <p>Location: ${searchParams.location}</p>
-            <p>Radius: ${searchParams.radius}</p>
+            <p>Job title: ${searchParams.search_jobTitle}</p>
+            <p>Location: ${searchParams.search_area}</p>
+            <p>Radius: ${searchParams.search_radius}</p>
             
             <h3>Session results:</h3>
             <p>User Id: ${sessionReport.user_id}</p>
