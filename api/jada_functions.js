@@ -147,7 +147,7 @@ async function isInterested(jobId, sessionData) {
 exports.check_interest = async function(potentialJobs, sessionData) {
     console.log('-------> checking job initial interest: <-------')
     let interestedRoles = [];
-    let viewedResults = await get_applied_jobIds(sessionData.user_id);
+    let viewedResults = await get_applied_jobIds(sessionData.user_id, sessionData.user_token);
     for (i = 0; i < potentialJobs.length; i++) {
         let hasBeenViewed = viewedResults.includes(potentialJobs[i]);
         console.log('------------------------------------------------')
@@ -424,21 +424,23 @@ function check_desirability(upperCaseJobString, dkw, udkw) {
     }
 }
 
-async function add_application_db(application) {
+async function add_application_db(application, token) {
     return responseData = await handle_fetch(
         'http://localhost:8080/applications',
         'POST',
-        application
+        application,
+        token
     )
 }
 
-async function handle_fetch(url, requestMethod, dataToSend) {
+async function handle_fetch(url, requestMethod, dataToSend, token) {
     let requestData = JSON.stringify(dataToSend);
     let response = await fetch(url, {
         method: requestMethod,
         body: requestData,
         headers: {
-            "Content-Type" : "application/json"
+            "Content-Type" : "application/json",
+            "Authorization": `Bearer ${token}`
         }
     })
 
@@ -470,7 +472,7 @@ async function log_failed_interest(sessionData, jobId, jobTitle, keyWordFinder) 
         "found_udkw": keyWordFinder.found_udkw,
         "found_top24": keyWordFinder.found_top24
     }
-    let logApplication = await add_application_db(currentApplication);
+    let logApplication = await add_application_db(currentApplication, sessionData.user_token);
     console.log('logging to db...')
     console.log(logApplication)
     if (logApplication.status !== 200) {
@@ -494,7 +496,7 @@ async function log_undesirable_job(sessionData, jobAdd, keyWordFinder) {
         "found_udkw": keyWordFinder.found_udkw,
         "found_top24": keyWordFinder.found_top24
     }
-    let logApplication = await add_application_db(currentApplication);
+    let logApplication = await add_application_db(currentApplication, sessionData.user_token);
     console.log('logging to db...')
     console.log(logApplication)
     if (logApplication.status !== 200) {
@@ -525,7 +527,7 @@ async function log_desirable_job(sessionData, jobAdd, keyWordFinder, appliedJob)
         "found_udkw": keyWordFinder.found_udkw,
         "found_top24": keyWordFinder.found_top24
     }
-    let logApplication = await add_application_db(currentApplication);
+    let logApplication = await add_application_db(currentApplication, sessionData.user_token);
     console.log('logging to db...')
     console.log(logApplication)
     if (logApplication.status !== 200) {
@@ -656,39 +658,15 @@ async function process_jobAdd(jobId, previouslyAppliedJobs, sessionData) {
     return appliedJob;
 }
 
-async function get_all_applications() {
-    console.log('Grabbing all applications...')
-    let response = await fetch('http://localhost:8080/applications', {
-        method: 'GET',
-        headers: {
-            "Content-Type" : "application/json"
-        }
-    })
-
-    let responseData = await response.json();
-
-    if (responseData.status === 404) {
-        console.log(`Response status: ${responseData.status}`);
-        console.log(`Response message: ${responseData.message}`);
-        return [];
-    } else if (responseData.status === 500) {
-        console.log('SESSION ERROR: handle fetch unsuccessful for all applications');
-        console.log(`Response status: ${responseData.status}`);
-        console.log(`Response error:`);
-        console.log(responseData.error)
-    }
-
-    let applications = await responseData.response.applications;
-    return applications
-}
-
-async function get_applications_by_user_id(user_id) {
+async function get_applications_by_user_id(user_id, token) {
     console.log(`Grabbing all applications for user: ${user_id}`)
     let applications;
     let response = await fetch(`http://localhost:8080/applications/user/${user_id}`, {
         method: 'GET',
         headers: {
-            "Content-Type" : "application/json"
+            "Content-Type" : "application/json",
+            "Authorization": `Bearer ${token}`
+
         }
     })
     let responseData = await response.json();
@@ -706,8 +684,8 @@ async function get_applications_by_user_id(user_id) {
     return applications
 }
 
-async function get_applied_jobIds(user_id) {
-    let applications = await get_applications_by_user_id(user_id);
+async function get_applied_jobIds(user_id, token) {
+    let applications = await get_applications_by_user_id(user_id, token);
     let processedIds = applications.map(application => {
         return application.totalJobs_id
     })
@@ -720,7 +698,7 @@ async function get_applied_jobIds(user_id) {
 exports.process_interested_jobs = async function(interestedJobIds, sessionData) {
     console.log('--------> processing interested jobs: <--------')
     let appliedJobs = [];
-    let previouslyAppliedJobs = await get_applied_jobIds(sessionData.user_id);
+    let previouslyAppliedJobs = await get_applied_jobIds(sessionData.user_id, sessionData.user_token);
 
     for (i = 0; i < interestedJobIds.length; i++) {
         console.log('------------------------------------------------')
@@ -803,12 +781,13 @@ exports.next_results_page = async function() {
 
 }
 
-async function get_by_sessionId(sessionId) {
+async function get_by_sessionId(sessionId, token) {
     console.log('Grabbing all applications by session_id...')
     let response = await fetch(`http://localhost:8080/applications/session/${sessionId}`, {
         method: 'GET',
         headers: {
-            "Content-Type" : "application/json"
+            "Content-Type" : "application/json",
+            "Authorization": `Bearer ${token}`
         }
     })
 
@@ -882,7 +861,7 @@ function remove_duplicates(array) {
 }
 
 exports.produce_session_report = async function(sessionData, allSessionJobIds) {
-    let applications = await get_by_sessionId(sessionData.session_id)
+    let applications = await get_by_sessionId(sessionData.session_id, sessionData.user_token)
     let successfullyApplied = applications.filter((application) => {
         if (application.apply_attempted === true) {
             return application
