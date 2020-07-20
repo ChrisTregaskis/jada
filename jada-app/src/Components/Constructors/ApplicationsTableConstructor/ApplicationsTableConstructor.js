@@ -12,9 +12,14 @@ class ApplicationsTableConstructor extends React.Component {
                 headers: [],
                 datasets: [],
                 modalActive: false,
-                applicationData: {}
+                applicationData: {},
+                bearerToken: ''
             }
         }
+    }
+
+    componentDidMount() {
+        this.setState({ bearerToken: localStorage.getItem('bearerToken') })
     }
 
     componentDidUpdate(prevProps) {
@@ -84,18 +89,16 @@ class ApplicationsTableConstructor extends React.Component {
         let data = await fetch(url, {
             method: 'GET',
             headers: {
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + this.state.bearerToken
             }
         });
 
         let responseStatus = data.status;
         data = await data.json();
         if (responseStatus !== 200) {
-            console.log('ERROR: unable to get application data')
-            console.log(data.response.status)
             return {}
         }
-
         return data;
     }
 

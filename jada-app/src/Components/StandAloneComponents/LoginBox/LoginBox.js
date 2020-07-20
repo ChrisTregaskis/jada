@@ -5,15 +5,21 @@ class LoginBox extends React.Component {
     constructor(props) {
         super(props);
         let token = '';
+        let user_id = '';
 
         if (localStorage.getItem('bearerToken')) {
             token = localStorage.getItem('bearerToken')
+        }
+
+        if (localStorage.getItem('user_id')) {
+            user_id = localStorage.getItem('user_id')
         }
 
         this.state = {
             email: '',
             password: '',
             bearerToken: token,
+            user_id: user_id,
             errorMessage: ''
         }
     }
@@ -41,6 +47,11 @@ class LoginBox extends React.Component {
         localStorage.setItem('bearerToken', fetchedToken)
     };
 
+    updateUserId = (fetchedId) => {
+        this.setState({ user_id: fetchedId })
+        localStorage.setItem('user_id', fetchedId)
+    }
+
     handleLogIn = async (e) => {
         e.preventDefault()
         let email = this.state.email
@@ -67,6 +78,7 @@ class LoginBox extends React.Component {
             }, 5000)
         } else if (response.success) {
             await this.updateToken(response.token)
+            await this.updateUserId(response.user_id)
             window.location.replace('http://localhost:3000/dashboard')
         }
 

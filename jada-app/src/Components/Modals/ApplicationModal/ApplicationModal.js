@@ -53,6 +53,12 @@ class ApplicationModal extends React.Component {
 
     displayData = (application) => {
         let displayData = [];
+
+        if (!application.session_time) {
+            displayData.push(<p className="d-flex justify-content-center">No application data found.</p>)
+            return displayData
+        }
+
         let date = this.reformatDate(application.session_date);
         let appliedTime = application.session_time.substring(0,5);
         let applied = application.apply_attempted.toString().toUpperCase();

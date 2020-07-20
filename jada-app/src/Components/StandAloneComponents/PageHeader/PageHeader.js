@@ -7,12 +7,43 @@ class PageHeader extends React.Component {
 
         this.state = {
             currentTime: '',
-            greetingMsg: 'Hello '
+            greetingMsg: 'Hello ',
+            user_id: localStorage.getItem('user_id'),
+            bearerToken: localStorage.getItem('bearerToken'),
+            userName: ''
         }
     }
 
     componentDidMount() {
+        this.updateUserName();
         this.getTime();
+    }
+
+    fetchUserData = async () => {
+        let url = `http://localhost:8080/user/${this.state.user_id}`
+        let data = await fetch(url, {
+            method: 'GET',
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization" : "Bearer " + this.state.bearerToken
+            }
+        })
+        data = await data.json();
+        if (data.status !== 200) {
+            return { success: false }
+        } else {
+            return  data
+        }
+    }
+
+    updateUserName = async () => {
+        let userData = await this.fetchUserData()
+
+        if (userData.status === 200) {
+            let first_name = userData.user.first_name;
+            this.setState({ userName: first_name })
+        }
+
     }
 
     getTime = () => {
@@ -32,7 +63,7 @@ class PageHeader extends React.Component {
     }
 
     render() {
-        let greeting = this.state.greetingMsg + 'Chris';
+        let greeting = this.state.greetingMsg + this.state.userName;
         return (
             <div>
                 <div className="col-xl-12 pageHeader d-flex justify-content-between">

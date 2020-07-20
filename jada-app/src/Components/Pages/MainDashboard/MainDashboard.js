@@ -20,9 +20,14 @@ import ButtonMainToggle from "../../Buttons/ButtonMainToggle/ButtonMainToggle";
 class MainDashboard extends React.Component {
     constructor(props) {
         super(props);
+        let user_id = '5f102df825d2553212c30ede';
+
+        if (localStorage.getItem('user_id')) {
+            user_id = localStorage.getItem('user_id');
+        }
 
         this.state = {
-            user_id: "5f102d3ce9647c31b2f1e92b",
+            user_id: user_id,
             applications: {},
             sessionDates:[],
             bearerToken: localStorage.getItem('bearerToken')
@@ -73,14 +78,13 @@ class MainDashboard extends React.Component {
         let data = await fetch(url, {
             method: 'GET',
             headers: {
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + this.state.bearerToken
             }
         });
-
+        let responseStatus = data.status;
         data = await data.json();
-        if (data.response.status !== 200) {
-            console.log('ERROR: unable to get application data')
-            console.log(data.response.status)
+        if (responseStatus !== 200) {
             return {}
         }
 
@@ -89,6 +93,7 @@ class MainDashboard extends React.Component {
 
     logOut = () => {
         localStorage.removeItem('bearerToken');
+        localStorage.removeItem('user_id');
         window.location.replace('http://localhost:3000/');
     }
 
