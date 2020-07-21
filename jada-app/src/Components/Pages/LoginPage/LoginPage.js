@@ -7,7 +7,8 @@ class LoginPage extends React.Component {
         super(props);
 
         this.state = {
-            activeForm: 'LogIn'
+            activeForm: 'LogIn',
+            displaySignUpSuccess: false
         }
     }
 
@@ -19,12 +20,18 @@ class LoginPage extends React.Component {
         }
     }
 
+    toggleDisplaySignUpSuccess = () => {
+        this.setState({ displaySignUpSuccess: !this.state.displaySignUpSuccess })
+    }
+
     render() {
         return (
             <div className="container-fluid loginPage">
                 <LoginBox
                     toggleForm={this.toggleForm}
                     activeForm={this.state.activeForm}
+                    displaySignUpSuccess={this.state.displaySignUpSuccess}
+                    toggleDisplaySignUpSuccess={this.toggleDisplaySignUpSuccess}
                 />
             </div>
         );
