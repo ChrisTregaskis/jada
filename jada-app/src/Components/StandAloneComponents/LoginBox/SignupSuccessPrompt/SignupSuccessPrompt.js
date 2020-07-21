@@ -22,6 +22,7 @@ class SignupSuccessPrompt extends React.Component {
 
     handleClick = () => {
         this.props.toggleForm();
+        this.props.toggleDisplaySignUpSuccess();
         this.setState({ cssClass: 'hidden' })
     }
 

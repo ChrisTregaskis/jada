@@ -58,16 +58,20 @@ class LoginBox extends React.Component {
         localStorage.setItem('user_id', fetchedId)
     }
 
-    clearEmailAndPassword = () => {
-        this.setState({ email: '', password: '' })
+    clearInputFields = () => {
+        this.setState({
+            email: '',
+            password: '',
+            firstName: '',
+            lastName: '',
+            retypedPassword: ''
+        })
     }
 
     handleLogIn = async (e) => {
         e.preventDefault()
         let email = this.state.email
         let password = this.state.password
-
-        // add email & password validation
 
         let logInPackage = {
             "email": email,
@@ -79,7 +83,7 @@ class LoginBox extends React.Component {
             logInPackage
         );
 
-        this.clearEmailAndPassword();
+        this.clearInputFields();
         
         if (!response.success) {
             this.setState({ errorMessage: 'Credentials incorrect, please try again.' })
@@ -142,7 +146,8 @@ class LoginBox extends React.Component {
             }, 5000)
         } else if (response.success) {
             console.log('user account created successfully!!')
-            this.props.toggleDisplaySignUpSuccess()
+            this.clearInputFields();
+            this.props.toggleDisplaySignUpSuccess();
         }
     }
 
