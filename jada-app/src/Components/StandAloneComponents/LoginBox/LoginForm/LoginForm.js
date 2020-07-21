@@ -1,9 +1,28 @@
 import React from "react";
+import '../loginBox.css';
 
 class LoginForm extends React.Component {
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            cssClass: 'displayed'
+        }
+    }
+
+    componentDidUpdate(prevProps) {
+        if (prevProps.activeForm !== this.props.activeForm) {
+            if (this.props.activeForm === 'LogIn') {
+                this.setState({ cssClass: 'displayed' })
+            } else if (this.props.activeForm === 'SignUp') {
+                this.setState({ cssClass: 'hidden' })
+            }
+        }
+    }
+
     render() {
         return (
-            <div>
+            <div className={this.state.cssClass}>
                 <form className="log-in" autoComplete="off" onSubmit={this.props.handleLogIn}>
                     <h4>Welcome</h4>
                     <p>Welcome back! Log in to your account to view your JADA results:</p>

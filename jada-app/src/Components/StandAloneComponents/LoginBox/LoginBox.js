@@ -1,6 +1,7 @@
 import React from "react";
 import './loginBox.css';
 import LoginForm from "./LoginForm/LoginForm";
+import SignupForm from "./SignupForm/SignupForm";
 
 class LoginBox extends React.Component {
     constructor(props) {
@@ -19,9 +20,12 @@ class LoginBox extends React.Component {
         this.state = {
             email: '',
             password: '',
+            retypedPassword: '',
             bearerToken: token,
             user_id: user_id,
-            errorMessage: ''
+            errorMessage: '',
+            firstName: '',
+            lastName: ''
         }
     }
 
@@ -85,6 +89,25 @@ class LoginBox extends React.Component {
 
     }
 
+    handleSignUp = (e) => {
+        e.preventDefault()
+        let firstName = this.state.firstName
+        let lastName = this.state.lastName
+        let email = this.state.email
+        let password = this.state.password
+
+        // add email & password validation
+
+        let signUpPackage = {
+            "first_name": firstName,
+            "last_name": lastName,
+            "email": email,
+            "password": password
+        }
+
+        console.log(signUpPackage)
+    }
+
     render() {
         return (
             <div className="loginBox">
@@ -96,8 +119,20 @@ class LoginBox extends React.Component {
                         email={this.state.email}
                         password={this.state.password}
                         toggleForm={this.props.toggleForm}
+                        activeForm={this.props.activeForm}
                     />
-                    <p>{this.state.errorMessage}</p>
+                    <SignupForm
+                        handleSignUp={this.handleSignUp}
+                        handleChange={this.handleChange}
+                        firstName={this.state.firstName}
+                        lastName={this.state.lastName}
+                        email={this.state.email}
+                        password={this.state.password}
+                        retypedPassword={this.state.retypedPassword}
+                        toggleForm={this.props.toggleForm}
+                        activeForm={this.props.activeForm}
+                    />
+                    <p className="errMsg">{this.state.errorMessage}</p>
                 </div>
             </div>
         );

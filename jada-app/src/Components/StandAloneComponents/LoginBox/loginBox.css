@@ -1,17 +1,13 @@
 .loginBox {
-    height: 500px;
+    height: 100vh;
     width: 400px;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background-color: rgba(248,248,248, 0.96);
-    border-radius: 5px;
+    background-color: rgba(248,248,248, 0.99);
     padding: 15px;
 }
 
 .loginBox h2 {
     color: #022F40;
+    display: inline;
 }
 
 .loginBox h4 {
@@ -140,9 +136,8 @@
     opacity: 0.7;
 }
 
-.loginBox p {
+.loginBox .errMsg {
     color: #e74c3c;
     display: flex;
     justify-content: center;
 }
-
