@@ -8,11 +8,18 @@ exports.users_sign_up = (req, res, next) => {
         .exec()
         .then(user => {
             if (user.length >= 1) {
-                  return res.status(422).json({ message: 'Email exists' });
+                  return res.status(422).json({
+                      status: 422,
+                      success: false,
+                      message: 'Email exists'
+                  });
                 } else {
                     bcrypt.hash(req.body.password, 10, (err, hash) => {
                         if (err) {
-                            return res.status(500).json({ error: err });
+                            return res.status(500).json({
+                                success: false,
+                                error: err
+                            });
                         } else {
                             const user = new User({
                                 _id: new mongoose.Types.ObjectId(),
@@ -26,6 +33,7 @@ exports.users_sign_up = (req, res, next) => {
                                 .then(result => {
                                   console.log(result)
                                   res.status(201).json({
+                                      success: true,
                                       message: 'User created',
                                       user: {
                                           _id: result._id,
@@ -36,14 +44,20 @@ exports.users_sign_up = (req, res, next) => {
                                   })
                                 })
                                 .catch(err => {
-                                  res.status(500).json({ error: err })
+                                  res.status(500).json({
+                                      success: false,
+                                      error: err
+                                  })
                                 })
                       }
                   })
             }
         })
         .catch(err => {
-          res.status(500).json({ error: err })
+          res.status(500).json({
+              success: false,
+              error: err
+          })
         })
 };
 
