@@ -1,5 +1,8 @@
 import React from "react";
 import './loginBox.css';
+import LoginForm from "./LoginForm/LoginForm";
+import SignupForm from "./SignupForm/SignupForm";
+import SignupSuccessPrompt from "./SignupSuccessPrompt/SignupSuccessPrompt";
 
 class LoginBox extends React.Component {
     constructor(props) {
@@ -18,9 +21,12 @@ class LoginBox extends React.Component {
         this.state = {
             email: '',
             password: '',
+            retypedPassword: '',
             bearerToken: token,
             user_id: user_id,
-            errorMessage: ''
+            errorMessage: '',
+            firstName: '',
+            lastName: ''
         }
     }
 
@@ -52,12 +58,20 @@ class LoginBox extends React.Component {
         localStorage.setItem('user_id', fetchedId)
     }
 
+    clearInputFields = () => {
+        this.setState({
+            email: '',
+            password: '',
+            firstName: '',
+            lastName: '',
+            retypedPassword: ''
+        })
+    }
+
     handleLogIn = async (e) => {
         e.preventDefault()
         let email = this.state.email
         let password = this.state.password
-
-        // add email & password validation
 
         let logInPackage = {
             "email": email,
@@ -69,7 +83,7 @@ class LoginBox extends React.Component {
             logInPackage
         );
 
-        this.setState({ email: '', password: '' })
+        this.clearInputFields();
         
         if (!response.success) {
             this.setState({ errorMessage: 'Credentials incorrect, please try again.' })
@@ -84,29 +98,92 @@ class LoginBox extends React.Component {
 
     }
 
+    postNewUser = async (newUser) => {
+        let reqData = JSON.stringify(newUser)
+        let url = 'http://localhost:8080/user/signup'
+        const response = await fetch(url, {
+            method: 'POST',
+            body: reqData,
+            headers: {
+                "Content-Type" : "application/json"
+            }
+        })
+        return response.json();
+    }
+
+    handleSignUp = async (e) => {
+        e.preventDefault()
+        let firstName = this.state.firstName
+        let lastName = this.state.lastName
+        let email = this.state.email
+        let password = this.state.password
+        let retypedPass = this.state.retypedPassword
+
+        if (password !== retypedPass) {
+            this.setState({ errorMessage: 'Passwords do not match, please try again.' })
+            setTimeout(() => {
+                this.setState({ errorMessage: '' })
+            }, 5000)
+            return
+        }
+
+        let signUpPackage = {
+            "first_name": firstName,
+            "last_name": lastName,
+            "email": email,
+            "password": password
+        }
+
+        let response = await this.postNewUser(signUpPackage)
+        if (!response.success) {
+            if (response.status === 422) {
+                this.setState({ errorMessage: response.message })
+            } else {
+                this.setState({ errorMessage: 'Unable to create a new account.' })
+            }
+            setTimeout(() => {
+                this.setState({ errorMessage: '' })
+            }, 5000)
+        } else if (response.success) {
+            console.log('user account created successfully!!')
+            this.clearInputFields();
+            this.props.toggleDisplaySignUpSuccess();
+        }
+    }
+
     render() {
         return (
             <div className="loginBox">
                 <h2 className="title d-flex justify-content-end">JADA</h2>
                 <div>
-                    <form className="log-in" autoComplete="off" onSubmit={this.handleLogIn}>
-                        <h4>Welcome</h4>
-                        <p>Welcome back! Log in to your account to view your JADA results:</p>
-                        <div className="floating-label">
-                            <input placeholder="Email" type="text" name="email" id="email"
-                                   onChange={(e) => this.handleChange(e, 'email')}
-                                   autoComplete="off" value={this.state.email} required/>
-                                <label htmlFor="email">Email:</label>
-                        </div>
-                        <div className="floating-label">
-                            <input placeholder="Password" type="password" name="password" id="password"
-                                   onChange={(e) => this.handleChange(e, 'password')}
-                                   autoComplete="off" value={this.state.password} required/>
-                                <label htmlFor="password">Password:</label>
-                        </div>
-                        <button>Log in</button>
-                    </form>
-                    <p>{this.state.errorMessage}</p>
+                    <LoginForm
+                        handleLogIn={this.handleLogIn}
+                        handleChange={this.handleChange}
+                        email={this.state.email}
+                        password={this.state.password}
+                        toggleForm={this.props.toggleForm}
+                        activeForm={this.props.activeForm}
+                        displaySignUpSuccess={this.props.displaySignUpSuccess}
+                    />
+                    <SignupForm
+                        handleSignUp={this.handleSignUp}
+                        handleChange={this.handleChange}
+                        firstName={this.state.firstName}
+                        lastName={this.state.lastName}
+                        email={this.state.email}
+                        password={this.state.password}
+                        retypedPassword={this.state.retypedPassword}
+                        toggleForm={this.props.toggleForm}
+                        activeForm={this.props.activeForm}
+                        displaySignUpSuccess={this.props.displaySignUpSuccess}
+                    />
+                    <SignupSuccessPrompt
+                        toggleForm={this.props.toggleForm}
+                        activeForm={this.props.activeForm}
+                        displaySignUpSuccess={this.props.displaySignUpSuccess}
+                        toggleDisplaySignUpSuccess={this.props.toggleDisplaySignUpSuccess}
+                    />
+                    <p className="errMsg">{this.state.errorMessage}</p>
                 </div>
             </div>
         );

@@ -19,6 +19,12 @@ class LastUpdatedSession extends React.Component {
             this.updateSessionDates();
             this.updateReportDate();
         }
+
+        if (this.state.reportDate === 'Tue 01 Jan 1901') {
+            this.setState({
+                reportDate: 'No session run yet'
+            })
+        }
     }
 
     updateSessionDates = async () => {

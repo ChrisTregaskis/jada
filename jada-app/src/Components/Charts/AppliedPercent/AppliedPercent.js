@@ -24,17 +24,25 @@ class AppliedPercent extends React.Component {
         let applied = 0;
         let skipped = 0;
 
-        applications.forEach(application => {
-            if (application.apply_attempted) {
-                applied = applied + 1
-            } else {
-                skipped = skipped + 1
+        if (applications.length < 1) {
+            return {
+                "applied": 0,
+                "skipped": 0
             }
-        })
 
-        return {
-            "applied": applied,
-            "skipped": skipped
+        } else if (applications.length > 0) {
+            applications.forEach(application => {
+                if (application.apply_attempted) {
+                    applied = applied + 1
+                } else {
+                    skipped = skipped + 1
+                }
+            })
+
+            return {
+                "applied": applied,
+                "skipped": skipped
+            }
         }
     }
 

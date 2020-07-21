@@ -73,7 +73,7 @@ class TablesPage extends React.Component {
         let responseStatus = data.status;
         data = await data.json();
         if (responseStatus !== 200) {
-            return {}
+            return []
         }
 
         return data.response.applications;
