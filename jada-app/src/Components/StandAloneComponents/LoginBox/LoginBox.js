@@ -2,6 +2,7 @@ import React from "react";
 import './loginBox.css';
 import LoginForm from "./LoginForm/LoginForm";
 import SignupForm from "./SignupForm/SignupForm";
+import SignupSuccessPrompt from "./SignupSuccessPrompt/SignupSuccessPrompt";
 
 class LoginBox extends React.Component {
     constructor(props) {
@@ -57,6 +58,10 @@ class LoginBox extends React.Component {
         localStorage.setItem('user_id', fetchedId)
     }
 
+    clearEmailAndPassword = () => {
+        this.setState({ email: '', password: '' })
+    }
+
     handleLogIn = async (e) => {
         e.preventDefault()
         let email = this.state.email
@@ -74,7 +79,7 @@ class LoginBox extends React.Component {
             logInPackage
         );
 
-        this.setState({ email: '', password: '' })
+        this.clearEmailAndPassword();
         
         if (!response.success) {
             this.setState({ errorMessage: 'Credentials incorrect, please try again.' })
@@ -89,14 +94,34 @@ class LoginBox extends React.Component {
 
     }
 
-    handleSignUp = (e) => {
+    postNewUser = async (newUser) => {
+        let reqData = JSON.stringify(newUser)
+        let url = 'http://localhost:8080/user/signup'
+        const response = await fetch(url, {
+            method: 'POST',
+            body: reqData,
+            headers: {
+                "Content-Type" : "application/json"
+            }
+        })
+        return response.json();
+    }
+
+    handleSignUp = async (e) => {
         e.preventDefault()
         let firstName = this.state.firstName
         let lastName = this.state.lastName
         let email = this.state.email
         let password = this.state.password
+        let retypedPass = this.state.retypedPassword
 
-        // add email & password validation
+        if (password !== retypedPass) {
+            this.setState({ errorMessage: 'Passwords do not match, please try again.' })
+            setTimeout(() => {
+                this.setState({ errorMessage: '' })
+            }, 5000)
+            return
+        }
 
         let signUpPackage = {
             "first_name": firstName,
@@ -105,7 +130,20 @@ class LoginBox extends React.Component {
             "password": password
         }
 
-        console.log(signUpPackage)
+        let response = await this.postNewUser(signUpPackage)
+        if (!response.success) {
+            if (response.status === 422) {
+                this.setState({ errorMessage: response.message })
+            } else {
+                this.setState({ errorMessage: 'Unable to create a new account.' })
+            }
+            setTimeout(() => {
+                this.setState({ errorMessage: '' })
+            }, 5000)
+        } else if (response.success) {
+            console.log('user account created successfully!!')
+            this.props.toggleDisplaySignUpSuccess()
+        }
     }
 
     render() {
@@ -120,6 +158,7 @@ class LoginBox extends React.Component {
                         password={this.state.password}
                         toggleForm={this.props.toggleForm}
                         activeForm={this.props.activeForm}
+                        displaySignUpSuccess={this.props.displaySignUpSuccess}
                     />
                     <SignupForm
                         handleSignUp={this.handleSignUp}
@@ -131,6 +170,13 @@ class LoginBox extends React.Component {
                         retypedPassword={this.state.retypedPassword}
                         toggleForm={this.props.toggleForm}
                         activeForm={this.props.activeForm}
+                        displaySignUpSuccess={this.props.displaySignUpSuccess}
+                    />
+                    <SignupSuccessPrompt
+                        toggleForm={this.props.toggleForm}
+                        activeForm={this.props.activeForm}
+                        displaySignUpSuccess={this.props.displaySignUpSuccess}
+                        toggleDisplaySignUpSuccess={this.props.toggleDisplaySignUpSuccess}
                     />
                     <p className="errMsg">{this.state.errorMessage}</p>
                 </div>

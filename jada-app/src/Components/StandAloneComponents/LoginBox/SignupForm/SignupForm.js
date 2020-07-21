@@ -17,6 +17,12 @@ class SignupForm extends React.Component {
             } else if (this.props.activeForm === 'SignUp') {
                 this.setState({ cssClass: 'displayed' })
             }
+        } else if (prevProps.displaySignUpSuccess !== this.props.displaySignUpSuccess) {
+            if (this.props.displaySignUpSuccess) {
+                this.setState({ cssClass: 'hidden' })
+            } else if (!this.props.displaySignUpSuccess && this.props.activeForm === 'SignUp') {
+                this.setState({ cssClass: 'displayed' })
+            }
         }
     }
 
@@ -53,7 +59,7 @@ class SignupForm extends React.Component {
                     <div className="floating-label">
                         <input placeholder="Retyped password" type="password" name="retypedPassword" id="retypedPassword"
                                onChange={(e) => this.props.handleChange(e, 'retypedPassword')}
-                               autoComplete="off" value={this.props.password} required/>
+                               autoComplete="off" value={this.props.retypedPassword} required/>
                         <label htmlFor="retypedPassword">Password:</label>
                     </div>
                     <div className="d-flex justify-content-between loginBoxBtns">

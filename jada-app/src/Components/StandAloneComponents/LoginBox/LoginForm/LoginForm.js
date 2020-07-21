@@ -17,6 +17,12 @@ class LoginForm extends React.Component {
             } else if (this.props.activeForm === 'SignUp') {
                 this.setState({ cssClass: 'hidden' })
             }
+        } else if (prevProps.displaySignUpSuccess !== this.props.displaySignUpSuccess) {
+            if (this.props.displaySignUpSuccess) {
+                this.setState({ cssClass: 'hidden' })
+            } else if (!this.props.displaySignUpSuccess && this.props.activeForm === 'LogIn') {
+                this.setState({ cssClass: 'displayed' })
+            }
         }
     }
 
