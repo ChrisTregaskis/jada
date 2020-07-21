@@ -104,7 +104,10 @@ class LoginBox extends React.Component {
                                    autoComplete="off" value={this.state.password} required/>
                                 <label htmlFor="password">Password:</label>
                         </div>
-                        <button>Log in</button>
+                        <div className="d-flex justify-content-between loginBoxBtns">
+                            <div className="signUpBtn">Sign up</div>
+                            <button>Log in</button>
+                        </div>
                     </form>
                     <p>{this.state.errorMessage}</p>
                 </div>
