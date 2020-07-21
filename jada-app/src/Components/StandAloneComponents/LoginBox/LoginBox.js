@@ -1,5 +1,6 @@
 import React from "react";
 import './loginBox.css';
+import LoginForm from "./LoginForm/LoginForm";
 
 class LoginBox extends React.Component {
     constructor(props) {
@@ -89,26 +90,13 @@ class LoginBox extends React.Component {
             <div className="loginBox">
                 <h2 className="title d-flex justify-content-end">JADA</h2>
                 <div>
-                    <form className="log-in" autoComplete="off" onSubmit={this.handleLogIn}>
-                        <h4>Welcome</h4>
-                        <p>Welcome back! Log in to your account to view your JADA results:</p>
-                        <div className="floating-label">
-                            <input placeholder="Email" type="text" name="email" id="email"
-                                   onChange={(e) => this.handleChange(e, 'email')}
-                                   autoComplete="off" value={this.state.email} required/>
-                                <label htmlFor="email">Email:</label>
-                        </div>
-                        <div className="floating-label">
-                            <input placeholder="Password" type="password" name="password" id="password"
-                                   onChange={(e) => this.handleChange(e, 'password')}
-                                   autoComplete="off" value={this.state.password} required/>
-                                <label htmlFor="password">Password:</label>
-                        </div>
-                        <div className="d-flex justify-content-between loginBoxBtns">
-                            <div className="signUpBtn">Sign up</div>
-                            <button>Log in</button>
-                        </div>
-                    </form>
+                    <LoginForm
+                        handleLogIn={this.handleLogIn}
+                        handleChange={this.handleChange}
+                        email={this.state.email}
+                        password={this.state.password}
+                        toggleForm={this.props.toggleForm}
+                    />
                     <p>{this.state.errorMessage}</p>
                 </div>
             </div>
