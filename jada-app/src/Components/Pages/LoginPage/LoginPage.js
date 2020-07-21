@@ -24,6 +24,7 @@ class LoginPage extends React.Component {
             <div className="container-fluid loginPage">
                 <LoginBox
                     toggleForm={this.toggleForm}
+                    activeForm={this.state.activeForm}
                 />
             </div>
         );
