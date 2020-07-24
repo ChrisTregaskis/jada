@@ -24,8 +24,12 @@ exports.users_sign_up = (req, res, next) => {
                             _id: new mongoose.Types.ObjectId(),
                             first_name: req.body.first_name,
                             last_name: req.body.last_name,
-                            email: req.body.email,
-                            password: hash
+                            log_in_credentials: {
+                                jada: {
+                                    email: req.body.email,
+                                    password: hash
+                                }
+                            }
                         });
                         user
                             .save()
@@ -38,7 +42,7 @@ exports.users_sign_up = (req, res, next) => {
                                         _id: result._id,
                                         first_name: result.first_name,
                                         last_name: result.last_name,
-                                        email: result.email
+                                        email: result.log_in_credentials.jada.email
                                     }
                                 })
                             })

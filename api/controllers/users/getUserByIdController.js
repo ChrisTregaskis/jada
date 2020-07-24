@@ -12,9 +12,9 @@ exports.get_user_by_id = (req, res, next) => {
                     success: true,
                     user: {
                         _id: doc._id,
-                        email: doc.email,
                         first_name: doc.first_name,
-                        last_name: doc.last_name
+                        last_name: doc.last_name,
+                        email: doc.log_in_credentials.jada.email
                     }
                 })
             } else {
