@@ -14,7 +14,18 @@ exports.get_user_by_id = (req, res, next) => {
                         _id: doc._id,
                         first_name: doc.first_name,
                         last_name: doc.last_name,
-                        email: doc.log_in_credentials.jada.email
+                        jada_email: doc.log_in_credentials.jada.email,
+                        totalJobs_email: doc.log_in_credentials.totalJobs.email,
+                        preferences: {
+                            reporting_email: doc.preferences.reporting_email,
+                            job_title: doc.preferences.job_title,
+                            location: doc.preferences.location,
+                            radius: doc.preferences.radius,
+                            session_limit: doc.preferences.session_limit,
+                            dkw: doc.preferences.dkw,
+                            udkw: doc.preferences.udkw,
+                            ikw: doc.preferences.ikw
+                        }
                     }
                 })
             } else {

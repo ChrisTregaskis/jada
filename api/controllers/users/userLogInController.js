@@ -3,7 +3,7 @@ const jwt = require('jsonwebtoken');
 const User = require('../../models/user');
 
 exports.users_login = (req, res, next) => {
-    User.find({ email: req.body.email })
+    User.find({ "log_in_credentials.jada.email": req.body.email })
         .exec()
         .then(user => {
             if (user.length < 1) {
@@ -13,9 +13,10 @@ exports.users_login = (req, res, next) => {
                 });
             }
 
-            bcrypt.compare(req.body.password, user[0].password, (err, result) => {
+            bcrypt.compare(req.body.password, user[0].log_in_credentials.jada.password, (err, result) => {
                 if (err) {
                     return res.status(401).json({
+                        error: err,
                         success: false,
                         message: 'Auth failed'
                     })
