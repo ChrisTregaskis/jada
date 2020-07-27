@@ -10,7 +10,7 @@ router.get('/', checkAuth, getAllSessionsController.get_all_sessions);
 router.post('/', postSessionToDBController.log_session);
 router.get('/:sessionId', checkAuth, getSessionController.get_session);
 
-// session logic
+// session runtime logic
 router.post('/totalJobsLogIn', totalJobsLogInController.totalJobs_logIn);
 
 module.exports = router;
