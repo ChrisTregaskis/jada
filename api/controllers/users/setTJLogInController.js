@@ -54,9 +54,9 @@ exports.set_totalJobs_LogIn = async (req, res, next) => {
                 message: 'Successfully updated totalJobs credentials'
             })
         } else if (addCredentials.nModified === 0) {
-            await res.status(500).json({
+            await res.status(400).json({
                 success: false,
-                message: 'Not able to update document'
+                message: 'Document not modified'
             })
         }
 
