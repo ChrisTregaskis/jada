@@ -6,3 +6,17 @@ exports.validate_email = (validateData) => {
         return 'invalid email'
     }
 }
+
+exports.validate_type = (data, requiredType) => {
+    const r = requiredType;
+    const s = 'string';
+    const o = 'object';
+    const n = 'number';
+    const b = 'boolean';
+
+    if (r === s || r === o || r === n || r === b) {
+        return typeof data === r;
+    } else {
+        return false
+    }
+}
