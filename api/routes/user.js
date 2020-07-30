@@ -11,6 +11,6 @@ router.get('/:userId', checkAuth, getUserByIdController.get_user_by_id);
 router.post('/signup', userSignUpController.users_sign_up);
 router.post('/login', userLogInController.users_login);
 router.delete('/:userId', checkAuth, deleteUserController.delete_user);
-router.put('/preferences/totalJobs/:userId', setTJLogInController.set_totalJobs_LogIn);
+router.put('/preferences/totalJobs/:userId', checkAuth, setTJLogInController.set_totalJobs_LogIn);
 
 module.exports = router;

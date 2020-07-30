@@ -11,6 +11,6 @@ router.post('/', postSessionToDBController.log_session);
 router.get('/:sessionId', checkAuth, getSessionController.get_session);
 
 // session runtime logic
-router.post('/totalJobsLogIn', totalJobsLogInController.totalJobs_logIn);
+router.post('/totalJobsLogIn', checkAuth, totalJobsLogInController.totalJobs_logIn);
 
 module.exports = router;
