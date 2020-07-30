@@ -1,4 +1,4 @@
-const { validate_email, validate_type } = require('../../Entities/validationEntity');
+const { validate_email, validate_type, sanitize_string } = require('../../Entities/validationEntity');
 const User = require('../../models/user');
 
 exports.set_user_preferences = async (req, res, next) => {
@@ -9,6 +9,9 @@ exports.set_user_preferences = async (req, res, next) => {
     const reqRadius = req.body.radius;
     const radiusOptions = [0, 5, 10, 20, 30];
     const reqSessionLimit = req.body.session_limit;
+    const reqDkw = req.body.dkw;
+    const reqUdkw = req.body.udkw;
+    const reqIkw = req.body.ikw;
     let email;
     let jobTitle;
     let location;
@@ -16,16 +19,16 @@ exports.set_user_preferences = async (req, res, next) => {
 
     if (reqEmail !== undefined) {
         if (!(validate_type(reqEmail, 'string'))) {
-            res.status(400).json({
+            await res.status(400).json({
                 success: false,
-                message: 'Email is an incorrect data type, should be a string'
+                message: 'Email is an incorrect data type, expecting a string'
             })
             return
         }
 
         email = reqEmail.trim();
         if (validate_email(email) === 'invalid email') {
-            res.status(400).json({
+            await res.status(400).json({
                 success: false,
                 message: 'Invalid email'
             })
@@ -36,40 +39,40 @@ exports.set_user_preferences = async (req, res, next) => {
 
     if (reqJobTitle !== undefined) {
         if (!(validate_type(reqJobTitle, 'string'))) {
-            res.status(400).json({
+            await res.status(400).json({
                 success: false,
-                message: 'Job Type is an incorrect data type, should be a string'
+                message: 'Job Type is an incorrect data type, expecting a string'
             })
             return
         }
 
-        jobTitle = reqJobTitle.trim();
+        jobTitle = sanitize_string(reqJobTitle)
     }
 
     if (reqLocation !== undefined) {
         if (!(validate_type(reqLocation, 'string'))) {
-            res.status(400).json({
+            await res.status(400).json({
                 success: false,
-                message: 'Location is an incorrect data type, should be string'
+                message: 'Location is an incorrect data type, expecting a string'
             })
             return
         }
 
-        location = reqLocation.trim();
+        location = sanitize_string(reqLocation)
     }
 
     if (reqRadius !== undefined) {
         if (!(validate_type(reqRadius, 'number'))) {
-            res.status(400).json({
+            await res.status(400).json({
                 success: false,
-                message: 'Radius is an incorrect data type, should be a number'
+                message: 'Radius is an incorrect data type, expecting a number'
             })
             return
         }
 
         let radiusValid = radiusOptions.includes(reqRadius);
         if (!radiusValid) {
-            res.status(400).json({
+            await res.status(400).json({
                 success: false,
                 message: 'Invalid radius option. Must be set to either 0, 5, 10, 20 or 30'
             })
@@ -80,13 +83,61 @@ exports.set_user_preferences = async (req, res, next) => {
 
     if (reqSessionLimit !== undefined) {
         if (!(validate_type(reqSessionLimit, 'number'))) {
-            res.status(400).json({
+            await res.status(400).json({
                 success: false,
-                message: 'Session limit is an incorrect data type, should be a number'
+                message: 'Session limit is an incorrect data type, expecting a number'
             })
             return
         }
 
+    }
+
+    let dkw = [];
+    if (reqDkw !== undefined) {
+        if (!(validate_type(reqDkw, 'object'))) {
+            await res.status(400).json({
+                success: false,
+                message: 'Desired key words is an incorrect data type, expecting an array'
+            })
+            return
+        }
+
+        reqDkw.forEach(i => {
+            let kw = sanitize_string(i.toUpperCase());
+            dkw.push(kw);
+        })
+    }
+
+    let udkw = [];
+    if (reqUdkw !== undefined) {
+        if (!(validate_type(reqUdkw, 'object'))) {
+            await res.status(400).json({
+                success: false,
+                message: 'Undesired key words is an incorrect data type, expecting an array'
+            })
+            return
+        }
+
+        reqUdkw.forEach(i => {
+            let kw = sanitize_string(i.toUpperCase());
+            udkw.push(kw);
+        })
+    }
+
+    let ikw = [];
+    if (reqIkw !== undefined) {
+        if (!(validate_type(reqIkw, 'object'))) {
+            await res.status(400).json({
+                success: false,
+                message: 'Interested key words is an incorrect data type, expecting an array'
+            })
+            return
+        }
+
+        reqIkw.forEach(i => {
+            let kw = sanitize_string(i.toUpperCase());
+            ikw.push(kw);
+        })
     }
 
     try {
@@ -96,6 +147,9 @@ exports.set_user_preferences = async (req, res, next) => {
         let locationUpdated = false;
         let radiusUpdated = false;
         let sessionLimitUpdated = false;
+        let dkwUpdated = false;
+        let udkwUpdated = false;
+        let ikwUpdated = false;
 
         if (reqEmail !== undefined) {
             updateEmail = await User.update(
@@ -152,6 +206,39 @@ exports.set_user_preferences = async (req, res, next) => {
             }
         }
 
+       if (reqDkw !== undefined) {
+           updateDkw = await User.update(
+               { _id: id },
+               { $set: { "preferences.dkw": dkw }}
+           )
+           if (updateDkw.nModified === 1 ) {
+               updatedPreferences++
+               dkwUpdated = true
+           }
+       }
+
+        if (reqUdkw !== undefined) {
+            updateUdkw = await User.update(
+                { _id: id },
+                { $set: { "preferences.udkw": udkw }}
+            )
+            if (updateUdkw.nModified === 1 ) {
+                updatedPreferences++
+                udkwUpdated = true
+            }
+        }
+
+        if (reqIkw !== undefined) {
+            updatedIkw = await User.update(
+                { _id: id },
+                { $set: { "preferences.ikw": ikw }}
+            )
+            if (updatedIkw.nModified === 1 ) {
+                updatedPreferences++
+                ikwUpdated = true
+            }
+        }
+
         if (updatedPreferences > 0) {
             await res.status(200).json({
                 success: true,
@@ -162,7 +249,10 @@ exports.set_user_preferences = async (req, res, next) => {
                     job_title: jobTitleUpdated,
                     location: locationUpdated,
                     radius: radiusUpdated,
-                    session_limit: sessionLimitUpdated
+                    session_limit: sessionLimitUpdated,
+                    dkw: dkwUpdated,
+                    udkw: udkwUpdated,
+                    ikw: ikwUpdated
                 }
             })
         } else if (updatedPreferences < 1) {
