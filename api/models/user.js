@@ -16,12 +16,12 @@ const userSchema = mongoose.Schema({
             password: { type: String, required: true }
         },
         totalJobs: {
-            email: {
+            tJ_email: {
                 type: String,
                 unique: true,
                 match: emailRegEx
             },
-            password: { type: String }
+            tJ_password: { type: String }
         }
     },
     preferences: {
