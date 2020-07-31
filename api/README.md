@@ -9,7 +9,7 @@ You must be authenticated to update data from this route; takes bearer token.
 - Takes email and password for totalJobs. Encrypts the password before saving to DB.
 
 - Required and sends through body either of the following:
-    - ```JSON
+    ```JSON
       { 
         "email": "valid@email.com", 
         "pass": "password"
@@ -17,21 +17,21 @@ You must be authenticated to update data from this route; takes bearer token.
     
 - Returns:
     - if successful 
-        - ```JSON
+        ```JSON
           { 
             "status": 200,
             "Success": true, 
             "Message": "Successfully updated totalJobs credentials"
           }  
     - if unsuccessful, error message depends on input, i.e. 'Email or password field empty'
-        - ```JSON
+        ```JSON
           { 
             "status": 400,
             "Success": false, 
             "Message": "Depending on caught error"
           }
     - alternatively, if unable to connect to DB
-        - ```JSON
+        ```JSON
           { 
             "status": 500,
             "Success": false, 
@@ -55,7 +55,7 @@ You must be authenticated to update data from this route; takes bearer token.
     - `{ "ikw": Array }` : type Array (js object), ikw stands for 'interested keywords', an array of single interested keywords. 
     
     - an example request might be:
-    - ```JSON
+    ```JSON
       { 
           "job_title": "Junior Software Engineer",
           "location": "Bath",
@@ -69,7 +69,7 @@ You must be authenticated to update data from this route; takes bearer token.
     
 - Returns:
     - if successful, count will state how many property values have changed and if changed, value of returned preference will state true, otherwise defaults to false.
-        - ```JSON
+        ```JSON
           { 
             "status": 200,
             "Success": true, 
@@ -87,14 +87,14 @@ You must be authenticated to update data from this route; takes bearer token.
             }
           }
     - if unsuccessful, error message depends on input, i.e. 'Invalid radius option. Must be set to either 0, 5, 10, 20 or 30'
-        - ```JSON
+        ```JSON
           { 
             "status": 400,
             "Success": false, 
             "Message": "Depending on caught error"
           }
     - alternatively, if unable to connect to DB
-        - ```JSON
+        ```JSON
           { 
             "status": 500,
             "Success": false, 
