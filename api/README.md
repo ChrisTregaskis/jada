@@ -20,22 +20,22 @@ You must be authenticated to update data from this route; takes bearer token.
         ```JSON
           { 
             "status": 200,
-            "Success": true, 
-            "Message": "Successfully updated totalJobs credentials"
+            "success": true, 
+            "message": "Successfully updated totalJobs credentials"
           }  
     - if unsuccessful, error message depends on input, i.e. 'Email or password field empty'
         ```JSON
           { 
             "status": 400,
-            "Success": false, 
-            "Message": "Depending on caught error"
+            "success": false, 
+            "message": "Depending on caught error"
           }
     - alternatively, if unable to connect to DB
         ```JSON
           { 
             "status": 500,
-            "Success": false, 
-            "Message": "Not able to update document"
+            "success": false, 
+            "message": "Not able to update document"
           }
 
 ### PUT
@@ -72,8 +72,8 @@ You must be authenticated to update data from this route; takes bearer token.
         ```JSON
           { 
             "status": 200,
-            "Success": true, 
-            "Message": "Successfully updated user preferences",
+            "success": true, 
+            "message": "Successfully updated user preferences",
             "preferences_updated": {
               "count": 0,
               "email": false,
@@ -90,13 +90,13 @@ You must be authenticated to update data from this route; takes bearer token.
         ```JSON
           { 
             "status": 400,
-            "Success": false, 
-            "Message": "Depending on caught error"
+            "success": false, 
+            "message": "Depending on caught error"
           }
     - alternatively, if unable to connect to DB
         ```JSON
           { 
             "status": 500,
-            "Success": false, 
-            "Message": "Not able to update document"
+            "success": false, 
+            "message": "Not able to update document"
           }
