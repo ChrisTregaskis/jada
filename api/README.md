@@ -1,7 +1,63 @@
 ## Routes
 - for local development use localhost:8080/whatYouRequire as your URL
 
-### PUT
+- for all routes that require an authenticated token, if authorisation fails for what ever reason, it will return:
+    ```JSON
+      { 
+        "success": "false",
+        "message": "Auth failed"
+      } 
+
+### USERS
+
+#### GET
+**/api/user/:userId**
+
+You must be authenticated to update data from this route; takes bearer token.
+
+- Returns user information
+
+- Requires user id in url parameters
+    
+- Returns:
+    - if successful 
+        ```JSON
+          { 
+            "status": 200,
+            "success": true,
+            "user": {
+                "_id": "5f102df825d2553212c30edf",
+                "first_name": "Joe",
+                "last_name": "Blogs",
+                "jada_email": "joe@blogs.com",
+                "preferences": {
+                    "reporting_email": "jerryjones@help.com",
+                    "job_title": "Junior Software Engineer",
+                    "location": "Dorset",
+                    "radius": 10,
+                    "session_limit": 20,
+                    "dkw": ["Software", "Engineer", "JavaScript"],
+                    "udkw": ["Lead", ".NET"],
+                    "ikw": ["Python", "OOP", "Windows"]
+                }
+            }
+          }  
+    - if unsuccessful
+        ```JSON
+          { 
+            "status": 404,
+            "success": false, 
+            "message": "no valid entry found for user id"
+          }
+    - alternatively, if unable to connect
+        ```JSON
+          { 
+            "status": 500,
+            "success": false, 
+            "error": "Relevant error message"
+          }
+
+#### PUT
 **/api/user/preferences/totalJobs/:userId**
 
 You must be authenticated to update data from this route; takes bearer token.
