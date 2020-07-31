@@ -1,10 +1,16 @@
 const express = require('express');
 const router = express.Router();
-const sessionsController = require('../controllers/sessionsController');
 const checkAuth = require('../middleware/check-auth');
+const getAllSessionsController = require('../controllers/sessions/getAllSessionsController');
+const getSessionController = require('../controllers/sessions/getSessionController');
+const postSessionToDBController = require('../controllers/sessions/postSessionToDBController');
+const totalJobsLogInController = require('../controllers/sessions/totalJobsLogIn/totalJobsLogInController');
 
-router.get('/', checkAuth, sessionsController.get_all_sessions);
-router.post('/', sessionsController.log_session);
-router.get('/:sessionId', checkAuth, sessionsController.get_session);
+router.get('/', checkAuth, getAllSessionsController.get_all_sessions);
+router.post('/', postSessionToDBController.log_session);
+router.get('/:sessionId', checkAuth, getSessionController.get_session);
+
+// session runtime logic
+router.post('/totalJobsLogIn', checkAuth, totalJobsLogInController.totalJobs_logIn);
 
 module.exports = router;
