@@ -141,7 +141,7 @@ You must be authenticated to update data from this route; takes bearer token.
 
 - Takes email and password for totalJobs. Encrypts the password before saving to DB.
 
-- Required and sends through body either of the following:
+- Required and sends through body the following:
     ```JSON
       { 
         "email": "valid@email.com", 
@@ -357,3 +357,62 @@ You must be authenticated to get data from this route; requires token.
             "success": false, 
             "error": "Relevant error message"
           }
+      
+### POST
+**/api/sessions/**
+
+- When logging a session to DB, all the following fields are required.
+
+- Required and sent through body (example):
+    ```JSON
+      {
+        "_id": "5efdbddc2b498306b5f98de8",
+        "session_id": "202007025efdbdc0c3f14b06b7710f5e",
+        "session_date": "2020-07-02",
+        "session_time": "11:58:08",
+        "total_processed": 20,
+        "newly_processed": 8,
+        "successfully_applied": 3,
+        "skipped_applications": 5,
+        "dkw_overview": ["DEVELOPER", "SOFTWARE", "ENGINEER", "GRADUATE"],
+        "dkw_all": ["DEVELOPER", "SOFTWARE", "ENGINEER", "DEVELOPER", "GRADUATE", "ENGINEER", "GRADUATE"],
+        "udkw_overview": ["TRAINEESHIP", "CONSULTANT", "LEAD"],
+        "udkw_all": ["TRAINEESHIP", "CONSULTANT", "LEAD", "LEAD"],
+        "top24_overview": ["JAVA", "SCALA"],
+        "top24_all": ["JAVA", "SCALA", "JAVA", "JAVA"],
+        "locations_overview": ["UK", "MOUNT"],
+        "locations_all": ["UK", "MOUNT", "MOUNT", "UK"]
+      }
+  
+- Returns:
+  - if successful (example) :
+      ```JSON
+        {
+          "status": 200,
+          "message": "Session successfully logged",
+          "loggedSession": { 
+            "_id": "5efdbddc2b498306b5f98de8",
+            "session_id": "202007025efdbdc0c3f14b06b7710f5e",
+            "session_date": "2020-07-02",
+            "session_time": "11:58:08",
+            "total_processed": 20,
+            "newly_processed": 8,
+            "successfully_applied": 3,
+            "skipped_applications": 5,
+            "dkw_overview": ["DEVELOPER", "SOFTWARE", "ENGINEER", "GRADUATE"],
+            "dkw_all": ["DEVELOPER", "SOFTWARE", "ENGINEER", "DEVELOPER", "GRADUATE", "ENGINEER", "GRADUATE"],
+            "udkw_overview": ["TRAINEESHIP", "CONSULTANT", "LEAD"],
+            "udkw_all": ["TRAINEESHIP", "CONSULTANT", "LEAD", "LEAD"],
+            "top24_overview": ["JAVA", "SCALA"],
+            "top24_all": ["JAVA", "SCALA", "JAVA", "JAVA"],
+            "locations_overview": ["UK", "MOUNT"],
+            "locations_all": ["UK", "MOUNT", "MOUNT", "UK"]
+        }
+      }
+  - if unsuccessful
+      ```JSON
+        { 
+          "status": 500,
+          "success": false, 
+          "error": "Relevant error message"
+        }
