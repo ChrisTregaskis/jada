@@ -275,37 +275,37 @@ You must be authenticated to get data from this route; requires token.
 - Returns applications from DB
 - When getting all applications, applications by session id, or by user id, a successful request will return (example) an array of application objects:
     ```JSON
-      { 
-        "response": {
-          "status": 200,
-          "count": 1160,
-          "applications": [
-            {
-                "_id": "5efdbdd52b498306b5f98de3",
-                "user_id": "5f102d3ce9647c31b2f1e922",
-                "session_id": "202007025efdbdc0c3f14b06b7710f5e",
-                "session_date": "2020-07-02",
-                "session_time": "11:58:08",
-                "job_title": "Graduate",
-                "totalJobs_id": "90323856",
-                "apply_attempted": false,
-                "interested": true,
-                "salary": "Competitive",
-                "company": "CGI Group",
-                "job_type": "Permanent",
-                "job_posted": "Today",
-                "location": "Mount Pleasant, Chippenham (SN14), SN14 0GB",
-                "job_url": "https://www.totaljobs.com/job/graduate/cgi-group-job90323856",
-                "job_contact": "Recruitment Team",
-                "totalJobs_ref": "Totaljobs/J0120-0020",
-                "found_dkw": ["SOFTWARE", "AGILE", "GRADUATE"],
-                "found_udkw": [],
-                "found_top24": ["JAVA", "C++", "C#", "PYTHON"]
-            },
-            { }
-          ]
-        }
-      }
+     { 
+       "response": {
+         "status": 200,
+         "count": 1160,
+         "applications": [
+           {
+             "_id": "5efdbdd52b498306b5f98de3",
+             "user_id": "5f102d3ce9647c31b2f1e922",
+             "session_id": "202007025efdbdc0c3f14b06b7710f5e",
+             "session_date": "2020-07-02",
+             "session_time": "11:58:08",
+             "job_title": "Graduate",
+             "totalJobs_id": "90323856",
+             "apply_attempted": false,
+             "interested": true,
+             "salary": "Competitive",
+             "company": "CGI Group",
+             "job_type": "Permanent",
+             "job_posted": "Today",
+             "location": "Mount Pleasant, Chippenham (SN14), SN14 0GB",
+             "job_url": "https://www.totaljobs.com/job/graduate/cgi-group-job90323856",
+             "job_contact": "Recruitment Team",
+             "totalJobs_ref": "Totaljobs/J0120-0020",
+             "found_dkw": ["SOFTWARE", "AGILE", "GRADUATE"],
+             "found_udkw": [],
+             "found_top24": ["JAVA", "C++", "C#", "PYTHON"]
+           },
+           { }
+         ]
+       }
+     }
 
 - When requesting a single application by application id, the response is the same except instead of an array of `applications`, a single `application` is returned. For example:
     ```JSON
@@ -352,6 +352,97 @@ You must be authenticated to get data from this route; requires token.
         "success": false, 
         "error": "Relevant error message"
       }
+
+### POST
+**/api/applications/**
+
+This route adds an application to DB
+
+- When logging an application to DB; 
+    - the following fields are required:
+        - `user_id` : the user's id
+        - `session_id` : the current session the application was processed on
+        - `session_date` : the current session date
+        - `session_time` : the current session time
+        - `job_title` : job title of application
+        - `totalJobs_id` : the id totalJobs uses
+        - `apply_attempted` : whether JADA clicked the 'apply' button on an application
+        - `found_dkw` : an _ARRAY_ of desired keywords found
+        - `found_udkw` : an _ARRAY_ of undesired keywords found
+        - `found_top24` : an _ARRAY_ of interested keywords found
+    - the following fields are optional:
+        - `interested` : a _BOOL_ stating whether the application passed preference criteria
+        - `salary` : a _STRING_ of salary quoted on application (NOT consistently numerical)
+        - `company` : the company associated with the application
+        - `job_type` : whether the role is permanent, part-time, contract etc
+        - `job_posted` : based on the time application processed, how old job post is
+        - `location` : location quoted on application
+        - `job_url` : the job add url
+        - `job_contact` : the contact associated with the application
+        - `totalJobs_ref` : a reference for the application given by totalJob's user (the recruiter)
+
+- An example of an application sent through body (example):
+    ```JSON
+      {
+        "_id": "5efdbdd42b498306b5f98de2",
+        "user_id": "5f102d3ce9647c31b2f1e923",
+        "session_id": "202007025efdbdc0c3f14b06b7710f5r",
+        "session_date": "2020-07-02",
+        "session_time": "11:58:08",
+        "job_title": "Junior Software Developer in Test (SDET)",
+        "totalJobs_id": "90293561",
+        "apply_attempted": true,
+        "interested": true,
+        "salary": "£23000 - £25000 per annum",
+        "company": "Opus Recruitment Solutions Ltd",
+        "job_type": "Permanent",
+        "job_posted": "Posted 6 days ago",
+        "location": "Chippenham",
+        "job_url": "https://www.totaljobs.com/job/software-development-engineer-in-test/opus-recruitment-solutions-ltd-job90293562",
+        "job_contact": "George Aldridge",
+        "totalJobs_ref": "Totaljobs/GA-40",
+        "found_dkw": ["SOFTWARE", "DEVELOPER", "RESTFUL", "AGILE", "ENGINEERING", "JAVASCRIPT", "HTML", "CSS"],
+        "found_udkw": [],
+        "found_top24": ["RUBY", "JAVA", "JAVASCRIPT", "C++", "C#", "HTML", "CSS"]
+      }
+  
+- Returns:
+  - if successful (example) :
+      ```JSON
+        {
+          "status": 200,
+          "message": "Application successfully logged",
+          "loggedApplication": { 
+            "_id": "5efdbdd42b498306b5f98de2",
+            "user_id": "5f102d3ce9647c31b2f1e923",
+            "session_id": "202007025efdbdc0c3f14b06b7710f5r",
+            "session_date": "2020-07-02",
+            "session_time": "11:58:08",
+            "job_title": "Junior Software Developer in Test (SDET)",
+            "totalJobs_id": "90293561",
+            "apply_attempted": true,
+            "interested": true,
+            "salary": "£23000 - £25000 per annum",
+            "company": "Opus Recruitment Solutions Ltd",
+            "job_type": "Permanent",
+            "job_posted": "Posted 6 days ago",
+            "location": "Chippenham",
+            "job_url": "https://www.totaljobs.com/job/software-development-engineer-in-test/opus-recruitment-solutions-ltd-job90293562",
+            "job_contact": "George Aldridge",
+            "totalJobs_ref": "Totaljobs/GA-40",
+            "found_dkw": ["SOFTWARE", "DEVELOPER", "RESTFUL", "AGILE", "ENGINEERING", "JAVASCRIPT", "HTML", "CSS"],
+            "found_udkw": [],
+            "found_top24": ["RUBY", "JAVA", "JAVASCRIPT", "C++", "C#", "HTML", "CSS"]
+        }
+      }
+  - if unsuccessful
+      ```JSON
+        { 
+          "status": 500,
+          "success": false, 
+          "error": "Relevant error message"
+        }
+    
 
 
 ## SESSIONS
