@@ -265,60 +265,93 @@ You must be authenticated to delete user from this route; takes bearer token.
 - DELETE `/api/applications/user/:userId` : deletes all applications with relevant user id
 
 ### GET
-**/api/applications/**
+**/api/applications/** <br>
+**/api/applications/:applicationId** <br>
+**/api/applications/session/:sessionId** <br>
+**/api/applications/user/:userId**
 
 You must be authenticated to get data from this route; requires token.
 
-- Returns all applications from DB
-    
-- Returns:
-    - if successful (example) :
-        ```JSON
-          { 
-            "response": {
-              "status": 200,
-              "count": 1160,
-              "sessions": [
-                {
-                    "_id": "5efdbdd52b498306b5f98de3",
-                    "user_id": "5f102d3ce9647c31b2f1e92b",
-                    "session_id": "202007025efdbdc0c3f14b06b7710f5e",
-                    "session_date": "2020-07-02",
-                    "session_time": "11:58:08",
-                    "job_title": "Graduate",
-                    "totalJobs_id": "90323856",
-                    "apply_attempted": false,
-                    "interested": true,
-                    "salary": "Competitive",
-                    "company": "CGI Group",
-                    "job_type": "Permanent",
-                    "job_posted": "Today",
-                    "location": "Mount Pleasant, Chippenham (SN14), SN14 0GB",
-                    "job_url": "https://www.totaljobs.com/job/graduate/cgi-group-job90323856",
-                    "job_contact": "Recruitment Team",
-                    "totalJobs_ref": "Totaljobs/J0120-0020",
-                    "found_dkw": ["SOFTWARE", "AGILE", "GRADUATE"],
-                    "found_udkw": [],
-                    "found_top24": ["JAVA", "C++", "C#", "PYTHON"]
-                },
-                { }
-              ]
-            }
-          }
-    - if unsuccessful
-        ```JSON
-          { 
-            "status": 404,
-            "success": false, 
-            "message": "no data in db"
-          }
-    - alternatively, if error caught
-        ```JSON
-          { 
-            "status": 500,
-            "success": false, 
-            "error": "Relevant error message"
-          }
+- Returns applications from DB
+- When getting all applications, applications by session id, or by user id, a successful request will return (example) an array of application objects:
+    ```JSON
+      { 
+        "response": {
+          "status": 200,
+          "count": 1160,
+          "applications": [
+            {
+                "_id": "5efdbdd52b498306b5f98de3",
+                "user_id": "5f102d3ce9647c31b2f1e922",
+                "session_id": "202007025efdbdc0c3f14b06b7710f5e",
+                "session_date": "2020-07-02",
+                "session_time": "11:58:08",
+                "job_title": "Graduate",
+                "totalJobs_id": "90323856",
+                "apply_attempted": false,
+                "interested": true,
+                "salary": "Competitive",
+                "company": "CGI Group",
+                "job_type": "Permanent",
+                "job_posted": "Today",
+                "location": "Mount Pleasant, Chippenham (SN14), SN14 0GB",
+                "job_url": "https://www.totaljobs.com/job/graduate/cgi-group-job90323856",
+                "job_contact": "Recruitment Team",
+                "totalJobs_ref": "Totaljobs/J0120-0020",
+                "found_dkw": ["SOFTWARE", "AGILE", "GRADUATE"],
+                "found_udkw": [],
+                "found_top24": ["JAVA", "C++", "C#", "PYTHON"]
+            },
+            { }
+          ]
+        }
+      }
+
+- When requesting a single application by application id, the response is the same except instead of an array of `applications`, a single `application` is returned. For example:
+    ```JSON
+    { 
+      "response": {
+        "status": 200,
+        "count": 1,
+        "application": {
+          "_id": "5efdbdd52b498306b5f98de3",
+          "user_id": "5f102d3ce9647c31b2f1e922",
+          "session_id": "202007025efdbdc0c3f14b06b7710f5e",
+          "session_date": "2020-07-02",
+          "session_time": "11:58:08",
+          "job_title": "Graduate",
+          "totalJobs_id": "90323856",
+          "apply_attempted": false,
+          "interested": true,
+          "salary": "Competitive",
+          "company": "CGI Group",
+          "job_type": "Permanent",
+          "job_posted": "Today",
+          "location": "Mount Pleasant, Chippenham (SN14), SN14 0GB",
+          "job_url": "https://www.totaljobs.com/job/graduate/cgi-group-job90323856",
+          "job_contact": "Recruitment Team",
+          "totalJobs_ref": "Totaljobs/J0120-0020",
+          "found_dkw": [],
+          "found_udkw": [],
+          "found_top24": []
+        }
+      }
+    }
+  
+- if unsuccessful
+    ```JSON
+      { 
+        "status": 404,
+        "success": false, 
+        "message": "no data in db"
+      }
+- alternatively, if error caught
+    ```JSON
+      { 
+        "status": 500,
+        "success": false, 
+        "error": "Relevant error message"
+      }
 
 
 ## SESSIONS
