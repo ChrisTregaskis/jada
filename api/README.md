@@ -13,7 +13,7 @@
 #### GET
 **/api/user/:userId**
 
-You must be authenticated to update data from this route; takes bearer token.
+You must be authenticated to get data from this route; requires token.
 
 - Returns user information
 
@@ -57,6 +57,46 @@ You must be authenticated to update data from this route; takes bearer token.
             "error": "Relevant error message"
           }
 
+#### POST
+**/api/user/signup**
+
+- Takes email and password for JADA. Hashes the password before saving to DB and email must be unique.
+
+- Required and sent through body:
+  ```JSON
+    { 
+      "email": "valid@email.com", 
+      "password": "password"
+    }
+  
+- Returns:
+  - if successful 
+      ```JSON
+        {
+            "success": true,
+            "message": "User created",
+            "user": {
+                "_id": "5f27e36e21c43c2d33f3606b",
+                "first_name": "Robert",
+                "last_name": "Randle",
+                "email": "robertrandle@rose.com"
+            }
+        } 
+  - if user email already exists
+      ```JSON
+        { 
+          "status": 422,
+          "success": false,
+          "message": "Email exists"
+        }
+  - alternatively, if unable to connect to save
+      ```JSON
+        { 
+          "status": 500,
+          "success": false, 
+          "message": "Not able to update document"
+        }
+      
 #### PUT
 **/api/user/preferences/totalJobs/:userId**
 
