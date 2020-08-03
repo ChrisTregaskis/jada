@@ -416,3 +416,13 @@ You must be authenticated to get data from this route; requires token.
           "success": false, 
           "error": "Relevant error message"
         }
+    
+## APPLICATIONS
+
+- GET `/api/applications/` : returns all applications
+- GET `/api/applications/:applicationId` : returns an application
+- GET `/api/applications/session/:sessionId` : returns all applications with stated session id
+- GET `/api/applications/user/:userId` : returns all applications with stated user id
+- POST `/api/applications/` : logs an application to DB
+- DELETE `/api/applications/:applicationId` : deletes an application based on application id
+- DELETE `/api/applications/user/:userId` : deletes all applications with relevant user id
