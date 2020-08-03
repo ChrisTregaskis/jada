@@ -17,7 +17,7 @@
 - PUT `/api/user/preferences/:userId` : updates user preferences
 - DELETE `/api/user/:userId` : deletes a single user
 
-#### GET
+### GET
 **/api/user/:userId**
 
 You must be authenticated to get data from this route; requires token.
@@ -64,7 +64,7 @@ You must be authenticated to get data from this route; requires token.
             "error": "Relevant error message"
           }
 
-#### POST
+### POST
 **/api/user/signup**
 
 - Takes email and password for JADA. Hashes the password before saving to DB and email must be unique.
@@ -106,7 +106,7 @@ You must be authenticated to get data from this route; requires token.
           "message": "Not able to update document"
         }
     
-#### POST
+### POST
 **/api/user/login**
 
 - Requires email and password for JADA log in and returns a bearer token if successful. 
@@ -134,7 +134,7 @@ You must be authenticated to get data from this route; requires token.
           "message": "Auth failed"
         } 
       
-#### PUT
+### PUT
 **/api/user/preferences/totalJobs/:userId**
 
 You must be authenticated to update data from this route; takes bearer token.
@@ -171,7 +171,7 @@ You must be authenticated to update data from this route; takes bearer token.
             "message": "Not able to update document"
           }
 
-#### PUT
+### PUT
 **/api/user/preferences/:userId**
 
 You must be authenticated to update data from this route; takes bearer token.
@@ -234,7 +234,7 @@ You must be authenticated to update data from this route; takes bearer token.
             "message": "Not able to update document"
           }
 
-#### DELETE
+### DELETE
 **/api/user/:userId**
 
 You must be authenticated to delete user from this route; takes bearer token.
@@ -263,14 +263,12 @@ You must be authenticated to delete user from this route; takes bearer token.
 - Runtime logic:
     - POST `/api/sessions/totalJobsLogIn` : navigates to totalJobs and logs in
 
-#### GET
+### GET
 **/api/sessions/**
 
 You must be authenticated to get data from this route; requires token.
 
 - Returns all sessions data
-
-- Requires user id in url parameters
     
 - Returns:
     - if successful (example) :
@@ -298,7 +296,7 @@ You must be authenticated to get data from this route; requires token.
                   "locations_overview": ["UK", "MOUNT"],
                   "locations_all": ["UK", "MOUNT", "MOUNT", "UK"]
                 },
-                { ... }
+                { }
               ]
             }
           }
@@ -309,7 +307,50 @@ You must be authenticated to get data from this route; requires token.
             "success": false, 
             "message": "no data in db"
           }
-    - alternatively, 
+    - alternatively, if error caught
+        ```JSON
+          { 
+            "status": 500,
+            "success": false, 
+            "error": "Relevant error message"
+          }
+      
+### GET
+**/api/sessions/:sessionId**
+
+You must be authenticated to get data from this route; requires token.
+
+- Requires session id in url parameters and returns relevant session data.
+    
+- Returns:
+    - if successful (example) :
+        ```JSON
+          { 
+            "_id": "5efdbddc2b498306b5f98de8",
+            "session_id": "202007025efdbdc0c3f14b06b7710f5e",
+            "session_date": "2020-07-02",
+            "session_time": "11:58:08",
+            "total_processed": 20,
+            "newly_processed": 8,
+            "successfully_applied": 3,
+            "skipped_applications": 5,
+            "dkw_overview": ["DEVELOPER", "SOFTWARE", "ENGINEER", "GRADUATE"],
+            "dkw_all": ["DEVELOPER", "SOFTWARE", "ENGINEER", "DEVELOPER", "GRADUATE", "ENGINEER", "GRADUATE"],
+            "udkw_overview": ["TRAINEESHIP", "CONSULTANT", "LEAD"],
+            "udkw_all": ["TRAINEESHIP", "CONSULTANT", "LEAD", "LEAD"],
+            "top24_overview": ["JAVA", "SCALA"],
+            "top24_all": ["JAVA", "SCALA", "JAVA", "JAVA"],
+            "locations_overview": ["UK", "MOUNT"],
+            "locations_all": ["UK", "MOUNT", "MOUNT", "UK"]
+          }
+    - if unsuccessful
+        ```JSON
+          { 
+            "status": 404,
+            "success": false, 
+            "message": "no data in db"
+          }
+    - alternatively, if error caught
         ```JSON
           { 
             "status": 500,
