@@ -478,9 +478,6 @@ These routes delete applications from the DB.
 - GET `/api/sessions/:sessionId` : returns a single session
 - POST `/api/sessions/` : logs a session to DB
 
-- Runtime logic:
-    - POST `/api/sessions/totalJobsLogIn` : navigates to totalJobs and logs in
-
 ### GET
 **/api/sessions/**
 
@@ -635,3 +632,50 @@ You must be authenticated to get data from this route; requires token.
           "error": "Relevant error message"
         }
     
+## SYSTEM RUNTIME LOGIC (via sessions route)
+
+- POST `/api/sessions/totalJobsLogIn` : navigates to totalJobs and logs in
+
+
+- You must be authenticated to call this route; requires bearer token.
+- If authentication passes and log in details accepted, route successfully logs in the user's totalJobs account and lands on totalJobs homepage 
+
+- Email and encoded password required (example):
+    ```JSON
+      {
+        "email": "joe@blogs.com",
+        "encPss": "5efdbddc2b498306b5f98de8"
+      }
+  
+- Returns:
+  - if successful (example) :
+      ```JSON
+        {
+          "status": 200,
+          "message": "Session successfully logged",
+          "loggedSession": { 
+            "_id": "5efdbddc2b498306b5f98de8",
+            "session_id": "202007025efdbdc0c3f14b06b7710f5e",
+            "session_date": "2020-07-02",
+            "session_time": "11:58:08",
+            "total_processed": 20,
+            "newly_processed": 8,
+            "successfully_applied": 3,
+            "skipped_applications": 5,
+            "dkw_overview": ["DEVELOPER", "SOFTWARE", "ENGINEER", "GRADUATE"],
+            "dkw_all": ["DEVELOPER", "SOFTWARE", "ENGINEER", "DEVELOPER", "GRADUATE", "ENGINEER", "GRADUATE"],
+            "udkw_overview": ["TRAINEESHIP", "CONSULTANT", "LEAD"],
+            "udkw_all": ["TRAINEESHIP", "CONSULTANT", "LEAD", "LEAD"],
+            "top24_overview": ["JAVA", "SCALA"],
+            "top24_all": ["JAVA", "SCALA", "JAVA", "JAVA"],
+            "locations_overview": ["UK", "MOUNT"],
+            "locations_all": ["UK", "MOUNT", "MOUNT", "UK"]
+        }
+      }
+  - if unsuccessful
+      ```JSON
+        { 
+          "status": 500,
+          "success": false, 
+          "error": "Relevant error message"
+        }
