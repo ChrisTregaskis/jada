@@ -254,6 +254,73 @@ You must be authenticated to delete user from this route; takes bearer token.
           "message": "Auth failed"
         }
     
+## APPLICATIONS
+
+- GET `/api/applications/` : returns all applications
+- GET `/api/applications/:applicationId` : returns an application
+- GET `/api/applications/session/:sessionId` : returns all applications with stated session id
+- GET `/api/applications/user/:userId` : returns all applications with stated user id
+- POST `/api/applications/` : logs an application to DB
+- DELETE `/api/applications/:applicationId` : deletes an application based on application id
+- DELETE `/api/applications/user/:userId` : deletes all applications with relevant user id
+
+### GET
+**/api/applications/**
+
+You must be authenticated to get data from this route; requires token.
+
+- Returns all applications from DB
+    
+- Returns:
+    - if successful (example) :
+        ```JSON
+          { 
+            "response": {
+              "status": 200,
+              "count": 1160,
+              "sessions": [
+                {
+                    "_id": "5efdbdd52b498306b5f98de3",
+                    "user_id": "5f102d3ce9647c31b2f1e92b",
+                    "session_id": "202007025efdbdc0c3f14b06b7710f5e",
+                    "session_date": "2020-07-02",
+                    "session_time": "11:58:08",
+                    "job_title": "Graduate",
+                    "totalJobs_id": "90323856",
+                    "apply_attempted": false,
+                    "interested": true,
+                    "salary": "Competitive",
+                    "company": "CGI Group",
+                    "job_type": "Permanent",
+                    "job_posted": "Today",
+                    "location": "Mount Pleasant, Chippenham (SN14), SN14 0GB",
+                    "job_url": "https://www.totaljobs.com/job/graduate/cgi-group-job90323856",
+                    "job_contact": "Recruitment Team",
+                    "totalJobs_ref": "Totaljobs/J0120-0020",
+                    "found_dkw": ["SOFTWARE", "AGILE", "GRADUATE"],
+                    "found_udkw": [],
+                    "found_top24": ["JAVA", "C++", "C#", "PYTHON"]
+                },
+                { }
+              ]
+            }
+          }
+    - if unsuccessful
+        ```JSON
+          { 
+            "status": 404,
+            "success": false, 
+            "message": "no data in db"
+          }
+    - alternatively, if error caught
+        ```JSON
+          { 
+            "status": 500,
+            "success": false, 
+            "error": "Relevant error message"
+          }
+
+
 ## SESSIONS
 
 - GET `/api/sessions/` : returns all sessions
@@ -417,12 +484,3 @@ You must be authenticated to get data from this route; requires token.
           "error": "Relevant error message"
         }
     
-## APPLICATIONS
-
-- GET `/api/applications/` : returns all applications
-- GET `/api/applications/:applicationId` : returns an application
-- GET `/api/applications/session/:sessionId` : returns all applications with stated session id
-- GET `/api/applications/user/:userId` : returns all applications with stated user id
-- POST `/api/applications/` : logs an application to DB
-- DELETE `/api/applications/:applicationId` : deletes an application based on application id
-- DELETE `/api/applications/user/:userId` : deletes all applications with relevant user id
