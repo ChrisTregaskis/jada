@@ -272,7 +272,7 @@ You must be authenticated to delete user from this route; takes bearer token.
 
 You must be authenticated to get data from this route; requires token.
 
-- Returns applications from DB
+These routes return applications from the DB.
 - When getting all applications, applications by session id, or by user id, a successful request will return (example) an array of application objects:
     ```JSON
      { 
@@ -443,7 +443,34 @@ This route adds an application to DB
           "error": "Relevant error message"
         }
     
+### DELETE
+**/api/applications/:applicationId** <br>
+**/api/applications/user/:userId**
 
+You must be authenticated to delete data via this route; requires token.
+
+These routes delete applications from the DB.
+
+- Requires either an application id or user id to be passed through url parameters.
+
+- When deleting a single application, if successful:
+  ```JSON
+    {
+      "status": 200,
+      "message": "application deleted"
+    } 
+
+- When deleteing multiple applications via a user id, if successful (example):
+  ```JSON
+    {
+      "status": 200,
+      "user_id": "5f102d3ce9647c31b2f1e923",
+      "message": "Deleted 34"
+    } 
+  
+- if unsuccessful 
+  ```JSON
+    { "error": "Relevant error message" }
 
 ## SESSIONS
 
