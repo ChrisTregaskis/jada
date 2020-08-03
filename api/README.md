@@ -65,7 +65,9 @@ You must be authenticated to get data from this route; requires token.
 - Required and sent through body:
   ```JSON
     { 
-      "email": "valid@email.com", 
+      "first_name": "Joe",
+      "last_name": "Blogs",
+      "email": "joe@blogs.com", 
       "password": "password"
     }
   
@@ -73,14 +75,14 @@ You must be authenticated to get data from this route; requires token.
   - if successful 
       ```JSON
         {
-            "success": true,
-            "message": "User created",
-            "user": {
-                "_id": "5f27e36e21c43c2d33f3606b",
-                "first_name": "Robert",
-                "last_name": "Randle",
-                "email": "robertrandle@rose.com"
-            }
+          "success": true,
+          "message": "User created",
+          "user": {
+            "_id": "5f27e36e21c43c2d33f3606b",
+            "first_name": "Joe",
+            "last_name": "Blogs",
+            "email": "joe@blogs.com"
+          }
         } 
   - if user email already exists
       ```JSON
@@ -96,6 +98,34 @@ You must be authenticated to get data from this route; requires token.
           "success": false, 
           "message": "Not able to update document"
         }
+    
+#### POST
+**/api/user/login**
+
+- Requires email and password for JADA log in and returns a bearer token if successful. 
+
+- Required and sent through body (example):
+  ```JSON
+    { 
+      "email": "joe@blogs.com", 
+      "password": "password"
+    }
+  
+- Returns:
+  - if successful 
+      ```JSON
+        {
+          "success": true,
+          "message": "Auth successful",
+          "user_id": "5f102df825d2553212c30edf",
+          "token": "token"
+        } 
+  - if unsuccessful 
+      ```JSON
+        { 
+          "success": "false",
+          "message": "Auth failed"
+        } 
       
 #### PUT
 **/api/user/preferences/totalJobs/:userId**
