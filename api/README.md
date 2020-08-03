@@ -10,6 +10,13 @@
 
 ### USERS
 
+- GET `/api/user/:userId` : returns user data
+- POST `/api/user/signup` : creates a user
+- POST `/api/user/login` : returns an authenticated bearer token
+- PUT `/api/user/preferences/totalJobs/:userId` : updates totalJobs log in credentials
+- PUT `/api/user/preferences/:userId` : updates user preferences
+- DELETE `/api/user/:userId` : deletes a single user
+
 #### GET
 **/api/user/:userId**
 
@@ -226,3 +233,23 @@ You must be authenticated to update data from this route; takes bearer token.
             "success": false, 
             "message": "Not able to update document"
           }
+
+#### DELETE
+**/api/user/:userId**
+
+You must be authenticated to delete user from this route; takes bearer token.
+
+- Requires userId to be passed through url parameters.
+  
+- Returns:
+  - if successful 
+      ```JSON
+        {
+          "message": "User deleted"
+        } 
+  - if unsuccessful 
+      ```JSON
+        { 
+          "success": "false",
+          "message": "Auth failed"
+        } 
