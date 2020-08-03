@@ -1,4 +1,4 @@
-## Routes
+# Routes
 - for local development use localhost:8080/whatYouRequire as your URL
 
 - for all routes that require an authenticated token, if authorisation fails for what ever reason, it will return:
@@ -8,7 +8,7 @@
         "message": "Auth failed"
       } 
 
-### USERS
+## USERS
 
 - GET `/api/user/:userId` : returns user data
 - POST `/api/user/signup` : creates a user
@@ -33,20 +33,20 @@ You must be authenticated to get data from this route; requires token.
             "status": 200,
             "success": true,
             "user": {
-                "_id": "5f102df825d2553212c30edf",
-                "first_name": "Joe",
-                "last_name": "Blogs",
-                "jada_email": "joe@blogs.com",
-                "preferences": {
-                    "reporting_email": "jerryjones@help.com",
-                    "job_title": "Junior Software Engineer",
-                    "location": "Dorset",
-                    "radius": 10,
-                    "session_limit": 20,
-                    "dkw": ["Software", "Engineer", "JavaScript"],
-                    "udkw": ["Lead", ".NET"],
-                    "ikw": ["Python", "OOP", "Windows"]
-                }
+              "_id": "5f102df825d2553212c30edf",
+              "first_name": "Joe",
+              "last_name": "Blogs",
+              "jada_email": "joe@blogs.com",
+              "preferences": {
+                "reporting_email": "jerryjones@help.com",
+                "job_title": "Junior Software Engineer",
+                "location": "Dorset",
+                "radius": 10,
+                "session_limit": 20,
+                "dkw": ["Software", "Engineer", "JavaScript"],
+                "udkw": ["Lead", ".NET"],
+                "ikw": ["Python", "OOP", "Windows"]
+              }
             }
           }  
     - if unsuccessful
@@ -171,7 +171,7 @@ You must be authenticated to update data from this route; takes bearer token.
             "message": "Not able to update document"
           }
 
-### PUT
+#### PUT
 **/api/user/preferences/:userId**
 
 You must be authenticated to update data from this route; takes bearer token.
@@ -190,13 +190,13 @@ You must be authenticated to update data from this route; takes bearer token.
     - an example request might be:
     ```JSON
       { 
-          "job_title": "Junior Software Engineer",
-          "location": "Bath",
-          "radius": 20,
-          "session_limit": 40,
-          "dkw": ["Software", "Engineer", "JavaScript", "Agile", "PHP"],
-          "udkw": ["Lead", ".NET", "C#"],
-          "ikw": ["Python", "OOP", "Windows", "LAMP"]
+        "job_title": "Junior Software Engineer",
+        "location": "Bath",
+        "radius": 20,
+        "session_limit": 40,
+        "dkw": ["Software", "Engineer", "JavaScript", "Agile", "PHP"],
+        "udkw": ["Lead", ".NET", "C#"],
+        "ikw": ["Python", "OOP", "Windows", "LAMP"]
       }
     
     
@@ -252,4 +252,67 @@ You must be authenticated to delete user from this route; takes bearer token.
         { 
           "success": "false",
           "message": "Auth failed"
-        } 
+        }
+    
+## SESSIONS
+
+- GET `/api/sessions/` : returns all sessions
+- GET `/api/sessions/:sessionId` : returns a single session
+- POST `/api/sessions/` : logs a session to DB
+
+- Runtime logic:
+    - POST `/api/sessions/totalJobsLogIn` : navigates to totalJobs and logs in
+
+#### GET
+**/api/sessions/**
+
+You must be authenticated to get data from this route; requires token.
+
+- Returns all sessions data
+
+- Requires user id in url parameters
+    
+- Returns:
+    - if successful (example) :
+        ```JSON
+          { 
+            "response": {
+              "status": 200,
+              "count": 39,
+              "sessions": [
+                {
+                  "_id": "5efdbddc2b498306b5f98de8",
+                  "session_id": "202007025efdbdc0c3f14b06b7710f5e",
+                  "session_date": "2020-07-02",
+                  "session_time": "11:58:08",
+                  "total_processed": 20,
+                  "newly_processed": 8,
+                  "successfully_applied": 3,
+                  "skipped_applications": 5,
+                  "dkw_overview": ["DEVELOPER", "SOFTWARE", "ENGINEER", "GRADUATE"],
+                  "dkw_all": ["DEVELOPER", "SOFTWARE", "ENGINEER", "DEVELOPER", "GRADUATE", "ENGINEER", "GRADUATE"],
+                  "udkw_overview": ["TRAINEESHIP", "CONSULTANT", "LEAD"],
+                  "udkw_all": ["TRAINEESHIP", "CONSULTANT", "LEAD", "LEAD"],
+                  "top24_overview": ["JAVA", "SCALA"],
+                  "top24_all": ["JAVA", "SCALA", "JAVA", "JAVA"],
+                  "locations_overview": ["UK", "MOUNT"],
+                  "locations_all": ["UK", "MOUNT", "MOUNT", "UK"]
+                },
+                { ... }
+              ]
+            }
+          }
+    - if unsuccessful
+        ```JSON
+          { 
+            "status": 404,
+            "success": false, 
+            "message": "no data in db"
+          }
+    - alternatively, 
+        ```JSON
+          { 
+            "status": 500,
+            "success": false, 
+            "error": "Relevant error message"
+          }
