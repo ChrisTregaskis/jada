@@ -1,5 +1,6 @@
 const { validate_type, sanitize_string } = require('../../../Entities/validationEntity')
-const { enter_job_title, enter_location, enter_radius } = require('../runJobSearch/runJobSearchActions');
+const { enter_job_title, enter_location,
+    enter_radius, click_search } = require('../runJobSearch/runJobSearchActions');
 
 exports.enter_search = async (req, res, next) => {
     const reqJobTitle = req.body.job_title;
@@ -35,9 +36,10 @@ exports.enter_search = async (req, res, next) => {
     }
 
     try {
-        await enter_job_title(jobTitle)
-        await enter_location(location)
-        await enter_radius(reqRadius)
+        await enter_job_title(jobTitle);
+        await enter_location(location);
+        await enter_radius(reqRadius);
+        await click_search();
         await res.status(200).json({
             success: true,
             search: {

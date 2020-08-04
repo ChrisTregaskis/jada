@@ -1,3 +1,4 @@
+const WebDriver = require('selenium-webdriver');
 const localWebDriver = require('../webDriver');
 const driver = localWebDriver.get_driver();
 
@@ -18,5 +19,14 @@ exports.enter_location = async (location) => {
 exports.enter_radius = async (radius) => {
     try {
         await driver.findElement({ id: 'LocationType' }).sendKeys(radius);
+    } catch (err) { throw err }
+}
+
+exports.click_search = async () => {
+    try {
+        await driver.findElement({ id: 'search-button' }).click();
+        await driver.wait(WebDriver.until.elementLocated({
+            xpath: '//*[@id="scroll-to-top"]'
+        }), 20000);
     } catch (err) { throw err }
 }
