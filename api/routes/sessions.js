@@ -13,6 +13,6 @@ router.get('/:sessionId', checkAuth, getSessionController.get_session);
 
 // SYSTEM RUNTIME LOGIC
 router.post('/totalJobsLogIn', checkAuth, totalJobsLogInController.totalJobs_logIn);
-router.post('/runJobSearch', runJobSearchController.enter_search);
+router.post('/runJobSearch', checkAuth, runJobSearchController.enter_search);
 
 module.exports = router;
