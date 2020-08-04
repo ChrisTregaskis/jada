@@ -2,6 +2,11 @@ const WebDriver = require('selenium-webdriver');
 const localWebDriver = require('../webDriver');
 const driver = localWebDriver.get_driver();
 
+exports.valid_url = async () => {
+    let title = await driver.getTitle();
+    return title === 'Jobs | UK Job Search | Find your perfect job - totaljobs';
+}
+
 exports.enter_job_title = async (jobTitle) => {
     try {
         await driver.findElement({ id: 'keywords' }).clear();

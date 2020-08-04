@@ -1,6 +1,6 @@
 const { validate_type, sanitize_string } = require('../../../Entities/validationEntity')
 const { enter_job_title, enter_location,
-    enter_radius, click_search } = require('../runJobSearch/runJobSearchActions');
+    enter_radius, click_search, valid_url } = require('../runJobSearch/runJobSearchActions');
 
 exports.enter_search = async (req, res, next) => {
     const reqJobTitle = req.body.job_title;
@@ -13,7 +13,7 @@ exports.enter_search = async (req, res, next) => {
         await res.status(400).json({
             success: false,
             message: 'Incorrect data types submitted',
-            expected_types: {
+            expected: {
                 job_title: "string",
                 location: "string",
                 radius: "number"
@@ -33,6 +33,23 @@ exports.enter_search = async (req, res, next) => {
             expected_options: [0, 5, 10, 20, 30]
         })
         return
+    }
+
+    try {
+        let validUrl = await valid_url();
+        if (!validUrl) {
+            await res.status(500).json({
+                success: false,
+                message: 'System error; required system url not found'
+            })
+            return
+        }
+    } catch (err) {
+        console.log(err)
+        await res.status(500).json({
+            success: false,
+            message: 'system error'
+        })
     }
 
     try {
