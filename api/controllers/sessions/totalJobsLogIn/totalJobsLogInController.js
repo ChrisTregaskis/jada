@@ -1,5 +1,5 @@
-const { navigate_to_website, navigate_to_loginPage, jobSeeker_login } = require('./totalJobsLogInActions');
 const { validate_email } = require('../../../Entities/validationEntity')
+const { navigate_to_website, navigate_to_loginPage, jobSeeker_login } = require('./totalJobsLogInActions');
 
 exports.totalJobs_logIn = async (req, res, next) => {
     const requestEmail = req.body.email;
@@ -43,7 +43,11 @@ exports.totalJobs_logIn = async (req, res, next) => {
                 message: 'Log in unsuccessful, please check email and password'
             })
         } else {
-            await res.status(500).json({ error: err })
+            console.log(err)
+            await res.status(500).json({
+                success: false,
+                message: 'system error'
+            })
         }
     }
 
