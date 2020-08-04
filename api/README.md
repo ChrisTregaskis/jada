@@ -634,10 +634,13 @@ You must be authenticated to get data from this route; requires token.
     
     
     
-## SYSTEM RUNTIME LOGIC (via sessions route)
+## SYSTEM SESSION RUNTIME LOGIC (via sessions route)
 
 - POST `/api/sessions/totalJobsLogIn` : navigates to totalJobs and logs in
+- POST `/api/sessions/runJobSearch` : enters given search preferences and lands on results page
 
+### POST
+**/api/sessions/totalJobsLogIn**
 
 - You must be authenticated to call this route; requires bearer token.
 - If authentication passes and log in details accepted, route successfully logs in the user's totalJobs account and lands on totalJobs homepage 
@@ -667,4 +670,48 @@ You must be authenticated to get data from this route; requires token.
         { 
           "success": false, 
           "error": "Relevant error message"
+        }
+    
+### POST
+**/api/sessions/runJobSearch**
+
+- You must be authenticated to call this route; requires bearer token.
+- If authentication passes and search parameters accepted, route applies search preferences and lands on totalJobs result page
+
+- The route requires a job title, location and radius
+- The route also requires to be on the correct url. Page title must match `Jobs | UK Job Search | Find your perfect job - totaljobs` otherwise returns system error and exits execution
+- Job title and location must be strings
+- Radius must be a number and either be; 0, 5, 10, 20 or 30
+- An example request:
+    ```JSON
+      {
+        "job_title": "Junior Software Engineer",
+        "location": "Bristol",
+        "radius": 5
+      }
+  
+- Returns: 
+  - if successful, once navigation finished executing (example) :
+      ```JSON
+        {
+          "success": true,
+          "search": {
+            "job_title": "Junior Software Engineer",
+            "location": "Bristol",
+            "radius": 20
+          },
+          "message": "Successfully entered search and found results"
+        }
+  - if validation unsuccessful (example)
+      ```JSON
+        { 
+          "success": false,
+          "message": "Incorrect radius number",
+          "expected_options": [0, 5, 10, 20, 30]
+        }
+  - if connection unsuccessful
+      ```JSON
+        { 
+          "success": false,
+          "message": "system error"
         }
