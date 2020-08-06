@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const { get_user_kw, check_logged_in } = require('./processSearchResultsActions');
+const { get_user_kw, check_logged_in, get_total_results, get_session_detail } = require('./processSearchResultsActions');
 
 exports.process_results = async (req, res, next) => {
     const request = req.body;
@@ -31,9 +31,18 @@ exports.process_results = async (req, res, next) => {
         })
     }
 
-    const userKeyWords = await get_user_kw(userId);
+    let totalResults = await get_total_results();
+    if (!(totalResults)) {
+        return await res.status(500).json({
+            status: 500,
+            success: false,
+            message: 'System error, total results not found'
+        })
+    }
 
-    // create session data
+    const sessionDetail = await get_session_detail();
+    const userKeyWords = await get_user_kw(userId);
+    let totalProcessed = 0;
 
     // set next button boolean
 
@@ -63,6 +72,12 @@ exports.process_results = async (req, res, next) => {
 
     await res.status(200).json({
         message: 'yellow',
+        total_results: totalResults,
+        session_detail: {
+            session_id: sessionDetail.session_id,
+            session_date: sessionDetail.session_date,
+            session_time: sessionDetail.session_time
+        },
         user_key_words: {
             dkw: userKeyWords.dkw,
             udkw: userKeyWords.udkw,
