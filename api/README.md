@@ -659,7 +659,7 @@ You must be authenticated to get data from this route; requires token.
           "success": true,
           "message": "Successfully logged into totalJobs account"
         }
-  - if validation unsuccessful, i.e. `{ status: 400, success: false, message: "Invalid email" }` 
+  - if validation unsuccessful, i.e. `{ "status": 400, "success": false, "message": "Invalid email" }` 
       ```JSON
         { 
           "success": false, 
