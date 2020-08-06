@@ -2,7 +2,8 @@ const aesjs = require('aes-js');
 const voltPackage = require('../../../volt');
 const volt = voltPackage.open_volt();
 const WebDriver = require('selenium-webdriver');
-const driver = new WebDriver.Builder().forBrowser('chrome').build();
+const localWebDriver = require('../webDriver');
+const driver = localWebDriver.get_driver()
 
 exports.navigate_to_website = async function() {
     const url = 'https://www.totaljobs.com/';
