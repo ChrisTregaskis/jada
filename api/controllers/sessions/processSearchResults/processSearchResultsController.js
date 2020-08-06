@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const { get_user_preferences } = require('./processSearchResultsActions');
 
 exports.process_results = async (req, res, next) => {
     const request = req.body;
@@ -22,7 +23,8 @@ exports.process_results = async (req, res, next) => {
     }
 
     // save preferences into variable (ie dkw)
-
+    const userPreferences = await get_user_preferences(userId);
+    
     // check we are logged into totalJobs ((otherwise applying won't work) Do I create another route that applies?)
 
     // check valid url (that we are on the results page)
@@ -55,5 +57,12 @@ exports.process_results = async (req, res, next) => {
 
     // return session report and save to db
 
-    await res.status(200).json({ message: 'yellow' })
+    await res.status(200).json({
+        message: 'yellow',
+        userPreferences: {
+            dkw: userPreferences.dkw,
+            udkw: userPreferences.udkw,
+            ikw: userPreferences.ikw
+        }
+    })
 }
