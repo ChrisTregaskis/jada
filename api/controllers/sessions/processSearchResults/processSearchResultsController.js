@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const { get_user_preferences } = require('./processSearchResultsActions');
+const { get_user_kw, check_logged_in } = require('./processSearchResultsActions');
 
 exports.process_results = async (req, res, next) => {
     const request = req.body;
@@ -18,16 +18,20 @@ exports.process_results = async (req, res, next) => {
         return await res.status(400).json({
             status: 400,
             success: false,
-            message: 'invalid user id'
+            message: 'Invalid user id'
         })
     }
 
-    // save preferences into variable (ie dkw)
-    const userPreferences = await get_user_preferences(userId);
-    
-    // check we are logged into totalJobs ((otherwise applying won't work) Do I create another route that applies?)
+    const loggedIn = await check_logged_in();
+    if (!(loggedIn)) {
+        return await res.status(500).json({
+            status: 500,
+            success: false,
+            message: 'System error, user not logged into totalJobs'
+        })
+    }
 
-    // check valid url (that we are on the results page)
+    const userKeyWords = await get_user_kw(userId);
 
     // create session data
 
@@ -59,10 +63,10 @@ exports.process_results = async (req, res, next) => {
 
     await res.status(200).json({
         message: 'yellow',
-        userPreferences: {
-            dkw: userPreferences.dkw,
-            udkw: userPreferences.udkw,
-            ikw: userPreferences.ikw
+        user_key_words: {
+            dkw: userKeyWords.dkw,
+            udkw: userKeyWords.udkw,
+            ikw: userKeyWords.ikw
         }
     })
 }
