@@ -2,12 +2,12 @@ const localWebDriver = require('../../../webDriver');
 const driver = localWebDriver.get_driver();
 
 exports.grab_job_description = async () => {
-    let jobDescription
+    let jobDesc
     try {
-        jobDescription = await driver.findElement({ className: 'job-description' }).getText();
+        jobDesc = await driver.findElement({ className: 'job-description' }).getText();
         return {
             success: true,
-            data: jobDescription
+            data: jobDesc
         }
     } catch (err) {
         console.log(err)

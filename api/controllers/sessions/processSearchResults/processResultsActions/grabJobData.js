@@ -3,15 +3,15 @@ const { grab_job_salary } = require('./grabJobData/grabJobSalary');
 
 exports.grab_all_job_data = async () => {
     try {
-        let jobDescription = await grab_job_description();
-        if (!(jobDescription.success)) { return jobDescription }
+        let jobDesc = await grab_job_description();
+        if (!(jobDesc.success)) { return jobDesc }
 
         let salary = await grab_job_salary();
         if (salary.error) { return salary }
 
         return {
             success: true,
-            job_description: jobDescription.data,
+            job_desc: jobDesc.data,
             salary: salary
         }
     } catch (err) {

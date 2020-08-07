@@ -44,7 +44,7 @@ exports.process_results = async (userId)  => {
             }
         }
         // generate found key words
-        let jD = jobData.job_description;
+        let jD = jobData.job_desc;
         let jDUpperCase = jD.toUpperCase();
 
         // check desirability, log and apply accordingly
