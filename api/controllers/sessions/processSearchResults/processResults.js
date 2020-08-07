@@ -6,6 +6,7 @@ const { get_user_kw } = require('./processResultsActions/getUserKw');
 const { get_processed_job_ids } = require('./processResultsActions/getProcessedJobIds');
 const { grab_page_tJ_ids } = require('./processResultsActions/grabPageTotalJobIds');
 const { open_job_add } = require('./processResultsActions/openJobAdd');
+const { grab_all_job_data } = require('./processResultsActions/grabJobData');
 
 exports.process_results = async (userId)  => {
     // let nextBtn = await next_btn_status();
@@ -34,7 +35,17 @@ exports.process_results = async (userId)  => {
         let mainWindow = await driver.getWindowHandle();
         let openJobAdd = await open_job_add(mainWindow, jobIds[i])
 
-        // grab all job add page detail
+
+        let jobData = await grab_all_job_data();
+        if (!(jobData.success)) {
+            return {
+                success: false,
+                message: 'System error grabbing job data'
+            }
+        }
+        // generate found key words
+        let jD = jobData.job_description;
+        let jDUpperCase = jD.toUpperCase();
 
         // check desirability, log and apply accordingly
 
