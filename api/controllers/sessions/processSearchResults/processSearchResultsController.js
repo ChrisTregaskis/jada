@@ -22,6 +22,9 @@ exports.process_results = async (req, res, next) => {
     // }
     //
     const processed_results = await process_results(userId);
+    if (!(processed_results.success)) {
+        return await res.status(500).json(failed_res_500(processed_results.message))
+    }
 
     let totalResults = await get_total_results();
     if (!(totalResults)) {
