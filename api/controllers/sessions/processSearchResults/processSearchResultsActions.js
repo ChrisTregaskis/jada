@@ -1,28 +1,20 @@
-const WebDriver = require('selenium-webdriver');
 const localWebDriver = require('../webDriver');
 const driver = localWebDriver.get_driver();
-const mongoose = require('mongoose');
-const User = require('../../../models/user');
 
-exports.failed_res = (status, message) => {
+exports.failed_res_400 = (message) => {
     return {
-        status: status,
+        status: 400,
         success: false,
         message: message
     }
 }
 
-exports.get_user_kw = async (id) => {
-    let userData = await User.findById(id)
-    let userPreferences = {};
-    try {
-        userPreferences = {
-            dkw: userData.preferences.dkw,
-            udkw: userData.preferences.udkw,
-            ikw: userData.preferences.ikw
-        }
-        return userPreferences
-    } catch (err) { throw err }
+exports.failed_res_500 = (message) => {
+    return {
+        status: 500,
+        success: false,
+        message: message
+    }
 }
 
 exports.check_logged_in = async () => {
@@ -50,52 +42,4 @@ exports.get_total_results = async () => {
         return false
     }
 
-}
-
-exports.get_session_detail = () => {
-    const today = new Date();
-
-    let dd = today.getDate();
-    let mm = today.getMonth() + 1;
-    let yyyy = today.getFullYear();
-    if(dd < 10) dd = '0' + dd;
-    if(mm < 10) mm = '0' + mm;
-    let date = yyyy+'-'+mm+'-'+dd;
-
-    let hh = today.getHours();
-    let min = today.getMinutes();
-    let sec = today.getSeconds();
-    if(hh < 10) hh = '0' + hh;
-    if(min < 10) min = '0' + min;
-    if(sec < 10) sec = '0' + sec;
-    let time = `${hh}:${min}:${sec}`;
-
-    let session_id = yyyy+ mm + dd + mongoose.Types.ObjectId();
-
-    return {
-        session_date: date,
-        session_time: time,
-        session_id: session_id
-    }
-}
-
-exports.next_btn_status = async () => {
-    try {
-        let nextBtnElement;
-        nextBtnElement = await driver.findElements({ css: '.pagination .next' });
-
-        if (nextBtnElement.length > 0) {
-            nextBtnElement = await driver.findElement({ css: '.pagination .next' });
-            let nextBtnClasses = await nextBtnElement.getAttribute('class');
-            let explodedBtnClasses = nextBtnClasses.split(" ");
-            let disabledNextBtn = explodedBtnClasses.includes('disabled')
-            return !disabledNextBtn;
-        } else {
-            return false
-        }
-
-    } catch (err) {
-        console.log(err)
-        return 'error'
-    }
 }
