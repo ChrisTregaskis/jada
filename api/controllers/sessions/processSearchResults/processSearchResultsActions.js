@@ -4,6 +4,14 @@ const driver = localWebDriver.get_driver();
 const mongoose = require('mongoose');
 const User = require('../../../models/user');
 
+exports.failed_res = (status, message) => {
+    return {
+        status: status,
+        success: false,
+        message: message
+    }
+}
+
 exports.get_user_kw = async (id) => {
     let userData = await User.findById(id)
     let userPreferences = {};

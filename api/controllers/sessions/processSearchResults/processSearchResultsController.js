@@ -1,43 +1,31 @@
 const mongoose = require('mongoose');
-const { get_user_kw, check_logged_in, get_total_results, get_session_detail } = require('./processSearchResultsActions');
+const { get_user_kw, check_logged_in, get_total_results, get_session_detail,
+    failed_res } = require('./processSearchResultsActions');
 
 exports.process_results = async (req, res, next) => {
     const request = req.body;
     const reqUserId = req.body.user_id;
 
     if (!(request.hasOwnProperty("user_id"))) {
-        return await res.status(400).json({
-            status: 400,
-            success: false,
-            message: 'user_id is required'
-        })
+        return await res.status(400).json(failed_res(400, 'user_id is required'));
     }
 
     const userId = reqUserId.trim();
     if (!(mongoose.Types.ObjectId.isValid(userId))) {
-        return await res.status(400).json({
-            status: 400,
-            success: false,
-            message: 'Invalid user id'
-        })
+        return await res.status(400).json(failed_res(400, 'Invalid user id'));
     }
 
     const loggedIn = await check_logged_in();
     if (!(loggedIn)) {
-        return await res.status(500).json({
-            status: 500,
-            success: false,
-            message: 'System error, user not logged into totalJobs'
-        })
+        return await res.status(500)
+            .json(failed_res(500, 'System error, user not logged into totalJobs'));
     }
 
     let totalResults = await get_total_results();
     if (!(totalResults)) {
-        return await res.status(500).json({
-            status: 500,
-            success: false,
-            message: 'System error, total results not found'
-        })
+        return await res.status(500).json(failed_res(500, 'System error, total results not found'));
+    } else {
+        totalResults = parseInt(totalResults)
     }
 
     const sessionDetail = await get_session_detail();
