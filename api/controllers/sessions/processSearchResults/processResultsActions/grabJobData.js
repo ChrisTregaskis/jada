@@ -1,6 +1,7 @@
 const { grab_job_description } = require('./grabJobData/grabJobDescription');
 const { grab_job_salary } = require('./grabJobData/grabJobSalary');
 const { grab_job_title } = require('./grabJobData/grabJobTitle');
+const { grab_job_company } = require('./grabJobData/grabJobCompany');
 
 exports.grab_all_job_data = async () => {
     try {
@@ -13,12 +14,15 @@ exports.grab_all_job_data = async () => {
         let salary = await grab_job_salary();
         if (salary.error) { return salary }
 
+        let company = await grab_job_company();
+        if (company.error) { return company }
+
         return {
             success: true,
             job_desc: jobDesc.data,
             job_title: jobTitle.data,
-            salary: salary
-
+            salary: salary.data,
+            company: company.data
         }
     } catch (err) {
         console.log(err)
