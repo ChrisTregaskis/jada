@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const { get_user_kw, check_logged_in, get_total_results, get_session_detail,
-    failed_res } = require('./processSearchResultsActions');
+    failed_res, next_btn_status } = require('./processSearchResultsActions');
 
 exports.process_results = async (req, res, next) => {
     const request = req.body;
@@ -32,7 +32,12 @@ exports.process_results = async (req, res, next) => {
     const userKeyWords = await get_user_kw(userId);
     let totalProcessed = 0;
 
-    // set next button boolean
+    let nextBtn = await next_btn_status();
+    if (nextBtn === 'error') {
+        return await res.status(500)
+            .json(failed_res(500, 'System error, next button element not found'));
+    }
+    console.log(nextBtn)
 
     // process job adds per page loop:
 
