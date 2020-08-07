@@ -46,7 +46,7 @@ exports.process_results = async (userId)  => {
         // generate found key words
         let jD = jobData.job_desc;
         let jDUpperCase = jD.toUpperCase();
-
+        console.log(jobData.company)
         // check desirability, log and apply accordingly
 
         totalProcessed++
