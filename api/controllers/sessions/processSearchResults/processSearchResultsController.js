@@ -16,10 +16,12 @@ exports.process_results = async (req, res, next) => {
         return await res.status(400).json(failed_res_400('Invalid user id'));
     }
 
-    const loggedIn = await check_logged_in();
-    if (!(loggedIn)) {
-        return await res.status(500).json(failed_res_500('System error, user not logged into totalJobs'));
-    }
+    // const loggedIn = await check_logged_in();
+    // if (!(loggedIn)) {
+    //     return await res.status(500).json(failed_res_500('System error, user not logged into totalJobs'));
+    // }
+    //
+    const processed_results = await process_results(userId);
 
     let totalResults = await get_total_results();
     if (!(totalResults)) {
@@ -29,7 +31,6 @@ exports.process_results = async (req, res, next) => {
     }
 
     // process job adds per page loop:
-    const processed_results = await process_results(userId);
 
     // produce session / loop report
 
