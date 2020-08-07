@@ -1,44 +1,61 @@
-const { next_btn_status } = require('./processResultsActions/nextBtnStatus');
+const localWebDriver = require('../webDriver');
+const driver = localWebDriver.get_driver();
+const { next_btn_status, test_page } = require('./processResultsActions/nextBtnStatus');
 const { create_session_detail } = require('./processResultsActions/createSessionDetail');
 const { get_user_kw } = require('./processResultsActions/getUserKw');
+const { get_processed_job_ids } = require('./processResultsActions/getProcessedJobIds');
+const { grab_page_tJ_ids } = require('./processResultsActions/grabPageTotalJobIds');
+const { open_job_add } = require('./processResultsActions/openJobAdd');
 
 exports.process_results = async (userId)  => {
-    let nextBtn = await next_btn_status();
-    if (nextBtn === 'error') {
-        return {
-            success: false,
-            message: 'System error, next button element not found'
-        }
-    }
+    // let nextBtn = await next_btn_status();
+    // if (nextBtn === 'error') {
+    //     return {
+    //         success: false,
+    //         message: 'System error, next button element not found'
+    //     }
+    // }
+
+    let testPage = await test_page();
 
     const sessionDetail = await create_session_detail();
     const userKeyWords = await get_user_kw(userId);
+    const processedJobIds = await get_processed_job_ids(userId);
     let totalProcessed = 0;
+    let jobIds;
+
+
+    ///////////////////////////////////////////---- PAGE LOOP ----/////////////////////////////////////////////////////
+
+    jobIds = await grab_page_tJ_ids();
+
+    for (let i=0; i < jobIds.length; i++) {
+        if (processedJobIds.includes(jobIds[i])) { continue }
+        let mainWindow = await driver.getWindowHandle();
+        let openJobAdd = await open_job_add(mainWindow, jobIds[i])
+
+        // grab all job add page detail
+
+        // check desirability, log and apply accordingly
+
+        totalProcessed++
+        await driver.close();
+        let backToMainWindow = await driver.switchTo().window(mainWindow);
+    }
+
+    // check next button status, if true click to next page, await load and update next button variable
+
+
+    ////////////////////////////////////////////---- PAGE LOOP ----////////////////////////////////////////////////////
 
     // do {
-        // grab all tJ_jobIds and check db if job already processed. Populate array to
-
-        // process tJ_jobIds that aren't already in db loop
-
-            // grab main window id (WebDriver)
-
-            // make sure tJ_jobId exists on page
-
-            // open tJ_jobId in new tab
-
-            // grab all job add page detail
-
-            // check desirability, log and apply accordingly
-
-            // switch back to main window
-
-        // check next button status, if true click to next page, await load and update next button variable
 
     // } while (nextBtn === true)
 
     return {
         success: true,
         message: 'Successfully processed all results',
+        total_processed: totalProcessed,
         session_detail: {
             session_id: sessionDetail.session_id,
             session_date: sessionDetail.session_date,
