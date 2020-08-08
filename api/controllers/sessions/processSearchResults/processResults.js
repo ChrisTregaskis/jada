@@ -9,6 +9,8 @@ const { open_job_add } = require('./processResultsActions/openJobAdd');
 const { grab_all_job_data } = require('./processResultsActions/grabJobData');
 
 exports.process_results = async (userId)  => {
+    let testPage = await test_page();
+
     // let nextBtn = await next_btn_status();
     // if (nextBtn === 'error') {
     //     return {
@@ -17,7 +19,6 @@ exports.process_results = async (userId)  => {
     //     }
     // }
 
-    let testPage = await test_page();
 
     const sessionDetail = await create_session_detail();
     const userKeyWords = await get_user_kw(userId);
