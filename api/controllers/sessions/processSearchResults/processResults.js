@@ -37,7 +37,7 @@ exports.process_results = async (userId)  => {
         let openJobAdd = await open_job_add(mainWindow, jobIds[i])
 
 
-        let jobData = await grab_all_job_data();
+        let jobData = await grab_all_job_data(userId);
         if (!(jobData.success)) {
             return {
                 success: false,
@@ -47,7 +47,7 @@ exports.process_results = async (userId)  => {
         // generate found key words
         let jD = jobData.job_desc;
         let jDUpperCase = jD.toUpperCase();
-        console.log(jobData.company)
+        console.log(jobData.job_type)
         // check desirability, log and apply accordingly
 
         totalProcessed++
