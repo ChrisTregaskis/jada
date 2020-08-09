@@ -39,17 +39,19 @@ exports.grab_all_job_data = async (id, jobUrl) => {
 
         return {
             success: true,
-            job_desc: jobDesc.data,
-            totalJobs_id: id,
-            job_title: jobTitle.data,
-            salary: salary.data,
-            company: company.data,
-            job_type: jobType.data,
-            job_posted: jobPosted.data,
-            location: location.data,
-            job_url: jobUrl,
-            job_contact: contact.data,
-            totalJobs_ref: totalJobsRef.data
+            job_info: {
+                job_desc: jobDesc.data,
+                totalJobs_id: id,
+                job_title: jobTitle.data,
+                salary: salary.data,
+                company: company.data,
+                job_type: jobType.data,
+                job_posted: jobPosted.data,
+                location: location.data,
+                job_url: jobUrl,
+                job_contact: contact.data,
+                totalJobs_ref: totalJobsRef.data
+            }
         }
     } catch (err) {
         console.log(err)
