@@ -1,4 +1,4 @@
-const Applications = require('../../../../models/applicationModel');
+const Applications = require('../../../../../models/applicationModel');
 
 exports.get_processed_job_ids = async (id) => {
     let userApplications;

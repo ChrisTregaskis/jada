@@ -1,4 +1,4 @@
-const User = require('../../../../models/user');
+const User = require('../../../../../models/user');
 
 exports.get_user_kw = async (id) => {
     let userData = await User.findById(id)
