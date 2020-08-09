@@ -7,9 +7,9 @@ exports.grab_job_contact = async () => {
         if (contactElements.length > 0) {
             let contactElement = await driver.findElement({ css: '.contact-reference li'});
             let contactElementString = await contactElement.getText();
-            let contactArrayName = contactElementString.split(" ");
-            let discard = contactArrayName.shift();
-            let contact = contactArrayName.join(" ");
+            let contactArray = contactElementString.split(" ");
+            let discard = contactArray.shift();
+            let contact = contactArray.join(" ");
             return {
                 error: false,
                 success: true,
