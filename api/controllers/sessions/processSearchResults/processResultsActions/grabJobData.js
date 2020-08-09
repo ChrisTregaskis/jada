@@ -6,7 +6,7 @@ const { grab_job_type } = require('./grabJobData/grabJobType');
 const { grab_job_posted } = require('./grabJobData/grabJobPosted');
 const { grab_job_location } = require('./grabJobData/grabJobLocation');
 
-exports.grab_all_job_data = async (id) => {
+exports.grab_all_job_data = async (id, jobUrl) => {
     try {
         let jobDesc = await grab_job_description();
         if (!(jobDesc.success)) { return jobDesc }
@@ -38,7 +38,8 @@ exports.grab_all_job_data = async (id) => {
             company: company.data,
             job_type: jobType.data,
             job_posted: jobPosted.data,
-            location: location.data
+            location: location.data,
+            job_url: jobUrl
         }
     } catch (err) {
         console.log(err)

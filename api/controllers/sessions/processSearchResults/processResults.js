@@ -5,6 +5,7 @@ const { create_session_detail } = require('./processResultsActions/createSession
 const { get_user_kw } = require('./processResultsActions/getUserKw');
 const { get_processed_job_ids } = require('./processResultsActions/getProcessedJobIds');
 const { grab_page_tJ_ids } = require('./processResultsActions/grabPageTotalJobIds');
+const { grab_job_url } = require('./processResultsActions/grabJobUrl');
 const { open_job_add } = require('./processResultsActions/openJobAdd');
 const { grab_all_job_data } = require('./processResultsActions/grabJobData');
 
@@ -34,10 +35,17 @@ exports.process_results = async (userId)  => {
     for (let i=0; i < jobIds.length; i++) {
         if (processedJobIds.includes(jobIds[i])) { continue }
         let mainWindow = await driver.getWindowHandle();
-        let openJobAdd = await open_job_add(mainWindow, jobIds[i])
+        let jobUrl = await grab_job_url(jobIds[i]).then((url) => { return url.data})
+        let openJobAdd = await open_job_add(mainWindow, jobUrl)
+        if (openJobAdd.error) {
+            return {
+                success: false,
+                message: 'System error grabbing job url'
+            }
+        }
 
 
-        let jobData = await grab_all_job_data(userId);
+        let jobData = await grab_all_job_data(userId, jobUrl);
         if (!(jobData.success)) {
             return {
                 success: false,
@@ -47,7 +55,7 @@ exports.process_results = async (userId)  => {
         // generate found key words
         let jD = jobData.job_desc;
         let jDUpperCase = jD.toUpperCase();
-        console.log(jobData.location)
+        console.log(jobData.job_url)
         // check desirability, log and apply accordingly
 
         totalProcessed++
