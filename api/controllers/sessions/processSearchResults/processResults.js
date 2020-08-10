@@ -8,6 +8,7 @@ const { grab_job_url } = require('./processResultsActions/grabJobUrl');
 const { open_job_add } = require('./processResultsActions/openJobAdd');
 const { grab_all_job_data } = require('./processResultsActions/grabJobData');
 const { key_word_finder } = require('./processResultsActions/keyWordFinder');
+const { post_application } = require('./processResultsActions/dataBaseRequests/postApplication');
 
 exports.process_results = async (userId)  => {
     let testPage = await test_page();
@@ -24,7 +25,6 @@ exports.process_results = async (userId)  => {
     const sessionDetail = await create_session_detail();
     const processedJobIds = await get_processed_job_ids(userId);
     let totalProcessed = 0;
-    let foundKw = {};
     let jobIds;
 
 
@@ -34,6 +34,7 @@ exports.process_results = async (userId)  => {
 
     for (let i=0; i < jobIds.length; i++) {
         if (processedJobIds.includes(jobIds[i])) { continue }
+
         let mainWindow = await driver.getWindowHandle();
         let jobUrl = await grab_job_url(jobIds[i]).then((url) => { return url.data})
         let openJobAdd = await open_job_add(mainWindow, jobUrl)
@@ -44,7 +45,7 @@ exports.process_results = async (userId)  => {
             }
         }
 
-        let jobData = await grab_all_job_data(userId, jobUrl);
+        let jobData = await grab_all_job_data(jobIds[i], jobUrl);
         if (!(jobData.success)) {
             return {
                 success: false,
@@ -54,12 +55,18 @@ exports.process_results = async (userId)  => {
 
         let jD = jobData.job_info.job_desc;
         let jDUpperCase = jD.toUpperCase();
-        foundKw = await key_word_finder(jDUpperCase, userId);
+        let foundKw = await key_word_finder(jDUpperCase, userId);
+        let dkw = foundKw.found_dkw;
+        let udkw = foundKw.found_udkw;
 
-        // check desirability, log and apply accordingly
-        console.log('***************************************************')
-        console.log(foundKw)
+        let desired = dkw.length > 0 && udkw.length === 0;
+        let applied = false
+        if (desired) {
+            // apply to job method
+            applied = true
+        }
 
+        let loggedApplication = await post_application(sessionDetail, userId, jobData, foundKw, desired, applied)
 
         totalProcessed++
         await driver.close();
@@ -83,7 +90,6 @@ exports.process_results = async (userId)  => {
             session_id: sessionDetail.session_id,
             session_date: sessionDetail.session_date,
             session_time: sessionDetail.session_time
-        },
-        user_key_words: foundKw
+        }
     }
 }
