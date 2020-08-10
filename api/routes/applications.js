@@ -10,6 +10,8 @@ const getApplicationController = require('../controllers/applications/getApplica
 const deleteApplicationController = require('../controllers/applications/deleteApplicationController');
 const deleteApplicationsByUserIdController =
     require('../controllers/applications/deleteApplicationsByUserIdController');
+const deleteApplicationsBySessionIdController =
+    require('../controllers/applications/deleteApplicationsBySessionIdController');
 
 router.get('/', checkAuth, getAllApplicationsController.get_all_applications);
 router.get('/:applicationId', checkAuth, getApplicationController.get_application);
@@ -18,5 +20,6 @@ router.get('/user/:userId', checkAuth, getApplicationsByUserIdController.get_by_
 router.post('/', postApplicationToDBController.log_application);
 router.delete('/:applicationId', checkAuth, deleteApplicationController.delete_application);
 router.delete('/user/:userId', checkAuth, deleteApplicationsByUserIdController.delete_applications_by_user_id);
+router.delete('/session/:sessionId', checkAuth, deleteApplicationsBySessionIdController.delete_applications_by_session_id);
 
 module.exports = router;
