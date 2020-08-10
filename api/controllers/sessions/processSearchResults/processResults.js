@@ -2,12 +2,12 @@ const localWebDriver = require('../webDriver');
 const driver = localWebDriver.get_driver();
 const { next_btn_status, test_page } = require('./processResultsActions/nextBtnStatus');
 const { create_session_detail } = require('./processResultsActions/createSessionDetail');
-const { get_user_kw } = require('./processResultsActions/dataBaseRequests/getUserKw');
 const { get_processed_job_ids } = require('./processResultsActions/dataBaseRequests/getProcessedJobIds');
 const { grab_page_tJ_ids } = require('./processResultsActions/grabPageTotalJobIds');
 const { grab_job_url } = require('./processResultsActions/grabJobUrl');
 const { open_job_add } = require('./processResultsActions/openJobAdd');
 const { grab_all_job_data } = require('./processResultsActions/grabJobData');
+const { key_word_finder } = require('./processResultsActions/keyWordFinder');
 
 exports.process_results = async (userId)  => {
     let testPage = await test_page();
@@ -22,9 +22,9 @@ exports.process_results = async (userId)  => {
 
 
     const sessionDetail = await create_session_detail();
-    const userKeyWords = await get_user_kw(userId);
     const processedJobIds = await get_processed_job_ids(userId);
     let totalProcessed = 0;
+    let foundKw = {};
     let jobIds;
 
 
@@ -51,11 +51,15 @@ exports.process_results = async (userId)  => {
                 message: 'System error grabbing job data'
             }
         }
-        // generate found key words
+
         let jD = jobData.job_info.job_desc;
         let jDUpperCase = jD.toUpperCase();
-        console.log(jobData.job_info.job_title)
+        foundKw = await key_word_finder(jDUpperCase, userId);
+
         // check desirability, log and apply accordingly
+        console.log('***************************************************')
+        console.log(foundKw)
+
 
         totalProcessed++
         await driver.close();
@@ -80,10 +84,6 @@ exports.process_results = async (userId)  => {
             session_date: sessionDetail.session_date,
             session_time: sessionDetail.session_time
         },
-        user_key_words: {
-            dkw: userKeyWords.dkw,
-            udkw: userKeyWords.udkw,
-            ikw: userKeyWords.ikw
-        }
+        user_key_words: foundKw
     }
 }
