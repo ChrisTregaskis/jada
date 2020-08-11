@@ -1,7 +1,11 @@
 const mongoose = require('mongoose');
-const { check_logged_in, get_total_results, failed_res,
-    get_search_parameters, generate_session_report } = require('./processSearchResultsActions');
 const { process_results } = require('./processResults');
+const { failed_res } = require('./processSearchResultsActions/failedRes');
+const { check_logged_in } = require('./processSearchResultsActions/checkLoggedIn');
+const { grab_total_results } = require('./processSearchResultsActions/grabTotalResults');
+const { grab_search_params } = require('./processSearchResultsActions/grabSearchParams');
+const { generate_session_report } = require('./processSearchResultsActions/generateSessionReport');
+
 
 exports.process_results = async (req, res, next) => {
     const request = req.body;
@@ -26,14 +30,14 @@ exports.process_results = async (req, res, next) => {
         return await res.status(500).json(failed_res(500, processed_results.message))
     }
 
-    let totalResults = await get_total_results();
+    let totalResults = await grab_total_results();
     if (!(totalResults)) {
         return await res.status(500).json(failed_res(500, 'System error, total results not found'));
     } else {
         totalResults = parseInt(totalResults)
     }
 
-    let searchParams = await get_search_parameters();
+    let searchParams = await grab_search_params();
     if (!(searchParams.success)) {
         return await res.status(500).json(failed_res(500, searchParams.message));
     }
