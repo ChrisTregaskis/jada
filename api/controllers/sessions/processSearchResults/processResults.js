@@ -31,7 +31,6 @@ exports.process_results = async (userId)  => {
         jobIds = await grab_page_tJ_ids();
 
         for (let i=0; i < jobIds.length; i++) {
-            sessionJobIds.push(jobIds[i])
             if (processedJobIds.includes(jobIds[i])) { continue }
 
             let mainWindow = await driver.getWindowHandle();

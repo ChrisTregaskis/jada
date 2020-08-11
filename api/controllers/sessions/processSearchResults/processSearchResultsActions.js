@@ -1,17 +1,10 @@
 const localWebDriver = require('../webDriver');
 const driver = localWebDriver.get_driver();
+const Applications = require('../../../models/applicationModel');
 
-exports.failed_res_400 = (message) => {
+exports.failed_res = (status, message) => {
     return {
-        status: 400,
-        success: false,
-        message: message
-    }
-}
-
-exports.failed_res_500 = (message) => {
-    return {
-        status: 500,
+        status: status,
         success: false,
         message: message
     }
@@ -40,6 +33,57 @@ exports.get_total_results = async () => {
     } catch (err) {
         console.log(err)
         return false
+    }
+
+}
+
+exports.get_search_parameters = async () => {
+    try {
+        let jTElement = await driver.findElement({ id: 'keywords' });
+        let jobTitle = await jTElement.getAttribute('value');
+
+        let lElement = await driver.findElement({ id: 'location' });
+        let location = await lElement.getAttribute('value');
+
+        let rBtnGroupElement = await driver.findElement({ css: '.radius-button-group span' });
+        let radius = await rBtnGroupElement.getText();
+
+        return {
+            success: true,
+            data: {
+                job_title: jobTitle,
+                location: location,
+                radius: radius
+            }
+        }
+    } catch (err) {
+        console.log(err)
+        return {
+            success: false,
+            message: 'System error, failed to find search parameters',
+            error: err
+        }
+    }
+}
+
+exports.generate_session_report = async (sessionId) => {
+    try {
+        let applications = await Applications.find({ session_id: sessionId})
+
+
+        return {
+            success: true,
+            data: {
+                applications: applications
+            }
+        }
+    } catch (err) {
+        console.log(err)
+        return {
+            success: false,
+            message: 'System error, failed to generate session report',
+            error: err
+        }
     }
 
 }
