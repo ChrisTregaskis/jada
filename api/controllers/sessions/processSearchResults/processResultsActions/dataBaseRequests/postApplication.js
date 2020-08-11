@@ -25,6 +25,17 @@ exports.post_application = async (sessionDetail, userId, jobData, foundKeyWords,
         found_ikw: foundKeyWords.found_ikw
     })
 
-    let savedApplication = await application.save();
-    console.log(savedApplication)
+    try {
+        let savedApplication = await application.save();
+        if (savedApplication) {
+            return { success: true }
+        }
+    } catch (err) {
+        console.log(err)
+        return {
+            success: false,
+            error: err
+        }
+    }
+
 }

@@ -9,78 +9,101 @@ const { open_job_add } = require('./processResultsActions/openJobAdd');
 const { grab_all_job_data } = require('./processResultsActions/grabJobData');
 const { key_word_finder } = require('./processResultsActions/keyWordFinder');
 const { post_application } = require('./processResultsActions/dataBaseRequests/postApplication');
+const { next_results_page } = require('./processResultsActions/nextResultsPage');
 
 exports.process_results = async (userId)  => {
     let testPage = await test_page();
 
-    // let nextBtn = await next_btn_status();
-    // if (nextBtn === 'error') {
-    //     return {
-    //         success: false,
-    //         message: 'System error, next button element not found'
-    //     }
-    // }
-
+    let nextBtn = await next_btn_status();
+    if (nextBtn === 'error') {
+        return {
+            success: false,
+            message: 'System error, next button element not found'
+        }
+    }
 
     const sessionDetail = await create_session_detail();
     const processedJobIds = await get_processed_job_ids(userId);
     let totalProcessed = 0;
     let jobIds;
 
+    do {
+        jobIds = await grab_page_tJ_ids();
 
-    ///////////////////////////////////////////---- PAGE LOOP ----/////////////////////////////////////////////////////
+        for (let i=0; i < jobIds.length; i++) {
+            sessionJobIds.push(jobIds[i])
+            if (processedJobIds.includes(jobIds[i])) { continue }
 
-    jobIds = await grab_page_tJ_ids();
+            let mainWindow = await driver.getWindowHandle();
+            let jobUrl = await grab_job_url(jobIds[i]).then((url) => { return url.data})
+            let openJobAdd = await open_job_add(mainWindow, jobUrl)
+            if (openJobAdd.error) {
+                return {
+                    success: false,
+                    message: 'System error grabbing job url'
+                }
+            }
 
-    for (let i=0; i < jobIds.length; i++) {
-        if (processedJobIds.includes(jobIds[i])) { continue }
+            let jobData = await grab_all_job_data(jobIds[i], jobUrl);
+            if (!(jobData.success)) {
+                return {
+                    success: false,
+                    message: 'System error grabbing job data'
+                }
+            }
 
-        let mainWindow = await driver.getWindowHandle();
-        let jobUrl = await grab_job_url(jobIds[i]).then((url) => { return url.data})
-        let openJobAdd = await open_job_add(mainWindow, jobUrl)
-        if (openJobAdd.error) {
-            return {
-                success: false,
-                message: 'System error grabbing job url'
+            let jD = jobData.job_info.job_desc;
+            let jDUpperCase = jD.toUpperCase();
+            let foundKw = await key_word_finder(jDUpperCase, userId);
+            let dkw = foundKw.found_dkw;
+            let udkw = foundKw.found_udkw;
+
+            let desired = dkw.length > 0 && udkw.length === 0;
+            let applied = false
+            if (desired) {
+                // apply to job method
+                // let applyToJob;
+                // if (!applyToJob.success) {
+                //     return {
+                //         success: false,
+                //         message: 'System error applying to job'
+                //     }
+                // } else if (applyToJob.success) {
+                //     applied = true
+                // }
+            }
+
+            let loggedApplication = await post_application(sessionDetail, userId, jobData, foundKw, desired, applied)
+            if (!loggedApplication.success) {
+                return {
+                    success: false,
+                    message: 'System error saving application to data base'
+                }
+            }
+
+            totalProcessed++
+            await driver.close();
+            let backToMainWindow = await driver.switchTo().window(mainWindow);
+        }
+
+        if (nextBtn) {
+            let nextPage = await next_results_page();
+            if (!nextPage) {
+                return {
+                    success: false,
+                    message: 'System error, failure loading next results page'
+                }
+            }
+            nextBtn = await next_btn_status();
+            if (nextBtn === 'error') {
+                return {
+                    success: false,
+                    message: 'System error, next button element not found'
+                }
             }
         }
 
-        let jobData = await grab_all_job_data(jobIds[i], jobUrl);
-        if (!(jobData.success)) {
-            return {
-                success: false,
-                message: 'System error grabbing job data'
-            }
-        }
-
-        let jD = jobData.job_info.job_desc;
-        let jDUpperCase = jD.toUpperCase();
-        let foundKw = await key_word_finder(jDUpperCase, userId);
-        let dkw = foundKw.found_dkw;
-        let udkw = foundKw.found_udkw;
-
-        let desired = dkw.length > 0 && udkw.length === 0;
-        let applied = false
-        if (desired) {
-            // apply to job method
-            applied = true
-        }
-
-        let loggedApplication = await post_application(sessionDetail, userId, jobData, foundKw, desired, applied)
-
-        totalProcessed++
-        await driver.close();
-        let backToMainWindow = await driver.switchTo().window(mainWindow);
-    }
-
-    // check next button status, if true click to next page, await load and update next button variable
-
-
-    ////////////////////////////////////////////---- PAGE LOOP ----////////////////////////////////////////////////////
-
-    // do {
-
-    // } while (nextBtn === true)
+    } while (nextBtn === true)
 
     return {
         success: true,
