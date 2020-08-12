@@ -31,7 +31,10 @@ exports.process_results = async (userId)  => {
         jobIds = await grab_page_tJ_ids();
 
         for (let i=0; i < jobIds.length; i++) {
-            if (processedJobIds.includes(jobIds[i])) { continue }
+            if (processedJobIds.includes(jobIds[i])) {
+                totalProcessed++
+                continue
+            }
 
             let mainWindow = await driver.getWindowHandle();
             let jobUrl = await grab_job_url(jobIds[i]).then((url) => { return url.data})
@@ -70,6 +73,7 @@ exports.process_results = async (userId)  => {
                 // } else if (applyToJob.success) {
                 //     applied = true
                 // }
+                applied = true
             }
 
             let loggedApplication = await post_application(sessionDetail, userId, jobData, foundKw, desired, applied)

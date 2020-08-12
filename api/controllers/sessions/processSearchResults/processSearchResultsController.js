@@ -43,8 +43,10 @@ exports.process_results = async (req, res, next) => {
     }
     // process job adds per page loop:
 
-    // produce session / loop report
-    let sessionReport = await generate_session_report(processed_results.session_detail.session_id)
+
+    let sessionId = processed_results.session_detail.session_id;
+    let totalProcessed = processed_results.total_processed;
+    let sessionReport = await generate_session_report(sessionId, totalProcessed)
     if (!(sessionReport.success)) {
         return await res.status(500).json(failed_res(500, sessionReport.message))
     }
