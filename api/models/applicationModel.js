@@ -21,7 +21,7 @@ const applicationSchema = mongoose.Schema({
     totalJobs_ref: { type: String },
     found_dkw: { type: Array, required: true },
     found_udkw: { type: Array, required: true },
-    found_top24: { type: Array, required: true }
+    found_ikw: { type: Array, required: true }
 })
 
 module.exports = mongoose.model('Application', applicationSchema);
