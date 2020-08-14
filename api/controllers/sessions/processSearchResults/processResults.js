@@ -26,6 +26,7 @@ exports.process_results = async (userId)  => {
     const processedJobIds = await get_processed_job_ids(userId);
     let totalProcessed = 0;
     let jobIds;
+    let jobData;
 
     do {
         jobIds = await grab_page_tJ_ids();
@@ -46,7 +47,7 @@ exports.process_results = async (userId)  => {
                 }
             }
 
-            let jobData = await grab_all_job_data(jobIds[i], jobUrl);
+            jobData = await grab_all_job_data(jobIds[i], jobUrl);
             if (!(jobData.success)) {
                 return {
                     success: false,
@@ -106,6 +107,8 @@ exports.process_results = async (userId)  => {
             }
         }
 
+        console.log('processed uno')
+
     } while (nextBtn === true)
 
     return {
@@ -116,6 +119,7 @@ exports.process_results = async (userId)  => {
             session_id: sessionDetail.session_id,
             session_date: sessionDetail.session_date,
             session_time: sessionDetail.session_time
-        }
+        },
+        last_job_data: jobData
     }
 }
