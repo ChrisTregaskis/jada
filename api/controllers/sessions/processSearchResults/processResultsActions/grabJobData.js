@@ -14,26 +14,41 @@ exports.grab_all_job_data = async (id, jobUrl) => {
         let jobJSON = await grab_job_JSON();
         if (jobJSON.error) { return jobJSON }
 
+        let jobTitle = jobJSON.data.job_schema.title;
+        let salary = jobJSON.data.agnostic_analytics.JobSalary;
+        let company = jobJSON.data.job_schema.hiringOrganization.name;
+        let jobType = jobJSON.data.job_schema.employmentType;
+        let jobPosted = jobJSON.data.job_schema.datePosted;
+        let location = jobJSON.data.job_schema.jobLocation.addressLocality;
+
+        if (jobTitle === undefined) {
+            let grabJobTitle = await grab_job_title();
+            if (!(grabJobTitle.success)) { return jobTitle }
+            jobTitle = grabJobTitle.data
+        } else if (salary === undefined) {
+            let grabSalary = await grab_job_salary();
+            if (grabSalary.error) { return salary }
+            salary = grabSalary.data
+        } else if (company === undefined) {
+            let grabCompany = await grab_job_company();
+            if (grabCompany.error) { return company }
+            company = grabCompany.data
+        } else if (jobType === undefined) {
+            let grabJobType = await grab_job_type();
+            if (grabJobType.error) { return jobType }
+            jobType = grabJobType.data
+        } else if (jobPosted === undefined) {
+            let grabJobPosted = await grab_job_posted();
+            if (grabJobPosted.error) { return jobPosted }
+            jobPosted = grabJobPosted.data
+        } else if (location === undefined) {
+            let grabLocation = await grab_job_location();
+            if (grabLocation.error) { return location }
+            location = grabLocation.data
+        }
+
         let jobDesc = await grab_job_description();
         if (!(jobDesc.success)) { return jobDesc }
-
-        // let jobTitle = await grab_job_title();
-        // if (!(jobTitle.success)) { return jobTitle }
-
-        let salary = await grab_job_salary();
-        if (salary.error) { return salary }
-
-        // let company = await grab_job_company();
-        // if (company.error) { return company }
-
-        let jobType = await grab_job_type();
-        if (jobType.error) { return jobType }
-
-        // let jobPosted = await grab_job_posted();
-        // if (jobPosted.error) { return jobPosted }
-
-        // let location = await grab_job_location();
-        // if (location.error) { return location }
 
         let contact = await grab_job_contact();
         if (contact.error) { return contact }
@@ -41,19 +56,17 @@ exports.grab_all_job_data = async (id, jobUrl) => {
         let totalJobsRef = await grab_totalJobs_ref();
         if (totalJobsRef.error) { return totalJobsRef}
 
-        //add validation, if property doesn't exist, try grabbing directly from html as with contact
-
         return {
             success: true,
             job_info: {
                 job_desc: jobDesc.data,
                 totalJobs_id: id,
-                job_title: jobJSON.data.job_schema.title,
-                salary: jobJSON.data.agnostic_analytics.JobSalary,
-                company: jobJSON.data.job_schema.hiringOrganization.name,
-                job_type: jobJSON.data.job_schema.employmentType,
-                job_posted: jobJSON.data.job_schema.datePosted,
-                location: jobJSON.data.job_schema.jobLocation.addressLocality,
+                job_title: jobTitle,
+                salary: salary,
+                company: company,
+                job_type: jobType,
+                job_posted: jobPosted,
+                location: location,
                 job_url: jobUrl,
                 job_contact: contact.data,
                 totalJobs_ref: totalJobsRef.data
