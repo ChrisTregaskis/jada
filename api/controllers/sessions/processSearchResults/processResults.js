@@ -119,7 +119,6 @@ exports.process_results = async (userId)  => {
             session_id: sessionDetail.session_id,
             session_date: sessionDetail.session_date,
             session_time: sessionDetail.session_time
-        },
-        last_job_data: jobData
+        }
     }
 }

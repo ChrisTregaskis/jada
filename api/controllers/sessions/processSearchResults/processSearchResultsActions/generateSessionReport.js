@@ -1,9 +1,8 @@
 const Applications = require('../../../../models/applicationModel');
 
-exports.generate_session_report = async (sessionId, totalProcessed) => {
+exports.generate_session_report = async (userId, sessionDetail, totalProcessed) => {
     try {
-        let applications = await Applications.find({ session_id: sessionId })
-        let applicationOne = applications[0]
+        let applications = await Applications.find({ session_id: sessionDetail.session_id })
         let applied = 0;
         let dkwAll = [];
         let udkwAll = [];
@@ -31,10 +30,10 @@ exports.generate_session_report = async (sessionId, totalProcessed) => {
         return {
             success: true,
             data: {
-                user_id: applicationOne.user_id,
-                session_id: applicationOne.session_id,
-                session_date: applicationOne.session_date,
-                session_time: applicationOne.session_time,
+                user_id: userId,
+                session_id: sessionDetail.session_id,
+                session_date: sessionDetail.session_date,
+                session_time: sessionDetail.session_time,
                 total_processed: totalProcessed,
                 newly_processed: applications.length,
                 successfully_applied: applied,

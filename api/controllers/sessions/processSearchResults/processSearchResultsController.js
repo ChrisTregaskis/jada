@@ -5,6 +5,7 @@ const { check_logged_in } = require('./processSearchResultsActions/checkLoggedIn
 const { grab_total_results } = require('./processSearchResultsActions/grabTotalResults');
 const { grab_search_params } = require('./processSearchResultsActions/grabSearchParams');
 const { generate_session_report } = require('./processSearchResultsActions/generateSessionReport');
+const { post_session_report } = require('../processSearchResults/processResultsActions/dataBaseRequests/postSessionReport');
 
 
 exports.process_results = async (req, res, next) => {
@@ -44,20 +45,18 @@ exports.process_results = async (req, res, next) => {
     // process job adds per page loop:
 
 
-    let sessionId = processed_results.session_detail.session_id;
     let totalProcessed = processed_results.total_processed;
-    let sessionReport = await generate_session_report(sessionId, totalProcessed)
+    let sessionReport = await generate_session_report(userId, processed_results.session_detail, totalProcessed)
     if (!(sessionReport.success)) {
         return await res.status(500).json(failed_res(500, sessionReport.message))
     }
 
-    // return session report and save to db
+    let postSession = await post_session_report(sessionReport.data);
 
     await res.status(200).json({
-        message: 'yellow',
+        success: true,
         total_results: totalResults,
         search_params: searchParams.data,
-        processed_results: processed_results,
-        session_report: sessionReport
+        session_report: sessionReport.data
     })
 }
