@@ -8,6 +8,7 @@ exports.generate_session_report = async (sessionId, totalProcessed) => {
         let dkwAll = [];
         let udkwAll = [];
         let ikwAll = [];
+        let locationAll = [];
 
         for (let i=0; i < applications.length; i++) {
             if (applications[i].applied) {
@@ -17,12 +18,14 @@ exports.generate_session_report = async (sessionId, totalProcessed) => {
             dkwAll.push(...applications[i].found_dkw)
             udkwAll.push(...applications[i].found_udkw)
             ikwAll.push(...applications[i].found_ikw)
+            locationAll.push(applications[i].location)
 
         }
 
         let dkwOverview = remove_duplicates(dkwAll);
         let udkwOverview = remove_duplicates(udkwAll);
         let ikwOverview = remove_duplicates(ikwAll);
+        let locationsOverview = remove_duplicates(locationAll);
         let skippedApplications = applications.length - applied;
 
         return {
@@ -42,8 +45,8 @@ exports.generate_session_report = async (sessionId, totalProcessed) => {
                 udkw_all: udkwAll,
                 ikw_overview: ikwOverview,
                 ikw_all: ikwAll,
-                locations_overview: '',
-                locations_all : ''
+                locations_overview: locationsOverview,
+                locations_all : locationAll
             }
         }
     } catch (err) {

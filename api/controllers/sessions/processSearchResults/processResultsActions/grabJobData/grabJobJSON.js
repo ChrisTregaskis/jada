@@ -3,12 +3,12 @@ const driver = localWebDriver.get_driver();
 
 exports.grab_job_JSON = async () => {
     try {
+        let agnosticAnalyticsJSON = await driver.executeScript('return analytics');
         let jobJSONElements = await driver.findElements({ id: 'jobPostingSchema' });
         if (jobJSONElements.length > 0) {
             let jobJSONElement = await driver.findElement({ id: 'jobPostingSchema' });
             let jobJSONString = await jobJSONElement.getAttribute('innerHTML');
             let jobJSON = await JSON.parse(jobJSONString);
-            let agnosticAnalyticsJSON = await driver.executeScript('return analytics');
 
             return {
                 error: false,
@@ -23,7 +23,22 @@ exports.grab_job_JSON = async () => {
             return {
                 error: false,
                 success: false,
-                data: 'NOT_FOUND'
+                data: {
+                    job_schema: {
+                        title: 'NOT_FOUND',
+                        hiringOrganization: {
+                            name: 'NOT_FOUND'
+                        },
+                        employmentType: 'NOT_FOUND',
+                        datePosted: 'NOT_FOUND',
+                        jobLocation: {
+                            address: {
+                                addressLocality: 'NOT_FOUND'
+                            }
+                        }
+                    },
+                    agnostic_analytics: agnosticAnalyticsJSON
+                }
             }
         }
 

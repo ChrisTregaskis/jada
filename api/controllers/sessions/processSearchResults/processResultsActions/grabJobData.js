@@ -14,37 +14,59 @@ exports.grab_all_job_data = async (id, jobUrl) => {
         let jobJSON = await grab_job_JSON();
         if (jobJSON.error) { return jobJSON }
 
-        let jobTitle = jobJSON.data.job_schema.title;
-        let salary = jobJSON.data.agnostic_analytics.JobSalary;
-        let company = jobJSON.data.job_schema.hiringOrganization.name;
-        let jobType = jobJSON.data.job_schema.employmentType;
-        let jobPosted = jobJSON.data.job_schema.datePosted;
-        let location = jobJSON.data.job_schema.jobLocation.addressLocality;
-
-        if (jobTitle === undefined) {
+        let jobTitle;
+        if (jobJSON.data.job_schema.title === 'NOT_FOUND') {
             let grabJobTitle = await grab_job_title();
-            if (!(grabJobTitle.success)) { return jobTitle }
+            if (!(grabJobTitle.success)) { return grabJobTitle }
             jobTitle = grabJobTitle.data
-        } else if (salary === undefined) {
+        } else {
+            jobTitle = jobJSON.data.job_schema.title;
+        }
+
+        let salary;
+        if (jobJSON.data.agnostic_analytics.JobSalary === 'NOT_FOUND') {
             let grabSalary = await grab_job_salary();
-            if (grabSalary.error) { return salary }
+            if (grabSalary.error) { return grabSalary }
             salary = grabSalary.data
-        } else if (company === undefined) {
+        } else {
+            salary = jobJSON.data.agnostic_analytics.JobSalary;
+        }
+
+        let company;
+        if (jobJSON.data.job_schema.hiringOrganization.name === 'NOT_FOUND') {
             let grabCompany = await grab_job_company();
-            if (grabCompany.error) { return company }
+            if (grabCompany.error) { return grabCompany }
             company = grabCompany.data
-        } else if (jobType === undefined) {
+        } else {
+            company = jobJSON.data.job_schema.hiringOrganization.name
+        }
+
+        let jobType;
+        if (jobJSON.data.job_schema.employmentType === 'NOT_FOUND') {
             let grabJobType = await grab_job_type();
-            if (grabJobType.error) { return jobType }
+            if (grabJobType.error) { return grabJobType }
             jobType = grabJobType.data
-        } else if (jobPosted === undefined) {
+        } else {
+            jobType = jobJSON.data.job_schema.employmentType;
+        }
+
+        let jobPosted;
+        if (jobJSON.data.job_schema.datePosted === 'NOT_FOUND') {
             let grabJobPosted = await grab_job_posted();
-            if (grabJobPosted.error) { return jobPosted }
+            if (grabJobPosted.error) { return grabJobPosted }
             jobPosted = grabJobPosted.data
-        } else if (location === undefined) {
+        } else {
+            jobPosted = jobJSON.data.job_schema.datePosted
+        }
+
+        let location;
+        if (jobJSON.data.job_schema.jobLocation.address.addressLocality === 'NOT_FOUND' ||
+            jobJSON.data.job_schema.jobLocation.address.addressLocality === '') {
             let grabLocation = await grab_job_location();
-            if (grabLocation.error) { return location }
+            if (grabLocation.error) { return grabLocation }
             location = grabLocation.data
+        } else {
+            location = jobJSON.data.job_schema.jobLocation.address.addressLocality;
         }
 
         let jobDesc = await grab_job_description();
@@ -54,7 +76,7 @@ exports.grab_all_job_data = async (id, jobUrl) => {
         if (contact.error) { return contact }
 
         let totalJobsRef = await grab_totalJobs_ref();
-        if (totalJobsRef.error) { return totalJobsRef}
+        if (totalJobsRef.error) { return totalJobsRef }
 
         return {
             success: true,
