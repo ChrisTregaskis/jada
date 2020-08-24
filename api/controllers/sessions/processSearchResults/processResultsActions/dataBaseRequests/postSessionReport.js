@@ -31,6 +31,7 @@ exports.post_session_report = async (report) => {
         console.log(err)
         return {
             success: false,
+            message: 'Failed to post session report',
             error: err
         }
     }

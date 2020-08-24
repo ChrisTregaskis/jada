@@ -10,9 +10,10 @@ const { grab_all_job_data } = require('./processResultsActions/grabJobData');
 const { key_word_finder } = require('./processResultsActions/keyWordFinder');
 const { post_application } = require('./processResultsActions/dataBaseRequests/postApplication');
 const { next_results_page } = require('./processResultsActions/nextResultsPage');
+const { apply_to_job } = require('./processResultsActions/applyToJob');
 
 exports.process_results = async (userId)  => {
-    let testPage = await test_page();
+    // let testPage = await test_page();
 
     let nextBtn = await next_btn_status();
     if (nextBtn === 'error') {
@@ -64,17 +65,15 @@ exports.process_results = async (userId)  => {
             let desired = dkw.length > 0 && udkw.length === 0;
             let applied = false
             if (desired) {
-                // apply to job method
-                // let applyToJob;
-                // if (!applyToJob.success) {
-                //     return {
-                //         success: false,
-                //         message: 'System error applying to job'
-                //     }
-                // } else if (applyToJob.success) {
-                //     applied = true
-                // }
-                applied = true
+                let applyToJob = await apply_to_job();
+                if (applyToJob.error) {
+                    return {
+                        success: false,
+                        message: 'System error applying to job'
+                    }
+                } else if (applyToJob.success) {
+                    applied = true
+                }
             }
 
             let loggedApplication = await post_application(sessionDetail, userId, jobData, foundKw, desired, applied)
@@ -106,8 +105,6 @@ exports.process_results = async (userId)  => {
                 }
             }
         }
-
-        console.log('processed uno')
 
     } while (nextBtn === true)
 

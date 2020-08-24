@@ -21,14 +21,9 @@ exports.process_results = async (req, res, next) => {
         return await res.status(400).json(failed_res(400,'Invalid user id'));
     }
 
-    // const loggedIn = await check_logged_in();
-    // if (!(loggedIn)) {
-    //     return await res.status(500).json(failed_res_500('System error, user not logged into totalJobs'));
-    // }
-    //
-    const processed_results = await process_results(userId);
-    if (!(processed_results.success)) {
-        return await res.status(500).json(failed_res(500, processed_results.message))
+    const loggedIn = await check_logged_in();
+    if (!(loggedIn)) {
+        return await res.status(500).json(failed_res(500,'System error, user not logged into totalJobs'));
     }
 
     let totalResults = await grab_total_results();
@@ -42,8 +37,11 @@ exports.process_results = async (req, res, next) => {
     if (!(searchParams.success)) {
         return await res.status(500).json(failed_res(500, searchParams.message));
     }
-    // process job adds per page loop:
 
+    const processed_results = await process_results(userId);
+    if (!(processed_results.success)) {
+        return await res.status(500).json(failed_res(500, processed_results.message))
+    }
 
     let totalProcessed = processed_results.total_processed;
     let sessionReport = await generate_session_report(userId, processed_results.session_detail, totalProcessed)
@@ -52,6 +50,9 @@ exports.process_results = async (req, res, next) => {
     }
 
     let postSession = await post_session_report(sessionReport.data);
+    if (!(postSession.success)) {
+        return await res.status(500).json(failed_res(500, sessionReport.message))
+    }
 
     await res.status(200).json({
         success: true,
