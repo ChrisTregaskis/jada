@@ -8,6 +8,7 @@ const totalJobsLogInController = require('../controllers/sessions/totalJobsLogIn
 const runJobSearchController = require('../controllers/sessions/runJobSearch/runJobSearchController');
 const processSearchResultsController =
     require('../controllers/sessions/processSearchResults/processSearchResultsController');
+const sessionTestController = require('../controllers/sessions/sessionTestController');
 
 router.get('/', checkAuth, getAllSessionsController.get_all_sessions);
 router.post('/', postSessionToDBController.log_session);
@@ -17,5 +18,7 @@ router.get('/:sessionId', checkAuth, getSessionController.get_session);
 router.post('/totalJobsLogIn', checkAuth, totalJobsLogInController.totalJobs_logIn);
 router.post('/runJobSearch', checkAuth, runJobSearchController.enter_search);
 router.post('/processSearchResults', checkAuth, processSearchResultsController.process_results);
+
+router.post('/test', sessionTestController.run_test);
 
 module.exports = router;
