@@ -8,6 +8,7 @@ const applicationSchema = mongoose.Schema({
     session_date: { type: String, required: true },
     session_time: { type: String, required: true },
     job_title: { type: String, required: true },
+    job_desc: { type: String, required: true },
     totalJobs_id: { type: String, required: true },
     desired: { type: Boolean, required: true },
     applied: { type: Boolean, required: true },
