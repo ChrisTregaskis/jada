@@ -11,6 +11,7 @@ const { key_word_finder } = require('./processResultsActions/keyWordFinder');
 const { post_application } = require('./processResultsActions/dataBaseRequests/postApplication');
 const { next_results_page } = require('./processResultsActions/nextResultsPage');
 const { apply_to_job } = require('./processResultsActions/applyToJob');
+const { check_desirability_job_type } = require('./processResultsActions/checkDesirabilityByPreference');
 
 exports.process_results = async (userId)  => {
     // let testPage = await test_page();
@@ -48,7 +49,7 @@ exports.process_results = async (userId)  => {
                 }
             }
 
-            jobData = await grab_all_job_data(jobIds[i], jobUrl);
+            let jobData = await grab_all_job_data(jobIds[i], jobUrl);
             if (!(jobData.success)) {
                 return {
                     success: false,
@@ -59,11 +60,17 @@ exports.process_results = async (userId)  => {
             let jD = jobData.job_info.job_desc;
             let jDUpperCase = jD.toUpperCase();
             let foundKw = await key_word_finder(jDUpperCase, userId);
+            let applicationJobType = jobData.job_info.job_type;
+            let desiredJobType = await check_desirability_job_type(applicationJobType, userId)
             let dkw = foundKw.found_dkw;
             let udkw = foundKw.found_udkw;
-
-            let desired = dkw.length > 0 && udkw.length === 0;
+            let desired = false;
             let applied = false
+
+            if (dkw.length > 0 && udkw.length === 0 && desiredJobType === true) {
+                desired = true;
+            }
+
             if (desired) {
                 let applyToJob = await apply_to_job();
                 if (applyToJob.error) {

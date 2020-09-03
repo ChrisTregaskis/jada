@@ -1,4 +1,4 @@
-const { get_user_kw } = require('./dataBaseRequests/getUserKw');
+const { get_user_kw } = require('./dataBaseRequests/getUserPreferences');
 let dkw, udkw, ikw;
 
 exports.key_word_finder = async (jobDesc, userId) => {
