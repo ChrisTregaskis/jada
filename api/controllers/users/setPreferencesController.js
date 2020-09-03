@@ -8,6 +8,8 @@ exports.set_user_preferences = async (req, res, next) => {
     const reqLocation = req.body.location;
     const reqRadius = req.body.radius;
     const radiusOptions = [0, 5, 10, 20, 30];
+    const reqJobType = req.body.job_type;
+    const jobTypeOptions = ['FULL_TIME', 'PART_TIME', 'CONTRACTOR', 'TEMPORARY'];
     const reqSessionLimit = req.body.session_limit;
     const reqDkw = req.body.dkw;
     const reqUdkw = req.body.udkw;
@@ -15,6 +17,7 @@ exports.set_user_preferences = async (req, res, next) => {
     let email;
     let jobTitle;
     let location;
+    let jobType;
 
 
     if (reqEmail !== undefined) {
@@ -79,6 +82,19 @@ exports.set_user_preferences = async (req, res, next) => {
             return
         }
 
+    }
+
+    if (reqJobType !== undefined) {
+        let jobTypeValid = jobTypeOptions.includes(reqJobType);
+        if (!jobTypeValid) {
+            await res.status(400).json({
+                success: false,
+                message: 'Incorrect job type preference, expecting either of the following: FULL_TIME, PART_TIME, CONTRACTOR, TEMPORARY'
+            })
+            return
+        }
+
+        jobType = sanitize_string(reqJobType)
     }
 
     if (reqSessionLimit !== undefined) {
@@ -146,13 +162,14 @@ exports.set_user_preferences = async (req, res, next) => {
         let jobTitleUpdated = false;
         let locationUpdated = false;
         let radiusUpdated = false;
+        let jobTypeUpdated = false;
         let sessionLimitUpdated = false;
         let dkwUpdated = false;
         let udkwUpdated = false;
         let ikwUpdated = false;
 
         if (reqEmail !== undefined) {
-            updateEmail = await User.update(
+            let updateEmail = await User.update(
                 { _id: id },
                 { $set: { "preferences.reporting_email": email } }
             )
@@ -163,7 +180,7 @@ exports.set_user_preferences = async (req, res, next) => {
         }
 
         if (reqJobTitle !== undefined) {
-            updateJobTitle = await User.update(
+            let updateJobTitle = await User.update(
                 { _id: id },
                 { $set: { "preferences.job_title": jobTitle } }
             )
@@ -174,7 +191,7 @@ exports.set_user_preferences = async (req, res, next) => {
         }
 
         if (reqLocation !== undefined) {
-            updateLocation = await User.update(
+            let updateLocation = await User.update(
                 { _id: id },
                 { $set: { "preferences.location": location } }
             )
@@ -185,7 +202,7 @@ exports.set_user_preferences = async (req, res, next) => {
         }
 
         if (reqRadius !== undefined) {
-            updateRadius = await User.update(
+            let updateRadius = await User.update(
                 { _id: id },
                 { $set: { "preferences.radius": reqRadius } }
             )
@@ -195,8 +212,19 @@ exports.set_user_preferences = async (req, res, next) => {
             }
         }
 
+        if (reqJobType !== undefined) {
+            let updateJobType = await User.update(
+                { _id: id },
+                { $set: { "preferences.job_type": jobType } }
+            )
+            if (updateJobType.nModified === 1 ) {
+                updatedPreferences++
+                jobTypeUpdated = true
+            }
+        }
+
         if (reqSessionLimit !== undefined) {
-            updateSessionLimit = await User.update(
+            let updateSessionLimit = await User.update(
                 { _id: id },
                 { $set: { "preferences.session_limit": reqSessionLimit } }
             )
@@ -207,7 +235,7 @@ exports.set_user_preferences = async (req, res, next) => {
         }
 
        if (reqDkw !== undefined) {
-           updateDkw = await User.update(
+           let updateDkw = await User.update(
                { _id: id },
                { $set: { "preferences.dkw": dkw }}
            )
@@ -218,7 +246,7 @@ exports.set_user_preferences = async (req, res, next) => {
        }
 
         if (reqUdkw !== undefined) {
-            updateUdkw = await User.update(
+            let updateUdkw = await User.update(
                 { _id: id },
                 { $set: { "preferences.udkw": udkw }}
             )
@@ -229,7 +257,7 @@ exports.set_user_preferences = async (req, res, next) => {
         }
 
         if (reqIkw !== undefined) {
-            updatedIkw = await User.update(
+            let updatedIkw = await User.update(
                 { _id: id },
                 { $set: { "preferences.ikw": ikw }}
             )
@@ -249,6 +277,7 @@ exports.set_user_preferences = async (req, res, next) => {
                     job_title: jobTitleUpdated,
                     location: locationUpdated,
                     radius: radiusUpdated,
+                    job_type: jobTypeUpdated,
                     session_limit: sessionLimitUpdated,
                     dkw: dkwUpdated,
                     udkw: udkwUpdated,
