@@ -1,14 +1,25 @@
 const express = require('express');
 const router = express.Router();
-const applicationsController = require('../controllers/applicationsController');
 const checkAuth = require('../middleware/check-auth');
+const getAllApplicationsController = require('../controllers/applications/getAllApplicationsController');
+const getApplicationsBySessionIdController =
+    require('../controllers/applications/getApplicationsBySessionIdController');
+const getApplicationsByUserIdController = require('../controllers/applications/getApplicationsByUserIdController');
+const postApplicationToDBController = require('../controllers/applications/postApplicationToDBController');
+const getApplicationController = require('../controllers/applications/getApplicationController');
+const deleteApplicationController = require('../controllers/applications/deleteApplicationController');
+const deleteApplicationsByUserIdController =
+    require('../controllers/applications/deleteApplicationsByUserIdController');
+const deleteApplicationsBySessionIdController =
+    require('../controllers/applications/deleteApplicationsBySessionIdController');
 
-router.get('/', checkAuth, applicationsController.get_all_applications);
-router.get('/:applicationId', checkAuth, applicationsController.get_application);
-router.get('/session/:sessionId', checkAuth, applicationsController.get_by_session_id);
-router.get('/user/:userId', checkAuth, applicationsController.get_by_user_id);
-router.post('/', applicationsController.log_application);
-router.delete('/:applicationId', checkAuth, applicationsController.delete_application);
-router.delete('/user/:userId', checkAuth, applicationsController.delete_applications_by_user_id);
+router.get('/', checkAuth, getAllApplicationsController.get_all_applications);
+router.get('/:applicationId', checkAuth, getApplicationController.get_application);
+router.get('/session/:sessionId', checkAuth, getApplicationsBySessionIdController.get_by_session_id);
+router.get('/user/:userId', checkAuth, getApplicationsByUserIdController.get_by_user_id);
+router.post('/', postApplicationToDBController.log_application);
+router.delete('/:applicationId', checkAuth, deleteApplicationController.delete_application);
+router.delete('/user/:userId', checkAuth, deleteApplicationsByUserIdController.delete_applications_by_user_id);
+router.delete('/session/:sessionId', checkAuth, deleteApplicationsBySessionIdController.delete_applications_by_session_id);
 
 module.exports = router;

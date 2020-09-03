@@ -14,8 +14,8 @@ const sessionSchema = mongoose.Schema({
     dkw_all: { type: Array, required: true },
     udkw_overview: { type: Array, required: true },
     udkw_all: { type: Array, required: true },
-    top24_overview: { type: Array, required: true },
-    top24_all: { type: Array, required: true },
+    ikw_overview: { type: Array, required: true },
+    ikw_all: { type: Array, required: true },
     locations_overview: { type: Array, required: true },
     locations_all: { type: Array, required: true }
 })
