@@ -1,6 +1,6 @@
 const localWebDriver = require('../webDriver');
 const driver = localWebDriver.get_driver();
-const { next_btn_status, test_page } = require('./processResultsActions/nextBtnStatus');
+const { next_btn_status } = require('./processResultsActions/nextBtnStatus');
 const { create_session_detail } = require('./processResultsActions/createSessionDetail');
 const { get_processed_job_ids } = require('./processResultsActions/dataBaseRequests/getProcessedJobIds');
 const { grab_page_tJ_ids } = require('./processResultsActions/grabPageTotalJobIds');
@@ -14,8 +14,6 @@ const { apply_to_job } = require('./processResultsActions/applyToJob');
 const { check_desirability_job_type } = require('./processResultsActions/checkDesirabilityByPreference');
 
 exports.process_results = async (userId)  => {
-    // let testPage = await test_page();
-
     let nextBtn = await next_btn_status();
     if (nextBtn === 'error') {
         return {
