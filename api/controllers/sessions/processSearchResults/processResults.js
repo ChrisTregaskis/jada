@@ -47,7 +47,7 @@ exports.process_results = async (userId)  => {
                 }
             }
 
-            let jobData = await grab_all_job_data(jobIds[i], jobUrl);
+            jobData = await grab_all_job_data(jobIds[i], jobUrl);
             if (!(jobData.success)) {
                 return {
                     success: false,
