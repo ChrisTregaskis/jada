@@ -23,5 +23,5 @@ exports.validate_type = (data, requiredType) => {
 
 exports.sanitize_string = (str) => {
     let sanitisedStr = str.trim();
-    return sanitisedStr.replace(/[^a-zA-Z\d\#\++: ]/g, "");
+    return sanitisedStr.replace(/[^a-zA-Z\d\#\++\_: ]/g, "");
 }

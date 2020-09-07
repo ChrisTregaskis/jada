@@ -182,6 +182,7 @@ You must be authenticated to update data from this route; takes bearer token.
     - `{ "job_title": String }` : type string, desired job title.
     - `{ "location": String }` :  type string, desired location.
     - `{ "radius": Number }` : type number, desired search radius. Specific options required: 0, 5, 10, 20, 30.
+    - `{ "job_type": String }` : type string, desired job type. Options: FULL_TIME, PART_TIME, CONTRACTOR, TEMPORARY.
     - `{ "session_limit": Number }` : type number, desired apply limit. Limits how many applications applied in a given session.
     - `{ "dkw": Array }` : type Array (js object), dkw stands for 'desired keywords', an array of single desired keywords. 
     - `{ "udkw": Array }` : type Array (js object), udkw stands for 'undesired keywords', an array of single undesired keywords. 
@@ -193,6 +194,7 @@ You must be authenticated to update data from this route; takes bearer token.
         "job_title": "Junior Software Engineer",
         "location": "Bath",
         "radius": 20,
+        "job_type": "FULL_TIME",
         "session_limit": 40,
         "dkw": ["Software", "Engineer", "JavaScript", "Agile", "PHP"],
         "udkw": ["Lead", ".NET", "C#"],
@@ -213,6 +215,7 @@ You must be authenticated to update data from this route; takes bearer token.
               "job_title": false,
               "location": false,
               "radius": false,
+              "job_type": false,
               "session_limit": false,
               "dkw": false,
               "udkw": false,

@@ -21,7 +21,3 @@ exports.next_btn_status = async () => {
         return 'error'
     }
 }
-
-exports.test_page = async () => {
-    await driver.get(`https://www.totaljobs.com/jobs/junior-developer/in-bath?radius=0&s=header`)
-}
