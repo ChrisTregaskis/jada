@@ -33,6 +33,7 @@ const userSchema = mongoose.Schema({
         location: { type: String },
         radius: { type: Number },
         job_type: { type: String },
+        salary: { type: Object },
         session_limit: { type: Number },
         dkw: { type: Array },
         udkw: { type: Array },

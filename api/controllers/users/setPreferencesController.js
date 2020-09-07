@@ -10,16 +10,13 @@ exports.set_user_preferences = async (req, res, next) => {
     const radiusOptions = [0, 5, 10, 20, 30];
     const reqJobType = req.body.job_type;
     const jobTypeOptions = ['FULL_TIME', 'PART_TIME', 'CONTRACTOR', 'TEMPORARY'];
+    const reqSalary = req.body.salary;
     const reqSessionLimit = req.body.session_limit;
     const reqDkw = req.body.dkw;
     const reqUdkw = req.body.udkw;
     const reqIkw = req.body.ikw;
+
     let email;
-    let jobTitle;
-    let location;
-    let jobType;
-
-
     if (reqEmail !== undefined) {
         if (!(validate_type(reqEmail, 'string'))) {
             await res.status(400).json({
@@ -40,6 +37,7 @@ exports.set_user_preferences = async (req, res, next) => {
 
     }
 
+    let jobTitle;
     if (reqJobTitle !== undefined) {
         if (!(validate_type(reqJobTitle, 'string'))) {
             await res.status(400).json({
@@ -52,6 +50,7 @@ exports.set_user_preferences = async (req, res, next) => {
         jobTitle = sanitize_string(reqJobTitle)
     }
 
+    let location;
     if (reqLocation !== undefined) {
         if (!(validate_type(reqLocation, 'string'))) {
             await res.status(400).json({
@@ -84,6 +83,7 @@ exports.set_user_preferences = async (req, res, next) => {
 
     }
 
+    let jobType;
     if (reqJobType !== undefined) {
         let jobTypeValid = jobTypeOptions.includes(reqJobType);
         if (!jobTypeValid) {
@@ -95,6 +95,26 @@ exports.set_user_preferences = async (req, res, next) => {
         }
 
         jobType = sanitize_string(reqJobType)
+    }
+
+    if (reqSalary !== undefined) {
+        if (!(validate_type(reqSalary, 'object')) ||
+            !(validate_type(reqSalary.permanent_preferred, 'number')) ||
+            !(validate_type(reqSalary.permanent_minimum, 'number')) ||
+            !(validate_type(reqSalary.permanent_maximum, 'number'))) {
+            await res.status(400).json({
+                success: false,
+                message: 'Set salary types incorrect. Salary must be object containing set preferences where the values are numbers.',
+                example: {
+                    salary: {
+                        permanent_preferred: 12345,
+                        permanent_minimum: 12345,
+                        permanent_maximum: 12345
+                    }
+                }
+            })
+            return
+        }
     }
 
     if (reqSessionLimit !== undefined) {
@@ -163,6 +183,7 @@ exports.set_user_preferences = async (req, res, next) => {
         let locationUpdated = false;
         let radiusUpdated = false;
         let jobTypeUpdated = false;
+        let salaryUpdated = false;
         let sessionLimitUpdated = false;
         let dkwUpdated = false;
         let udkwUpdated = false;
@@ -223,6 +244,17 @@ exports.set_user_preferences = async (req, res, next) => {
             }
         }
 
+        if (reqSalary !== undefined) {
+            let updateSalary = await User.update(
+                { _id: id },
+                { $set: { "preferences.salary": reqSalary } }
+            )
+            if (updateSalary.nModified === 1) {
+                updatedPreferences++
+                salaryUpdated = true
+            }
+        }
+
         if (reqSessionLimit !== undefined) {
             let updateSessionLimit = await User.update(
                 { _id: id },
@@ -278,6 +310,7 @@ exports.set_user_preferences = async (req, res, next) => {
                     location: locationUpdated,
                     radius: radiusUpdated,
                     job_type: jobTypeUpdated,
+                    salary: salaryUpdated,
                     session_limit: sessionLimitUpdated,
                     dkw: dkwUpdated,
                     udkw: udkwUpdated,
