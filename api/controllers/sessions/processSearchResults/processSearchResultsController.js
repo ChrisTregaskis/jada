@@ -58,6 +58,7 @@ exports.process_results = async (req, res, next) => {
         success: true,
         total_results: totalResults,
         search_params: searchParams.data,
+        processed_results: processed_results,
         session_report: sessionReport.data
     })
 }

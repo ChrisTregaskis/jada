@@ -12,6 +12,7 @@ const { post_application } = require('./processResultsActions/dataBaseRequests/p
 const { next_results_page } = require('./processResultsActions/nextResultsPage');
 const { apply_to_job } = require('./processResultsActions/applyToJob');
 const { check_desirability_job_type, check_desirability_salary } = require('./processResultsActions/checkDesirabilityByPreference');
+const { get_user_session_limit } = require('./processResultsActions/dataBaseRequests/getUserPreferences');
 
 exports.process_results = async (userId)  => {
     let nextBtn = await next_btn_status();
@@ -24,6 +25,15 @@ exports.process_results = async (userId)  => {
 
     const sessionDetail = await create_session_detail();
     const processedJobIds = await get_processed_job_ids(userId);
+    const userSessionLimitData = await get_user_session_limit(userId);
+    if (!userSessionLimitData.success) {
+        return {
+            success: false,
+            message: 'System error, user session limit preference not found'
+        }
+    }
+    const userSessionLimit = userSessionLimitData.session_limit;
+    let currentAppliedCount = 0;
     let totalProcessed = 0;
     let jobIds;
     let jobData;
@@ -78,7 +88,8 @@ exports.process_results = async (userId)  => {
                         message: 'System error applying to job'
                     }
                 } else if (applyToJob.success) {
-                    applied = true
+                    applied = true;
+                    currentAppliedCount++
                 }
             }
 
@@ -93,6 +104,21 @@ exports.process_results = async (userId)  => {
             totalProcessed++
             await driver.close();
             let backToMainWindow = await driver.switchTo().window(mainWindow);
+
+            if (currentAppliedCount >= userSessionLimit) {
+                return {
+                    success: true,
+                    message: 'Successfully processed results upto user set session limit',
+                    session_limit: userSessionLimit,
+                    total_processed: totalProcessed,
+                    total_applied: currentAppliedCount,
+                    session_detail: {
+                        session_id: sessionDetail.session_id,
+                        session_date: sessionDetail.session_date,
+                        session_time: sessionDetail.session_time
+                    }
+                }
+            }
         }
 
         if (nextBtn) {
@@ -117,7 +143,9 @@ exports.process_results = async (userId)  => {
     return {
         success: true,
         message: 'Successfully processed all results',
+        session_limit: userSessionLimit,
         total_processed: totalProcessed,
+        total_applied: currentAppliedCount,
         session_detail: {
             session_id: sessionDetail.session_id,
             session_date: sessionDetail.session_date,

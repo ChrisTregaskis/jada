@@ -51,3 +51,19 @@ exports.get_user_salary = async (id) => {
         }
     }
 }
+
+exports.get_user_session_limit = async (id) => {
+    let userData = await User.findById(id)
+    try {
+        return {
+            success: true,
+            session_limit: userData.preferences.session_limit
+        }
+    } catch (err) {
+        console.log(err)
+        return {
+            success: false,
+            error: err
+        }
+    }
+}
