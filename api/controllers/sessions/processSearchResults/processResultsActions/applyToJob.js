@@ -18,6 +18,7 @@ exports.apply_to_job = async () => {
         return { success: true }
 
     } catch (err) {
+        console.log(err)
         return {
             success: false,
             error: err
