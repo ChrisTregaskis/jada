@@ -35,3 +35,19 @@ exports.get_user_job_type = async (id) => {
         }
     }
 }
+
+exports.get_user_salary = async (id) => {
+    let userData = await User.findById(id)
+    try {
+        return {
+            success: true,
+            salary: userData.preferences.salary
+        }
+    } catch (err) {
+        console.log(err)
+        return {
+            success: false,
+            error: err
+        }
+    }
+}
