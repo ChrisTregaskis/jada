@@ -33,7 +33,7 @@ class TableApplications extends React.Component {
         let originalData = this.props.applications;
         let applications = this.reorderApplications(originalData)
         let tableData = {
-            headers: ['job_title', 'totalJobs_id', 'totalJobs_ref', 'apply_attempted', 'session_date'],
+            headers: ['job_title', 'totalJobs_id', 'totalJobs_ref', 'applied', 'session_date'],
             datasets: []
         }
 

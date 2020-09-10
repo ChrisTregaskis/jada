@@ -87,7 +87,7 @@ class TablesPage extends React.Component {
         let applications = this.state.applications
         let currentApplications = [];
         applications.forEach(application => {
-            if (application.apply_attempted) {
+            if (application.applied) {
                 currentApplications.push(application)
             }
         })
@@ -98,7 +98,7 @@ class TablesPage extends React.Component {
     toggleViewSkipped = () => {let applications = this.state.applications;
         let currentApplications = [];
         applications.forEach(application => {
-            if (application.apply_attempted === false) {
+            if (application.applied === false) {
                 currentApplications.push(application)
             }
         })

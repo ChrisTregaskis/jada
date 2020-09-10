@@ -9,10 +9,10 @@ import BarChartAvS from "../../Charts/BarChartAvS/BarChartAvS";
 import BarChartDKW from "../../Charts/BarChartDKW/BarChartDKW";
 import BarChartUDKW from "../../Charts/BarChartUDKW/BarChartUDKW";
 import BarChartLocations from "../../Charts/BarChartLocations/BarChartLocations";
-import PercentJavaScript from "../../Charts/PercentJavaScript/PercentJavaScript";
-import PercentPHP from "../../Charts/PercentPHP/PercentPHP";
-import PercentNET from "../../Charts/PercentNET/PercentNET";
-import PercentPython from "../../Charts/PercentPython/PercentPython";
+// import PercentJavaScript from "../../Charts/PercentJavaScript/PercentJavaScript";
+// import PercentPHP from "../../Charts/PercentPHP/PercentPHP";
+// import PercentNET from "../../Charts/PercentNET/PercentNET";
+// import PercentPython from "../../Charts/PercentPython/PercentPython";
 import BarChartIKW from "../../Charts/BarChartIKW/BarChartIKW";
 import ButtonMain from "../../Buttons/ButtonMain/ButtonMain";
 import ButtonMainToggle from "../../Buttons/ButtonMainToggle/ButtonMainToggle";
@@ -141,15 +141,15 @@ class MainDashboard extends React.Component {
                 <h1 className="d-flex justify-content-center sectionTitle">
                     Overview of Interested Key Words
                 </h1>
-                <p className="d-flex justify-content-center">
-                    Of the total applications processed...
-                </p>
-                <div className="col-xl-12 d-flex flex-wrap">
-                    <PercentJavaScript applications={this.state.applications} />
-                    <PercentPHP applications={this.state.applications} />
-                    <PercentPython applications={this.state.applications} />
-                    <PercentNET applications={this.state.applications} />
-                </div>
+                {/*<p className="d-flex justify-content-center">*/}
+                {/*    Of the total applications processed...*/}
+                {/*</p>*/}
+                {/*<div className="col-xl-12 d-flex flex-wrap">*/}
+                {/*    <PercentJavaScript applications={this.state.applications} />*/}
+                {/*    <PercentPHP applications={this.state.applications} />*/}
+                {/*    <PercentPython applications={this.state.applications} />*/}
+                {/*    <PercentNET applications={this.state.applications} />*/}
+                {/*</div>*/}
                 <div className="col-xl-12">
                     <BarChartIKW applications={this.state.applications} />
                 </div>
