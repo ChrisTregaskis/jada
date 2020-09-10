@@ -64,7 +64,7 @@ class LineChartAvS extends React.Component {
         }];
         // change for loop i to 1 to omit first run
         for (let i = 0; i < applications.length; i++) {
-            if (applications[i].apply_attempted) {
+            if (applications[i].applied) {
                 appliedDates.push(applications[i].session_date)
             } else {
                 skippedDates.push(applications[i].session_date)

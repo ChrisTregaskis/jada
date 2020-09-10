@@ -40,8 +40,10 @@ class PercentPython extends React.Component {
         let allKeyWords = [];
         let filteredKeyWord = [];
 
-        applications.forEach(applications => {
-            allKeyWords.push(...applications.found_top24)
+        applications.forEach(application => {
+            if (application.found_ikw !== undefined) {
+                allKeyWords.push(...application.found_ikw)
+            }
         });
 
         for (let i=0; i < allKeyWords.length; i++) {

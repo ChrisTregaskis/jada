@@ -67,8 +67,8 @@ class ApplicationModal extends React.Component {
         let dkw = (dkwFormatted < 1) ? '-' : dkwFormatted
         let udkwFormatted = this.reformatKeyWords(application.found_udkw);
         let udkw = (udkwFormatted < 1) ? '-' : udkwFormatted;
-        let top24Formatted = this.reformatKeyWords(application.found_top24);
-        let top24 = (top24Formatted < 1) ? '-' : top24Formatted;
+        let ikwFormatted = this.reformatKeyWords(application.found_ikw);
+        let ikw = (ikwFormatted < 1) ? '-' : ikwFormatted;
         let key = application.totalJobs_id;
         let reference = application.totalJobs_ref;
 
@@ -94,7 +94,7 @@ class ApplicationModal extends React.Component {
                     <li key={key + 12}><span className="applicationDetail">Job contact:</span> {jobContact}</li>
                     <li key={key + 13}><span className="applicationDetail">DKW found:</span> {dkw}</li>
                     <li key={key + 14}><span className="applicationDetail">UDKW found:</span> {udkw}</li>
-                    <li key={key + 15}><span className="applicationDetail">Top24 found:</span> {top24}</li>
+                    <li key={key + 15}><span className="applicationDetail">IKW found:</span> {ikw}</li>
                 </ul>
             )
         } else if (!application.apply_attempted && interested) {
@@ -109,7 +109,7 @@ class ApplicationModal extends React.Component {
                     <li key={key + 7}><span className="applicationDetail">Interested:</span> {interested}</li>
                     <li key={key + 8}><span className="applicationDetail">DKW found:</span> {dkw}</li>
                     <li key={key + 9}><span className="applicationDetail">UDKW found:</span> {udkw}</li>
-                    <li key={key + 10}><span className="applicationDetail">Top24 found:</span> {top24}</li>
+                    <li key={key + 10}><span className="applicationDetail">IKW found:</span> {ikw}</li>
                 </ul>
             )
         } else {
@@ -123,7 +123,7 @@ class ApplicationModal extends React.Component {
                     <li key={key + 7}><span className="applicationDetail">Interested:</span> {interested}</li>
                     <li key={key + 8}><span className="applicationDetail">DKW found:</span> {dkw}</li>
                     <li key={key + 9}><span className="applicationDetail">UDKW found:</span> {udkw}</li>
-                    <li key={key + 10}><span className="applicationDetail">Top24 found:</span> {top24}</li>
+                    <li key={key + 10}><span className="applicationDetail">IKW found:</span> {ikw}</li>
                 </ul>
             )
         }

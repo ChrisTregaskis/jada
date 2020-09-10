@@ -46,7 +46,6 @@ class BarChartIKW extends React.Component {
     }
 
     mapIkw = (applications) => {
-        console.log(applications)
         let ikw = [];
         applications.forEach(application => {
             if (application.found_ikw !== undefined) {
