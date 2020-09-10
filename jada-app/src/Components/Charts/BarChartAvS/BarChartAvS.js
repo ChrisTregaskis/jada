@@ -25,7 +25,7 @@ class BarChartAvS extends React.Component {
         let skipped = 0;
 
         applications.forEach(application => {
-            if (application.apply_attempted) {
+            if (application.applied) {
                 applied = applied + 1
             } else {
                 skipped = skipped + 1

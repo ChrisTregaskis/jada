@@ -34,19 +34,7 @@ class BarChartLocations extends React.Component {
             if (application.location !== undefined) {
                 let toUpperCaseLocation = application.location.toUpperCase();
                 let location = toUpperCaseLocation.split(/[^a-zA-Z\d:]/);
-
-                if (location.includes('BRISTOL') === true) {
-                    locations.push('BRISTOL')
-                } else if (location.includes('BATH') === true) {
-                    locations.push('BATH')
-                } else if (location.includes('SWINDON') === true) {
-                    locations.push('SWINDON')
-                } else if (location.includes('GLOUCESTERSHIRE') === true ||
-                    location.includes('GLOUCESTER') === true) {
-                    locations.push('GLOUCESTER')
-                } else {
-                    locations.push(location[0])
-                }
+                locations.push(location[0])
             }
         })
         return locations
