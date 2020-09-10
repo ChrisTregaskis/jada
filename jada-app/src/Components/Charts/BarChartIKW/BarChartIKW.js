@@ -1,8 +1,8 @@
 import React from "react";
-import './barChartTop24.css';
+import './barChartIKW.css';
 import BarChartConstructor from "../../Constructors/BarChartConstructor/BarChartConstructor";
 
-class BarChartTop24 extends React.Component {
+class BarChartIKW extends React.Component {
     constructor(props) {
         super(props);
 
@@ -18,13 +18,13 @@ class BarChartTop24 extends React.Component {
             this.setState({
                 applications: this.props.applications
             })
-            this.updateTop24Data()
+            this.updateIkwData()
         }
     }
 
-    languageCount = (language, languageArr) => {
-        let languageFound = languageArr.filter(word => word === language);
-        return languageFound.length
+    ikwCount = (ikw, ikwArr) => {
+        let ikwFound = ikwArr.filter(word => word === ikw);
+        return ikwFound.length
     }
 
     javaScriptCount = () => {
@@ -45,12 +45,15 @@ class BarChartTop24 extends React.Component {
         return jS.length
     }
 
-    mapLanguages = (applications) => {
-        let languages = [];
+    mapIkw = (applications) => {
+        console.log(applications)
+        let ikw = [];
         applications.forEach(application => {
-            languages.push(...application.found_top24)
+            if (application.found_ikw !== undefined) {
+                ikw.push(...application.found_ikw)
+            }
         })
-        return languages
+        return ikw
     }
 
     removeDuplicates = (array) => {
@@ -58,12 +61,12 @@ class BarChartTop24 extends React.Component {
             unique.includes(item) ? unique : [...unique, item],[]);
     }
 
-    updateTop24CountForJS = (languageSingle, currentCounts) => {
+    updateIkwCountForJS = (ikwSingle, currentCounts) => {
         let updatedCounts = [];
         updatedCounts.push(...currentCounts);
         let jsCount = this.javaScriptCount();
-        for (let i=0; i < languageSingle.length; i++) {
-            if (languageSingle[i] === 'JAVASCRIPT') {
+        for (let i=0; i < ikwSingle.length; i++) {
+            if (ikwSingle[i] === 'JAVASCRIPT') {
                 updatedCounts[i] = jsCount
             }
         }
@@ -71,10 +74,10 @@ class BarChartTop24 extends React.Component {
         return updatedCounts
     }
 
-    updateTop24Data = () => {
+    updateIkwData = () => {
         let applications = this.props.applications;
-        let languagesCount = [];
-        let languageData = {
+        let ikwCount = [];
+        let ikwData = {
             labels: [],
             datasets: [{
                 backgroundColor: '#34495e',
@@ -82,19 +85,19 @@ class BarChartTop24 extends React.Component {
             }]
         }
 
-        let languagesAll = this.mapLanguages(applications);
-        let languagesSingle = this.removeDuplicates(languagesAll);
+        let ikwAll = this.mapIkw(applications);
+        let ikwSingle = this.removeDuplicates(ikwAll);
 
-        languagesSingle.forEach(language => {
-            languagesCount.push(this.languageCount(language, languagesAll))
+        ikwSingle.forEach(ikw => {
+            ikwCount.push(this.ikwCount(ikw, ikwAll))
         })
 
-        let updatedLanguagesCount = this.updateTop24CountForJS(languagesSingle, languagesCount)
+        let updatedIkwCount = this.updateIkwCountForJS(ikwSingle, ikwCount)
 
-        languageData.labels.push(...languagesSingle);
-        languageData.datasets[0].data.push(...updatedLanguagesCount)
+        ikwData.labels.push(...ikwSingle);
+        ikwData.datasets[0].data.push(...updatedIkwCount)
 
-        this.setState({ data: languageData })
+        this.setState({ data: ikwData })
 
     }
 
@@ -103,7 +106,7 @@ class BarChartTop24 extends React.Component {
             <div className="col-xl-12 barChartUDKW">
                 <BarChartConstructor
                     data={this.state.data}
-                    title='TOP 24 Programming Languages Found'
+                    title='Interested Key Words Found'
                     displayTitle={this.state.displayTitle}
                 />
             </div>
@@ -112,4 +115,4 @@ class BarChartTop24 extends React.Component {
 
 }
 
-export default BarChartTop24;
+export default BarChartIKW;

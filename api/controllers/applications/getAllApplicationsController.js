@@ -17,8 +17,8 @@ exports.get_all_applications = (req, res, next) => {
                         session_time: doc.session_time,
                         job_title: doc.job_title,
                         totalJobs_id: doc.totalJobs_id,
-                        apply_attempted: doc.apply_attempted,
-                        interested: doc.interested,
+                        desired: doc.desired,
+                        applied: doc.applied,
                         salary: doc.salary,
                         company: doc.company,
                         job_type: doc.job_type,
@@ -29,7 +29,7 @@ exports.get_all_applications = (req, res, next) => {
                         totalJobs_ref: doc.totalJobs_ref,
                         found_dkw: doc.found_dkw,
                         found_udkw: doc.found_udkw,
-                        found_top24: doc.found_top24
+                        found_ikw: doc.found_ikw
 
                     }
                 })
