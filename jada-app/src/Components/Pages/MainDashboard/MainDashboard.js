@@ -52,7 +52,7 @@ class MainDashboard extends React.Component {
     timedRemoveToken = () => {
         setTimeout(() => {
             localStorage.removeItem('bearerToken')
-        }, 300000)
+        }, 86400000)
     }
 
     updateSessionDates = async () => {
@@ -110,8 +110,13 @@ class MainDashboard extends React.Component {
                         <LastUpdatedSession sessionDates={this.state.sessionDates} />
                         <div className="btnMainDashboard">
                             <ButtonMain
+                                buttonText="APPLY FOR JOBS"
+                                cssClass="d-flex justify-content-center my-2"
+                                location="http://localhost:3000/apply"
+                            />
+                            <ButtonMain
                                 buttonText="ALL APPLICATIONS"
-                                cssClass="d-flex justify-content-center"
+                                cssClass="d-flex justify-content-center my-2"
                                 location="http://localhost:3000/tables"
                             />
                             <ButtonMainToggle
