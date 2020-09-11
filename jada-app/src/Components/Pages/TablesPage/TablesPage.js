@@ -37,7 +37,7 @@ class TablesPage extends React.Component {
     timedRemoveToken = () => {
         setTimeout(() => {
             localStorage.removeItem('bearerToken')
-        }, 300000)
+        }, 86400000)
     }
 
     updateSessionDates = async () => {
