@@ -14,7 +14,10 @@ class ApplyPage extends React.Component {
             jobTitle: '',
             location: '',
             radius: '0',
-            jobType: 'Full Time'
+            jobType: 'Full Time',
+            salary_perm_min: '',
+            salary_perm_max: '',
+            session_limit: ''
         }
     }
 
@@ -25,7 +28,10 @@ class ApplyPage extends React.Component {
     setStateUserPreferences = async () => {
         let userPreferences = await this.fetchUserPreferences();
         this.setState({
-            jobType: userPreferences.job_type
+            jobType: userPreferences.job_type,
+            salary_perm_min: userPreferences.salary.permanent_minimum,
+            salary_perm_max: userPreferences.salary.permanent_maximum,
+            session_limit: userPreferences.session_limit
         })
 
     }
@@ -81,6 +87,9 @@ class ApplyPage extends React.Component {
                     handleUpdatePreferences={this.handleUpdatePreferences}
                     handleChange={this.handleChange}
                     jobType={this.state.jobType}
+                    salary_perm_min={this.state.salary_perm_min}
+                    salary_perm_max={this.state.salary_perm_max}
+                    session_limit={this.state.session_limit}
                 />
             </div>
         )

@@ -3,6 +3,16 @@ import './setPreferences.css';
 
 class SetPreferences extends React.Component {
 
+    displaySalaryOptions = () => {
+        let optionsHTML = []
+        let value = 0
+        for (let i=0; value<200000; i++) {
+            value = value + 500
+            optionsHTML.push(<option key={value} value={value}>{value}</option>)
+        }
+        return optionsHTML
+    }
+
     render() {
         return (
             <div className="setPreferencesBox">
@@ -12,8 +22,8 @@ class SetPreferences extends React.Component {
                     Please navigate to your total jobs account to update the CV and generic cover letter.
                     </p>
                     <div className="form-group row">
-                        <label htmlFor="jobType" className="col-sm-2 col-form-label">Job Type:</label>
-                        <div className="col-sm-10">
+                        <label htmlFor="jobType" className="col-sm-3 col-form-label">Job Type:</label>
+                        <div className="col-sm-9">
                             <select className="form-control" onChange={(e) => this.props.handleChange(e, 'jobType')}
                             value={this.props.jobType}>
                                 <option value="FULL_TIME">Full Time</option>
@@ -21,6 +31,26 @@ class SetPreferences extends React.Component {
                                 <option value="CONTRACTOR">Contractor</option>
                                 <option value="TEMPORARY">Temporary</option>
                             </select>
+                        </div>
+                        <label htmlFor="salary_perm_min" className="col-sm-3 col-form-label">Salary, permanent minimum:</label>
+                        <div className="col-sm-9">
+                            <select className="form-control" onChange={(e) => this.props.handleChange(e, 'salary_perm_min')}
+                                    value={this.props.salary_perm_min}>
+                                {this.displaySalaryOptions()}
+                            </select>
+                        </div>
+                        <label htmlFor="salary_perm_min" className="col-sm-3 col-form-label">Salary, permanent maximum:</label>
+                        <div className="col-sm-9">
+                            <select className="form-control" onChange={(e) => this.props.handleChange(e, 'salary_perm_max')}
+                                    value={this.props.salary_perm_max}>
+                                {this.displaySalaryOptions()}
+                            </select>
+                        </div>
+                        <label htmlFor="session_limit" className="col-sm-3 col-form-label">Session Apply Limit:</label>
+                        <div className="col-sm-9">
+                            <input className="form-control" onChange={(e) => this.props.handleChange(e, 'session_limit')}
+                                    value={this.props.session_limit}>
+                            </input>
                         </div>
                     </div>
                 </form>
