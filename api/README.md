@@ -42,6 +42,12 @@ You must be authenticated to get data from this route; requires token.
                 "job_title": "Junior Software Engineer",
                 "location": "Dorset",
                 "radius": 10,
+                "job_type": "FULL_TIME",
+                "salary": {
+                    "permanent_preferred": 25000,
+                    "permanent_minimum": 22500,
+                    "permanent_maximum": 35000
+                  },
                 "session_limit": 20,
                 "dkw": ["Software", "Engineer", "JavaScript"],
                 "udkw": ["Lead", ".NET"],

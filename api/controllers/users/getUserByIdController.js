@@ -21,6 +21,8 @@ exports.get_user_by_id = (req, res, next) => {
                             job_title: doc.preferences.job_title,
                             location: doc.preferences.location,
                             radius: doc.preferences.radius,
+                            job_type: doc.preferences.job_type,
+                            salary: doc.preferences.salary,
                             session_limit: doc.preferences.session_limit,
                             dkw: doc.preferences.dkw,
                             udkw: doc.preferences.udkw,
