@@ -11,3 +11,45 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+.defaultBtn {
+  -webkit-appearance: none;
+  width: auto;
+  min-width: 100px;
+  border-radius: 24px;
+  text-align: center;
+  padding: 5px 25px;
+  background-color: #022F40;
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 500;
+  box-shadow: 0 2px 6px -1px rgba(0, 0, 0, .13);
+  border: none;
+  transition: all 0.3s ease;
+  outline: 0;
+}
+
+.defaultClearBtn {
+  -webkit-appearance: none;
+  background-color: transparent;
+  color: #022F40;
+  border: 1px solid #022F40;
+  border-radius: 24px;
+  padding: 4px 20px;
+  font-size: 1rem;
+  font-weight: 500;
+  box-shadow: 0 2px 6px -1px rgba(0, 0, 0, .13);
+  transition: all 0.3s ease;
+}
+
+.defaultBtn:hover,
+.defaultClearBtn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 2px 6px -1px rgba(2, 47, 64, .65);
+  cursor: pointer;
+}
+
+.defaultBtn:hover:active,
+.defaultClearBtn:hover:active {
+  transform: scale(0.99);
+}
