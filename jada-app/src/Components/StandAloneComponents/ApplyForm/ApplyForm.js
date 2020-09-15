@@ -8,8 +8,6 @@ class ApplyForm extends React.Component {
         return (
             <div className="applyBox col-12">
                 <form autoComplete="on" onSubmit={this.props.handleApply}>
-                    <h4>Apply To Jobs</h4>
-                    <p>Enter desired job title, location and radius and click the apply button. JADA will log into your totalJobs account, run the job search, and process all the results, applying where the application meets your preferences.</p>
                     <div className="floating-label">
                         <input placeholder="Job Title" type="text" name="jobTitle" id="jobTitle"
                                onChange={(e) => this.props.handleChange(e, 'jobTitle')}
