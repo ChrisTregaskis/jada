@@ -1,7 +1,15 @@
 import React from "react";
-import './setPreferences.css';
+import './setPreferencesModal.css';
 
-class SetPreferences extends React.Component {
+class SetPreferencesModal extends React.Component {
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            modalClass: 'hidden'
+        }
+    }
+
 
     displaySalaryOptions = () => {
         let optionsHTML = []
@@ -14,8 +22,9 @@ class SetPreferences extends React.Component {
     }
 
     render() {
+        let modalClass = this.state.modalClass + ' setPreferencesBox'
         return (
-            <div className="setPreferencesBox">
+            <div className={modalClass}>
                 <form autoComplete="on" onSubmit={this.props.handleUpdatePreferences}>
                     <h4>Job Search and Apply Preferences</h4>
                     <p>View and update the criteria that is used to asses whether a particular job application warrants applying for on your behalf.<br/>
@@ -52,6 +61,10 @@ class SetPreferences extends React.Component {
                                     value={this.props.session_limit}>
                             </input>
                         </div>
+                        <div className="d-flex justify-content-around loginBoxBtns">
+                            <button>SAVE</button>
+                            <div className="signUpBtn" onClick={console.log('cancel clicked')}>CANCEL</div>
+                        </div>
                     </div>
                 </form>
             </div>
@@ -59,4 +72,4 @@ class SetPreferences extends React.Component {
     }
 }
 
-export default SetPreferences
+export default SetPreferencesModal
