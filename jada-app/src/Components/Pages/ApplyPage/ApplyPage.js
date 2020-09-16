@@ -3,6 +3,7 @@ import './applyPage.css';
 import PageHeader from "../../StandAloneComponents/PageHeader/PageHeader";
 import ApplyForm from "../../StandAloneComponents/ApplyForm/ApplyForm";
 import SetPreferencesModal from "../../Modals/SetPreferencesModal/SetPreferencesModal";
+import KeyWordsConstructor from "../../StandAloneComponents/UserKeyWords/KeyWordsContructor/KeyWordsConstructor";
 
 class ApplyPage extends React.Component {
     constructor(props) {
@@ -20,7 +21,11 @@ class ApplyPage extends React.Component {
             salary_perm_max: '',
             session_limit: '',
             desiredKeyWord: '',
-            desiredKeyWords: []
+            desiredKeyWords: [],
+            undesiredKeyWord: '',
+            undesiredKeyWords: [],
+            interestedKeyWord: '',
+            interestedKeyWords: []
         }
     }
 
@@ -35,7 +40,9 @@ class ApplyPage extends React.Component {
             salary_perm_min: userPreferences.salary.permanent_minimum,
             salary_perm_max: userPreferences.salary.permanent_maximum,
             session_limit: userPreferences.session_limit,
-            desiredKeyWords: userPreferences.dkw
+            desiredKeyWords: userPreferences.dkw,
+            undesiredKeyWords: userPreferences.udkw,
+            interestedKeyWords: userPreferences.ikw
         });
     }
 
@@ -80,12 +87,12 @@ class ApplyPage extends React.Component {
         console.log('adding dkw...')
     }
 
-    displayKW = (keyWords) => {
-        let keyWordsHTML = []
-        keyWords.forEach(kw => {
-            keyWordsHTML.push(<div className="defaultClearBtn mr-4 mb-4 deleteIcon">{kw}</div> )
-        })
-        return keyWordsHTML
+    handleUDKWSubmit = (e) => {
+        console.log('adding udkw...')
+    }
+
+    handleIKWSubmit = (e) => {
+        console.log('adding ikw...')
     }
 
     render() {
@@ -121,24 +128,36 @@ class ApplyPage extends React.Component {
                         <p><span className="preferenceTitle">Salary, permanent maximum: </span><span>£</span>{this.state.salary_perm_max}</p>
                         <p><span className="preferenceTitle">Session limit: </span>{this.state.session_limit}</p>
                     </div>
-                    <div className="keyWordsBox">
-                        <form autoComplete="on" onSubmit={this.handleDKWSubmit}>
-                            <p className="preferenceTitle d-inline">Desired Key Words:</p>
-                            <div className="keyWordFormInput">
-                                <div className="floating-label mr-4">
-                                    <input placeholder="Input desired key word..." type="text" name="keyWord" id="desiredKeyWord"
-                                           onChange={(e) => this.handleChange(e, 'desiredKeyWord')}
-                                           autoComplete="on" value={this.state.desiredKeyWord} required/>
-                                    <label htmlFor="location">Desired Key Word:</label>
-                                </div>
-                                <button className="defaultBtn kwAddBtn">ADD</button>
-                            </div>
-                        </form>
-                        <div className="keyWords">
-                            {this.displayKW(this.state.desiredKeyWords)}
-
-                        </div>
-                    </div>
+                    <KeyWordsConstructor
+                        handleChange={this.handleChange}
+                        handleSubmit={this.handleDKWSubmit}
+                        preferenceTitle='Desired Key Words: '
+                        placeHolder='Input desired key word... '
+                        id='desiredKeyWord'
+                        stateProperty='desiredKeyWord'
+                        stateValue={this.state.desiredKeyWord}
+                        keyWordsList={this.state.desiredKeyWords}
+                    />
+                    <KeyWordsConstructor
+                        handleChange={this.handleChange}
+                        handleSubmit={this.handleUDKWSubmit}
+                        preferenceTitle='Undesirable Key Words: '
+                        placeHolder='Input undesirable key word... '
+                        id='undesiredKeyWord'
+                        stateProperty='undesiredKeyWord'
+                        stateValue={this.state.undesiredKeyWord}
+                        keyWordsList={this.state.undesiredKeyWords}
+                    />
+                    <KeyWordsConstructor
+                        handleChange={this.handleChange}
+                        handleSubmit={this.handleIKWSubmit}
+                        preferenceTitle='Interested Key Words: '
+                        placeHolder='Input interested key word... '
+                        id='interestedKeyWord'
+                        stateProperty='interestedKeyWord'
+                        stateValue={this.state.interestedKeyWord}
+                        keyWordsList={this.state.interestedKeyWords}
+                    />
                 </div>
             </div>
         )
