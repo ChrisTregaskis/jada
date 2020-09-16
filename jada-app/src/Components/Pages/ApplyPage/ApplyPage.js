@@ -13,6 +13,7 @@ class ApplyPage extends React.Component {
             user_id: localStorage.getItem('user_id'),
             bearerToken: localStorage.getItem('bearerToken'),
             modalActive: false,
+            tJUserEmail: '',
             jobTitle: '',
             location: '',
             radius: '0',
@@ -31,6 +32,7 @@ class ApplyPage extends React.Component {
 
     componentDidMount() {
         this.setStateUserPreferences();
+        this.setUserTotalJobsEmailState();
     }
 
     setStateUserPreferences = async () => {
@@ -46,7 +48,22 @@ class ApplyPage extends React.Component {
         });
     }
 
+    setUserTotalJobsEmailState = async () => {
+        let totalJobsEmail = await this.fetchUserTotalJobsEmail();
+        this.setState({ tJUserEmail: totalJobsEmail })
+    }
+
+    fetchUserTotalJobsEmail = async () => {
+        let userData = await this.fetchData();
+        return userData.totalJobs_email
+    }
+
     fetchUserPreferences = async () => {
+        let userData = await this.fetchData()
+        return userData.preferences;
+    }
+    
+    fetchData = async () => {
         const url = `http://localhost:8080/user/${this.state.user_id}`;
         let data = await fetch(url, {
             method: 'GET',
@@ -60,8 +77,7 @@ class ApplyPage extends React.Component {
         if (responseStatus !== 200) {
             return []
         }
-        console.log(data.user.preferences)
-        return data.user.preferences;
+        return data.user;
     }
 
     handleChange = (e, stateProperty) => {
@@ -72,7 +88,7 @@ class ApplyPage extends React.Component {
 
     handleApply = (e) => {
         e.preventDefault();
-        console.log(this.state)
+        console.log('handling apply...')
         this.setState({
             jobTitle: '',
             location: ''
@@ -111,6 +127,12 @@ class ApplyPage extends React.Component {
                     <h4 className="mt-4 mb-4">Job Search and Apply Preferences</h4>
                     <p className="mb-4">View and update the criteria that is used to asses whether a particular job application warrants applying for on your behalf.<br/>
                         Please navigate to your total jobs account to update the CV and generic cover letter.</p>
+                    <div className="totalJobsDetailsBox mt-4 mb-4">
+                        <div className="d-flex justify-content-between">
+                            <p><span className="preferenceTitle">Totaljobs log in email: </span>{this.state.tJUserEmail}</p>
+                            <button className="defaultBtn" onClick={console.log('update clicked')}>UPDATE</button>
+                        </div>
+                    </div>
                     <SetPreferencesModal
                         handleUpdatePreferences={this.handleUpdatePreferences}
                         handleChange={this.handleChange}
