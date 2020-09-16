@@ -15,7 +15,7 @@ exports.get_user_by_id = (req, res, next) => {
                         first_name: doc.first_name,
                         last_name: doc.last_name,
                         jada_email: doc.log_in_credentials.jada.email,
-                        totalJobs_email: doc.log_in_credentials.totalJobs.email,
+                        totalJobs_email: doc.log_in_credentials.totalJobs.tJ_email,
                         preferences: {
                             reporting_email: doc.preferences.reporting_email,
                             job_title: doc.preferences.job_title,
