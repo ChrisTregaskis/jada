@@ -167,3 +167,8 @@
     border-color: #e74c3c;
     text-decoration: line-through;
 }
+
+.totalJobsDetailsBox p {
+    margin: 7.5px 0;
+    align-self: center;
+}

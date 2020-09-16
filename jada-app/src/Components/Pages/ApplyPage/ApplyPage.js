@@ -4,6 +4,8 @@ import PageHeader from "../../StandAloneComponents/PageHeader/PageHeader";
 import ApplyForm from "../../StandAloneComponents/ApplyForm/ApplyForm";
 import SetPreferencesModal from "../../Modals/SetPreferencesModal/SetPreferencesModal";
 import KeyWordsConstructor from "../../StandAloneComponents/UserKeyWords/KeyWordsContructor/KeyWordsConstructor";
+import SetTotalJobsCredentialsModal from "../../Modals/SetTotalJobsCredentialsModal/SetTotalJobsCredentialsModal";
+import BackgroundOverlay from "../../StandAloneComponents/BackgroundOverlay/BackgroundOverlay";
 
 class ApplyPage extends React.Component {
     constructor(props) {
@@ -12,7 +14,7 @@ class ApplyPage extends React.Component {
         this.state = {
             user_id: localStorage.getItem('user_id'),
             bearerToken: localStorage.getItem('bearerToken'),
-            modalActive: false,
+            setCredentialsModalActive: false,
             tJUserEmail: '',
             jobTitle: '',
             location: '',
@@ -48,6 +50,10 @@ class ApplyPage extends React.Component {
         });
     }
 
+    toggleCredentialsModalActive = () => {
+        this.setState({ setCredentialsModalActive: !this.state.setCredentialsModalActive })
+    }
+
     setUserTotalJobsEmailState = async () => {
         let totalJobsEmail = await this.fetchUserTotalJobsEmail();
         this.setState({ tJUserEmail: totalJobsEmail })
@@ -62,7 +68,7 @@ class ApplyPage extends React.Component {
         let userData = await this.fetchData()
         return userData.preferences;
     }
-    
+
     fetchData = async () => {
         const url = `http://localhost:8080/user/${this.state.user_id}`;
         let data = await fetch(url, {
@@ -96,24 +102,31 @@ class ApplyPage extends React.Component {
     }
 
     handleUpdatePreferences = (e) => {
+        e.preventDefault();
         console.log('updating preferences...')
     }
 
     handleDKWSubmit = (e) => {
+        e.preventDefault();
         console.log('adding dkw...')
     }
 
     handleUDKWSubmit = (e) => {
+        e.preventDefault();
         console.log('adding udkw...')
     }
 
     handleIKWSubmit = (e) => {
+        e.preventDefault();
         console.log('adding ikw...')
     }
 
     render() {
         return(
             <div className="container">
+                <BackgroundOverlay
+                    modalActive={this.state.setCredentialsModalActive}
+                />
                 <PageHeader/>
                 <div className="applyPage">
                     <h4 className="mt-4 mb-4">Apply To Jobs</h4>
@@ -127,10 +140,15 @@ class ApplyPage extends React.Component {
                     <h4 className="mt-4 mb-4">Job Search and Apply Preferences</h4>
                     <p className="mb-4">View and update the criteria that is used to asses whether a particular job application warrants applying for on your behalf.<br/>
                         Please navigate to your total jobs account to update the CV and generic cover letter.</p>
+                    <SetTotalJobsCredentialsModal
+                        tJUserEmail={this.state.tJUserEmail}
+                        setCredentialsModalActive={this.state.setCredentialsModalActive}
+                        toggleCredentialsModal={this.toggleCredentialsModalActive}
+                    />
                     <div className="totalJobsDetailsBox mt-4 mb-4">
                         <div className="d-flex justify-content-between">
                             <p><span className="preferenceTitle">Totaljobs log in email: </span>{this.state.tJUserEmail}</p>
-                            <button className="defaultBtn" onClick={console.log('update clicked')}>UPDATE</button>
+                            <button className="defaultBtn" onClick={this.toggleCredentialsModalActive}>UPDATE</button>
                         </div>
                     </div>
                     <SetPreferencesModal
