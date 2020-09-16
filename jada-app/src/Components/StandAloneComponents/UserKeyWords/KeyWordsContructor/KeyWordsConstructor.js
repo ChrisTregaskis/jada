@@ -5,7 +5,10 @@ class KeyWordsConstructor extends React.Component {
     displayKW = (keyWords) => {
         let keyWordsHTML = []
         keyWords.forEach(kw => {
-            keyWordsHTML.push(<div className="defaultClearBtn mr-4 mb-4 deleteIcon">{kw}</div> )
+            keyWordsHTML.push(<div
+                key={kw}
+                className="defaultClearBtn mr-4 mb-4 deleteIcon"
+            >{kw}</div> )
         })
         return keyWordsHTML
     }
