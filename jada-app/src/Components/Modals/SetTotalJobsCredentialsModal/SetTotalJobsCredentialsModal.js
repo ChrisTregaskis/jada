@@ -6,6 +6,8 @@ class SetTotalJobsCredentialsModal extends React.Component {
         super(props);
 
         this.state = {
+            userId: localStorage.getItem('user_id'),
+            bearerToken: localStorage.getItem('bearerToken'),
             modalClass: 'hidden',
             updatedEmail: '',
             changePass1: '',
@@ -31,7 +33,7 @@ class SetTotalJobsCredentialsModal extends React.Component {
         this.setState(updatedData)
     }
 
-    handleSubmit = (e) => {
+    handleSubmit = async (e) => {
         e.preventDefault();
         let updatedEmail = this.state.updatedEmail;
         let pass1 = this.state.changePass1;
@@ -86,7 +88,33 @@ class SetTotalJobsCredentialsModal extends React.Component {
             }
         }
 
-        console.log(updatePackage)
+        let credentialsUpdated = await this.updateCredentials(updatePackage)
+
+        if (!credentialsUpdated) {
+            this.setState({ errorMessage: 'Unfortunately, unable to update credentials.' })
+            setTimeout(() => {
+                this.setState({ errorMessage: '' })
+            }, 5000)
+            return
+        } else if (credentialsUpdated) {
+            alert('successfully updated credentials')
+            this.props.toggleCredentialsModal();
+        }
+    }
+
+    updateCredentials = async (credentials) => {
+        let reqData = JSON.stringify(credentials);
+        let url = `http://localhost:8080/user/preferences/totalJobs/${this.state.userId}`;
+        const res = await fetch(url, {
+            method: 'PUT',
+            body: reqData,
+            headers: {
+                "Content-Type" : "application/json",
+                "Authorization": "Bearer " + this.state.bearerToken
+            }
+        })
+        let response = res.json();
+        return response.success
     }
 
     validateEmail = (email) => {
