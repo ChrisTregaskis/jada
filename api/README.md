@@ -44,7 +44,6 @@ You must be authenticated to get data from this route; requires token.
                 "radius": 10,
                 "job_type": "FULL_TIME",
                 "salary": {
-                    "permanent_preferred": 25000,
                     "permanent_minimum": 22500,
                     "permanent_maximum": 35000
                   },
@@ -203,7 +202,6 @@ You must be authenticated to update data from this route; takes bearer token.
         "radius": 20,
         "job_type": "FULL_TIME",
         "salary": {
-          "permanent_preferred": 25000,
           "permanent_minimum": 22000,
           "permanent_maximum": 35000
         },

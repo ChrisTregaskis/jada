@@ -99,7 +99,6 @@ exports.set_user_preferences = async (req, res, next) => {
 
     if (reqSalary !== undefined) {
         if (!(validate_type(reqSalary, 'object')) ||
-            !(validate_type(reqSalary.permanent_preferred, 'number')) ||
             !(validate_type(reqSalary.permanent_minimum, 'number')) ||
             !(validate_type(reqSalary.permanent_maximum, 'number'))) {
             await res.status(400).json({
@@ -107,7 +106,6 @@ exports.set_user_preferences = async (req, res, next) => {
                 message: 'Set salary types incorrect. Salary must be object containing set preferences where the values are numbers.',
                 example: {
                     salary: {
-                        permanent_preferred: 12345,
                         permanent_minimum: 12345,
                         permanent_maximum: 12345
                     }
