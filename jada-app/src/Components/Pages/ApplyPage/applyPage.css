@@ -46,8 +46,7 @@
     margin-bottom: 20px;
 }
 
-.applyBox form p,
-.setPreferencesBox form p {
+.applyBox form p {
     line-height: 155%;
     font-size: 14px;
     font-weight: 400;

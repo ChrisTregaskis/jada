@@ -15,6 +15,8 @@ class ApplyPage extends React.Component {
             user_id: localStorage.getItem('user_id'),
             bearerToken: localStorage.getItem('bearerToken'),
             setCredentialsModalActive: false,
+            setPreferencesModalActive: false,
+            modalActive: false,
             tJUserEmail: '',
             jobTitle: '',
             location: '',
@@ -37,6 +39,22 @@ class ApplyPage extends React.Component {
         this.setUserTotalJobsEmailState();
     }
 
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        if (prevState.setCredentialsModalActive !== this.state.setCredentialsModalActive) {
+            if (this.state.setCredentialsModalActive) {
+                this.toggleModalActive();
+            }
+        } else if (prevState.setPreferencesModalActive !== this.state.setPreferencesModalActive) {
+            if (this.state.setPreferencesModalActive) {
+                this.toggleModalActive();
+            }
+        }
+    }
+
+    toggleModalActive = () => {
+        this.setState({ modalActive: !this.state.modalActive })
+    }
+
     setStateUserPreferences = async () => {
         let userPreferences = await this.fetchUserPreferences();
         this.setState({
@@ -52,6 +70,10 @@ class ApplyPage extends React.Component {
 
     toggleCredentialsModalActive = () => {
         this.setState({ setCredentialsModalActive: !this.state.setCredentialsModalActive })
+    }
+
+    togglePreferencesModalActive = () => {
+        this.setState({ setPreferencesModalActive: !this.state.setPreferencesModalActive })
     }
 
     setUserTotalJobsEmailState = async () => {
@@ -101,11 +123,6 @@ class ApplyPage extends React.Component {
         })
     }
 
-    handleUpdatePreferences = (e) => {
-        e.preventDefault();
-        console.log('updating preferences...')
-    }
-
     handleDKWSubmit = (e) => {
         e.preventDefault();
         console.log('adding dkw...')
@@ -125,7 +142,7 @@ class ApplyPage extends React.Component {
         return(
             <div className="container">
                 <BackgroundOverlay
-                    modalActive={this.state.setCredentialsModalActive}
+                    modalActive={this.state.modalActive}
                 />
                 <PageHeader/>
                 <div className="applyPage">
@@ -144,6 +161,7 @@ class ApplyPage extends React.Component {
                         tJUserEmail={this.state.tJUserEmail}
                         setCredentialsModalActive={this.state.setCredentialsModalActive}
                         toggleCredentialsModal={this.toggleCredentialsModalActive}
+                        toggleModalActive={this.toggleModalActive}
                     />
                     <div className="totalJobsDetailsBox mt-4 mb-4">
                         <div className="d-flex justify-content-between">
@@ -152,7 +170,9 @@ class ApplyPage extends React.Component {
                         </div>
                     </div>
                     <SetPreferencesModal
-                        handleUpdatePreferences={this.handleUpdatePreferences}
+                        setPreferencesModalActive={this.state.setPreferencesModalActive}
+                        togglePreferencesModalActive={this.togglePreferencesModalActive}
+                        toggleModalActive={this.toggleModalActive}
                         handleChange={this.handleChange}
                         jobType={this.state.jobType}
                         salary_perm_min={this.state.salary_perm_min}
@@ -162,7 +182,7 @@ class ApplyPage extends React.Component {
                     <div className="preferencesStaticBox mt-4 mb-4">
                         <div className="d-flex justify-content-between">
                             <p><span className="preferenceTitle">Job type: </span>{this.state.jobType}</p>
-                            <button className="defaultBtn" onClick={console.log('update clicked')}>UPDATE</button>
+                            <button className="defaultBtn" onClick={this.togglePreferencesModalActive}>UPDATE</button>
                         </div>
                         <p><span className="preferenceTitle">Salary, permanent minimum: </span><span>£</span>{this.state.salary_perm_min}</p>
                         <p><span className="preferenceTitle">Salary, permanent maximum: </span><span>£</span>{this.state.salary_perm_max}</p>

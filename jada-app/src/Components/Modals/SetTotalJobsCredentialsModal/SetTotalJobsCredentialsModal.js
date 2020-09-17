@@ -107,6 +107,7 @@ class SetTotalJobsCredentialsModal extends React.Component {
         } else if (credentialsUpdated) {
             alert('successfully updated credentials')
             this.props.toggleCredentialsModal();
+            this.props.toggleModalActive();
         }
     }
 
@@ -132,6 +133,7 @@ class SetTotalJobsCredentialsModal extends React.Component {
 
     closeModal = () => {
         this.props.toggleCredentialsModal();
+        this.props.toggleModalActive();
     }
 
     render() {
