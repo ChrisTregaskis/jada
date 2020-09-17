@@ -111,12 +111,12 @@ class MainDashboard extends React.Component {
                         <div className="btnMainDashboard">
                             <ButtonMain
                                 buttonText="APPLY FOR JOBS"
-                                cssClass="d-flex justify-content-center my-2"
+                                cssClass="d-flex justify-content-center my-2 btnCen"
                                 location="http://localhost:3000/apply"
                             />
                             <ButtonMain
                                 buttonText="ALL APPLICATIONS"
-                                cssClass="d-flex justify-content-center my-2"
+                                cssClass="d-flex justify-content-center my-2 btnCen"
                                 location="http://localhost:3000/tables"
                             />
                             <ButtonMainToggle

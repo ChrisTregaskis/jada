@@ -115,7 +115,7 @@ class TablesPage extends React.Component {
                     <div className="btnMainTablesPage">
                         <ButtonMain
                             buttonText="MAIN DASHBOARD"
-                            cssClass=""
+                            cssClass="btnCen"
                             location="http://localhost:3000/dashboard"
                         />
                     </div>

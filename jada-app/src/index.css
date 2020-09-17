@@ -53,3 +53,8 @@ code {
 .defaultClearBtn:hover:active {
   transform: scale(0.99);
 }
+
+.btnCen {
+  width: fit-content;
+  margin: 0 auto;
+}

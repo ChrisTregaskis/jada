@@ -16,7 +16,7 @@ class ButtonMainToggle extends React.Component {
         return (
             <div className={cssClass}>
                 <div onClick={this.props.handleClick}
-                     className="buttonMain buttonMainToggle">
+                     className="defaultClearBtn">
                     <span className="text">{this.state.buttonText}</span>
                 </div>
             </div>
