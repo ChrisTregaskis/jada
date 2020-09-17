@@ -76,6 +76,10 @@ class SetTotalJobsCredentialsModal extends React.Component {
                         "email": updatedEmail,
                         "pass": pass1
                     }
+                    this.setState({
+                        changePass1: '',
+                        changePass2: ''
+                    })
                 } else {
                     updatePackage = {
                         "email": updatedEmail
@@ -86,12 +90,16 @@ class SetTotalJobsCredentialsModal extends React.Component {
             updatePackage = {
                 "pass": pass1
             }
+            this.setState({
+                changePass1: '',
+                changePass2: ''
+            })
         }
 
         let credentialsUpdated = await this.updateCredentials(updatePackage)
 
         if (!credentialsUpdated) {
-            this.setState({ errorMessage: 'Unfortunately, unable to update credentials.' })
+            this.setState({ errorMessage: 'Unable to update credentials.' })
             setTimeout(() => {
                 this.setState({ errorMessage: '' })
             }, 5000)
@@ -113,7 +121,7 @@ class SetTotalJobsCredentialsModal extends React.Component {
                 "Authorization": "Bearer " + this.state.bearerToken
             }
         })
-        let response = res.json();
+        let response = await res.json();
         return response.success
     }
 
