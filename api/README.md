@@ -190,9 +190,9 @@ You must be authenticated to update data from this route; takes bearer token.
     - `{ "job_type": String }` : type string, desired job type. Options: FULL_TIME, PART_TIME, CONTRACTOR, TEMPORARY.
     - `{ "salary": Object }` : type object, desired preferred salary and ranges as set below.
     - `{ "session_limit": Number }` : type number, desired apply limit. Limits how many applications applied in a given session.
-    - `{ "dkw": Array }` : type Array (js object), dkw stands for 'desired keywords', an array of single desired keywords. 
-    - `{ "udkw": Array }` : type Array (js object), udkw stands for 'undesired keywords', an array of single undesired keywords. 
-    - `{ "ikw": Array }` : type Array (js object), ikw stands for 'interested keywords', an array of single interested keywords. 
+    - `{ "dkw": String }` : type String, dkw stands for 'desired keywords', a single relevant word. 
+    - `{ "udkw": String }` : type String, udkw stands for 'undesired keywords', a single relevant word. 
+    - `{ "ikw": String }` : type String, ikw stands for 'interested keywords', a single relevant word. 
     
     - an example request might be:
     ```JSON
@@ -206,9 +206,9 @@ You must be authenticated to update data from this route; takes bearer token.
           "permanent_maximum": 35000
         },
         "session_limit": 40,
-        "dkw": ["Software", "Engineer", "JavaScript", "Agile", "PHP"],
-        "udkw": ["Lead", ".NET", "C#"],
-        "ikw": ["Python", "OOP", "Windows", "LAMP"]
+        "dkw": "Software",
+        "udkw": "Design",
+        "ikw": "Lead"
       }
     
     
