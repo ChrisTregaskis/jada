@@ -81,6 +81,16 @@ class ApplyPage extends React.Component {
         this.setState({ tJUserEmail: totalJobsEmail })
     }
 
+    clearStateKW = (stateKeyWord) => {
+        if (stateKeyWord === 'desiredKeyWord') {
+            this.setState({ desiredKeyWord: '' })
+        } else if (stateKeyWord === 'undesiredKeyWord') {
+            this.setState({ undesiredKeyWord: '' })
+        } else if (stateKeyWord === 'interestedKeyWord') {
+            this.setState({ interestedKeyWord: ''})
+        }
+    }
+
     fetchUserTotalJobsEmail = async () => {
         let userData = await this.fetchData();
         return userData.totalJobs_email
@@ -121,21 +131,6 @@ class ApplyPage extends React.Component {
             jobTitle: '',
             location: ''
         })
-    }
-
-    handleDKWSubmit = (e) => {
-        e.preventDefault();
-        console.log('adding dkw...')
-    }
-
-    handleUDKWSubmit = (e) => {
-        e.preventDefault();
-        console.log('adding udkw...')
-    }
-
-    handleIKWSubmit = (e) => {
-        e.preventDefault();
-        console.log('adding ikw...')
     }
 
     render() {
@@ -189,34 +184,40 @@ class ApplyPage extends React.Component {
                         <p><span className="preferenceTitle">Session limit: </span>{this.state.session_limit}</p>
                     </div>
                     <KeyWordsConstructor
+                        setStateUserPreferences={this.setStateUserPreferences}
                         handleChange={this.handleChange}
-                        handleSubmit={this.handleDKWSubmit}
+                        clearStateKW={this.clearStateKW}
                         preferenceTitle='Desired Key Words: '
                         placeHolder='Input desired key word... '
                         id='desiredKeyWord'
                         stateProperty='desiredKeyWord'
                         stateValue={this.state.desiredKeyWord}
                         keyWordsList={this.state.desiredKeyWords}
+                        dbProperty='dkw'
                     />
                     <KeyWordsConstructor
+                        setStateUserPreferences={this.setStateUserPreferences}
                         handleChange={this.handleChange}
-                        handleSubmit={this.handleUDKWSubmit}
+                        clearStateKW={this.clearStateKW}
                         preferenceTitle='Undesirable Key Words: '
                         placeHolder='Input undesirable key word... '
                         id='undesiredKeyWord'
                         stateProperty='undesiredKeyWord'
                         stateValue={this.state.undesiredKeyWord}
                         keyWordsList={this.state.undesiredKeyWords}
+                        dbProperty='udkw'
                     />
                     <KeyWordsConstructor
+                        setStateUserPreferences={this.setStateUserPreferences}
                         handleChange={this.handleChange}
-                        handleSubmit={this.handleIKWSubmit}
+                        clearStateKW={this.clearStateKW}
                         preferenceTitle='Interested Key Words: '
                         placeHolder='Input interested key word... '
                         id='interestedKeyWord'
                         stateProperty='interestedKeyWord'
                         stateValue={this.state.interestedKeyWord}
                         keyWordsList={this.state.interestedKeyWords}
+                        dbProperty='ikw'
                     />
                 </div>
             </div>
