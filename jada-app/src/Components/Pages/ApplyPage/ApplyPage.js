@@ -68,6 +68,15 @@ class ApplyPage extends React.Component {
         });
     }
 
+    updateStateKeyWords = async () => {
+        let userPreferences = await this.fetchUserPreferences();
+        this.setState({
+            desiredKeyWords: userPreferences.dkw,
+            undesiredKeyWords: userPreferences.udkw,
+            interestedKeyWords: userPreferences.ikw
+        })
+    }
+
     toggleCredentialsModalActive = () => {
         this.setState({ setCredentialsModalActive: !this.state.setCredentialsModalActive })
     }
@@ -184,7 +193,7 @@ class ApplyPage extends React.Component {
                         <p><span className="preferenceTitle">Session limit: </span>{this.state.session_limit}</p>
                     </div>
                     <KeyWordsConstructor
-                        setStateUserPreferences={this.setStateUserPreferences}
+                        updateStateKeyWords={this.updateStateKeyWords}
                         handleChange={this.handleChange}
                         clearStateKW={this.clearStateKW}
                         preferenceTitle='Desired Key Words: '
@@ -196,7 +205,7 @@ class ApplyPage extends React.Component {
                         dbProperty='dkw'
                     />
                     <KeyWordsConstructor
-                        setStateUserPreferences={this.setStateUserPreferences}
+                        updateStateKeyWords={this.updateStateKeyWords}
                         handleChange={this.handleChange}
                         clearStateKW={this.clearStateKW}
                         preferenceTitle='Undesirable Key Words: '
@@ -208,7 +217,7 @@ class ApplyPage extends React.Component {
                         dbProperty='udkw'
                     />
                     <KeyWordsConstructor
-                        setStateUserPreferences={this.setStateUserPreferences}
+                        updateStateKeyWords={this.updateStateKeyWords}
                         handleChange={this.handleChange}
                         clearStateKW={this.clearStateKW}
                         preferenceTitle='Interested Key Words: '

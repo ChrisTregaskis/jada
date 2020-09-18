@@ -8,6 +8,23 @@ class KeyWordsConstructor extends React.Component {
         this.state = {
             user_id: localStorage.getItem('user_id'),
             bearerToken: localStorage.getItem('bearerToken'),
+            keyWordsHTML: []
+        }
+    }
+
+    componentDidMount() {
+        let kWHTML = this.displayKW(this.props.keyWordsList)
+        this.setState({ keyWordsHTML: kWHTML })
+    }
+
+    updateKeyWordsHTML = () => {
+        let kWHTML = this.displayKW(this.props.keyWordsList)
+        this.setState({ keyWordsHTML: kWHTML })
+    }
+
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        if (prevProps.keyWordsList !== this.props.keyWordsList) {
+            this.updateKeyWordsHTML()
         }
     }
 
@@ -36,9 +53,9 @@ class KeyWordsConstructor extends React.Component {
         }
 
         let keyWordListUpdated = await this.updateKeyWordList(updatePackage);
-
-        if (keyWordListUpdated.success) {
-            this.props.setStateUserPreferences();
+        if (keyWordListUpdated) {
+            await this.props.updateStateKeyWords();
+            await this.updateKeyWordsHTML()
         }
         this.props.clearStateKW(this.props.stateProperty)
     }
@@ -74,7 +91,7 @@ class KeyWordsConstructor extends React.Component {
                     </div>
                 </form>
                 <div className="keyWords">
-                    {this.displayKW(this.props.keyWordsList)}
+                    {this.state.keyWordsHTML}
                 </div>
             </div>
         );
