@@ -15,6 +15,7 @@
 - POST `/api/user/login` : returns an authenticated bearer token
 - PUT `/api/user/preferences/totalJobs/:userId` : updates totalJobs log in credentials
 - PUT `/api/user/preferences/:userId` : updates user preferences
+- PUT `/api/user/preferences/keyWords/:userId` : for removing user key word preferences
 - DELETE `/api/user/:userId` : deletes a single user
 
 ### GET
@@ -233,6 +234,51 @@ You must be authenticated to update data from this route; takes bearer token.
             }
           }
     - if unsuccessful, error message depends on input, i.e. 'Invalid radius option. Must be set to either 0, 5, 10, 20 or 30'
+        ```JSON
+          { 
+            "status": 400,
+            "success": false, 
+            "message": "Depending on caught error"
+          }
+    - alternatively, if unable to connect to DB
+        ```JSON
+          { 
+            "status": 500,
+            "success": false, 
+            "message": "Not able to update document"
+          }
+
+      
+### PUT
+**/api/user/preferences/keyWords/:userId**
+
+This route is for removing individual key words from their relevant lists.
+
+You must be authenticated to update data from this route; takes bearer token.
+
+- All preferences are optional and can be sent in the same request
+
+    - `{ "dkw": String }` : type String, dkw stands for 'desired keywords', a key word you want to remove from this list. 
+    - `{ "udkw": String }` : type String, udkw stands for 'undesired keywords', a key word you want to remove from this list. 
+    - `{ "ikw": String }` : type String, ikw stands for 'interested keywords', a key word you want to remove from this list. 
+    
+    - an example request might be: `{ "dkw": "Manager" }` This would remove the key word "Manager" from the "dkw" list.
+    
+- Returns:
+    - if successful, count will state how many property values have changed and if changed, value of returned preference will state true, otherwise defaults to false.
+        ```JSON
+          { 
+            "status": 200,
+            "success": true, 
+            "message": "Successfully updated user preferences",
+            "preferences_updated": {
+              "count": 0,
+              "dkw": false,
+              "udkw": false,
+              "ikw": false
+            }
+          }
+    - if unsuccessful, error message depends on input
         ```JSON
           { 
             "status": 400,
