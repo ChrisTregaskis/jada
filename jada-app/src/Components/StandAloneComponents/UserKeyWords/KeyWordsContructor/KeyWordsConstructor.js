@@ -13,12 +13,12 @@ class KeyWordsConstructor extends React.Component {
     }
 
     componentDidMount() {
-        let kWHTML = this.displayKW(this.props.keyWordsList)
+        let kWHTML = this.displayKW(this.props.dbProperty, this.props.keyWordsList)
         this.setState({ keyWordsHTML: kWHTML })
     }
 
     updateKeyWordsHTML = () => {
-        let kWHTML = this.displayKW(this.props.keyWordsList)
+        let kWHTML = this.displayKW(this.props.dbProperty, this.props.keyWordsList)
         this.setState({ keyWordsHTML: kWHTML })
     }
 
@@ -28,15 +28,51 @@ class KeyWordsConstructor extends React.Component {
         }
     }
 
-    displayKW = (keyWords) => {
+    displayKW = (dbProperty, keyWords) => {
         let keyWordsHTML = []
         keyWords.forEach(kw => {
-            keyWordsHTML.push(<div
-                key={kw}
-                className="defaultClearBtn mr-4 mb-4 deleteIcon"
-            >{kw}</div> )
+            keyWordsHTML.push(
+                <form key={kw} onSubmit={this.handleDelete}>
+                    <button className="defaultClearBtn mr-4 mb-4 deleteIcon" data-kw_group={dbProperty}>{kw}</button>
+                </form>
+            )
         })
         return keyWordsHTML
+    }
+
+    handleDelete = async (e) => {
+        e.preventDefault();
+        let kwGroup = e.target.childNodes[0].dataset.kw_group;
+        let kw = e.target.childNodes[0].textContent;
+        let updatePackage;
+        if (kwGroup === 'dkw') {
+            updatePackage = { "dkw": kw }
+        } else if (kwGroup === 'udkw') {
+            updatePackage = { "udkw": kw }
+        } else if (kwGroup === 'ikw') {
+            updatePackage = { "ikw": kw }
+        }
+
+        let keyWordListUpdated = await this.removeKeyWordFromList(updatePackage);
+        if (keyWordListUpdated) {
+            await this.props.updateStateKeyWords();
+            await this.updateKeyWordsHTML()
+        }
+    }
+
+    removeKeyWordFromList = async (keyWord) => {
+        let reqData = JSON.stringify(keyWord);
+        let url = `http://localhost:8080/user/preferences/keyWords/${this.state.user_id}`;
+        const res = await fetch(url, {
+            method: 'PUT',
+            body: reqData,
+            headers: {
+                "Content-Type" : "application/json",
+                "Authorization": "Bearer " + this.state.bearerToken
+            }
+        })
+        let response = await res.json();
+        return response.success
     }
 
     handleSubmit = async (e) => {
@@ -78,7 +114,7 @@ class KeyWordsConstructor extends React.Component {
     render() {
         return (
             <div className="keyWordsBox">
-                <form autoComplete="on" onSubmit={this.handleSubmit}>
+                <form className="mb-4" autoComplete="on" onSubmit={this.handleSubmit}>
                     <p className="preferenceTitle">{this.props.preferenceTitle}</p>
                     <div className="keyWordFormInput">
                         <div className="floating-label mr-4">
