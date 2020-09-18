@@ -1,7 +1,7 @@
 # JADA
 Job Application Digital Assistant
 
-You can check out an example of JADA running here: https://vimeo.com/438840301
+You can check out an example of the initial proof of concept running for myself here: https://vimeo.com/438840301
 
 I've been told getting your first dev job, on top of projects one could show, is a numbers game. After spending over 120 hours, countless applications and missing coding due to spending the majority of my time applying to code (the irony) I started to wonder if I could use my new skills to build something that would automate this all.
 If you've ever been looking for work for longer than a month, you'd certainly appreciate how taxing it can be mentally not getting any replies from applications, or just getting automated responses. I started loosing lots of confidence, increasingly doubting my self-worth and this affected relationships around me. This project was also birthed to counter the lifeless feeling of interacting with the recruitment industry.
