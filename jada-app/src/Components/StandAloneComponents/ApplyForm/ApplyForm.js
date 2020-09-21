@@ -1,14 +1,31 @@
 import React from "react";
 import './applyForm.css';
 import ButtonMain from "../../Buttons/ButtonMain/ButtonMain";
+import ConfirmApplyModal from "../../Modals/ConfirmApplyModal/ConfirmApplyModal";
 
 class ApplyForm extends React.Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            errorMessage: ''
+            userId: localStorage.getItem('user_id'),
+            bearerToken: localStorage.getItem('bearerToken'),
+            errorMessage: '',
+            confirmedApply: false,
+            applyPackage: {}
         }
+    }
+
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        if (prevState.confirmedApply !== this.state.confirmedApply) {
+            if (this.state.confirmedApply) {
+                this.processApply().then((data) => console.log(data.success));
+            }
+        }
+    }
+
+    toggleConfirmedApply = () => {
+        this.setState({ confirmedApply: !this.state.confirmedApply })
     }
 
     handleSubmit = async (e) => {
@@ -25,23 +42,21 @@ class ApplyForm extends React.Component {
             }, 5000)
             return
         }
+
+        this.props.toggleApplyModalActive();
+
         let applyPackage = {
             "job_title": jobTitle,
             "location": location,
             "radius": radius
         }
 
-        let processedApply = await this.processApply(applyPackage)
-
+        this.setState({ applyPackage: applyPackage })
         this.props.resetJTAndLocation();
     }
 
-    processApply = async (applyPackage) => {
-        // navigate to website and log in route
-            // expected package: {
-                // 	"email": "chris.tregaskis.work@gmail.com",
-                // 	"encPass": "ce5431ac4b132fe974ee7b6e3d251f"
-                // }
+    processApply = async () => {
+        let loggedIn = await this.logInToTJAccount();
 
         // enter search with apply package
             // expected package: {
@@ -58,12 +73,82 @@ class ApplyForm extends React.Component {
         // log out
             // just requires authentication
 
-        // return success true or false
+        // populate session overview (in alert for now cause long ting)
+        alert('Apply Process Complete')
+        this.toggleConfirmedApply()
+
+        return {
+            success: true,
+            message: 'test passed'
+        }
+    }
+
+    logInToTJAccount = async () => {
+        let grabCredUrl = `http://localhost:8080/user/tj/${this.state.userId}`;
+        let userData = await this.fetchRequestGET(grabCredUrl)
+        if (userData.credentials.tJ_password === undefined) {
+            this.setState({ errorMessage: 'Unsuccessful. Please update totaljobs log in password in credentials box below.' })
+            setTimeout(() => {
+                this.setState({ errorMessage: '' })
+            }, 10000)
+            return
+        }
+
+        let e = userData.credentials.tJ_email
+        let p = userData.credentials.tJ_password
+        let logInPackage = {
+            "email": e,
+            "encPass": p
+        }
+        let logInTJUrl = `http://localhost:8080/sessions/totalJobsLogIn`
+        let logInRes = await this.fetchRequestPOST(logInTJUrl, logInPackage)
+
+        if (!logInRes.success) {
+            this.setState({ errorMessage: logInRes.message })
+            setTimeout(() => {
+                this.setState({ errorMessage: '' })
+            }, 10000)
+            return false
+        } else if (logInRes.success) {
+            return true
+        }
+    }
+
+    fetchRequestPOST = async (url, reqPackage) => {
+        let reqData = JSON.stringify(reqPackage);
+        const res = await fetch(url, {
+            method: 'POST',
+            body: reqData,
+            headers: {
+                "Content-Type" : "application/json",
+                "Authorization": "Bearer " + this.state.bearerToken
+            }
+        })
+        let response = await res.json();
+        return response
+    }
+
+    fetchRequestGET = async (url) => {
+        const res = await fetch(url, {
+            method: 'GET',
+            headers: {
+                "Content-Type" : "application/json",
+                "Authorization": "Bearer " + this.state.bearerToken
+            }
+        })
+        let response = await res.json();
+        return response
     }
 
     render() {
         return (
             <div className="applyBox col-12">
+                <ConfirmApplyModal
+                    toggleApplyModalActive={this.props.toggleApplyModalActive}
+                    toggleModalActive={this.props.toggleModalActive}
+                    applyModalActive={this.props.applyModalActive}
+                    toggleConfirmedApply={this.toggleConfirmedApply}
+                />
                 <form autoComplete="on" onSubmit={this.handleSubmit}>
                     <div className="floating-label">
                         <input placeholder="Job Title" type="text" name="jobTitle" id="jobTitle"

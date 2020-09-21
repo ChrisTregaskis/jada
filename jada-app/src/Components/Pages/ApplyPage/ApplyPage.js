@@ -14,6 +14,7 @@ class ApplyPage extends React.Component {
         this.state = {
             user_id: localStorage.getItem('user_id'),
             bearerToken: localStorage.getItem('bearerToken'),
+            applyModalActive: false,
             setCredentialsModalActive: false,
             setPreferencesModalActive: false,
             modalActive: false,
@@ -40,7 +41,11 @@ class ApplyPage extends React.Component {
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
-        if (prevState.setCredentialsModalActive !== this.state.setCredentialsModalActive) {
+        if (prevState.applyModalActive !== this.state.applyModalActive) {
+            if (this.state.applyModalActive) {
+                this.toggleModalActive()
+            }
+        } else if (prevState.setCredentialsModalActive !== this.state.setCredentialsModalActive) {
             if (this.state.setCredentialsModalActive) {
                 this.toggleModalActive();
             }
@@ -161,6 +166,10 @@ class ApplyPage extends React.Component {
 
     }
 
+    toggleApplyModalActive = () => {
+        this.setState({ applyModalActive: !this.state.applyModalActive })
+    }
+
     toggleCredentialsModalActive = () => {
         this.setState({ setCredentialsModalActive: !this.state.setCredentialsModalActive })
     }
@@ -232,7 +241,7 @@ class ApplyPage extends React.Component {
                 />
                 <PageHeader/>
                 <div className="applyPage">
-                    <h4 className="mt-4 mb-4">Apply To Jobs</h4>
+                    <h4 className="mt-4 mb-4">Apply For Jobs</h4>
                     <p className="mb-4">Enter desired job title, location and radius and click the apply button. JADA will log into your totalJobs account, run the job search, and process all the results, applying where the application meets your preferences.</p>
                     <ApplyForm
                         checkPreferencesSet={this.checkPreferencesSet}
@@ -240,6 +249,9 @@ class ApplyPage extends React.Component {
                         resetJTAndLocation={this.resetJTAndLocation}
                         jobTitle={this.state.jobTitle}
                         location={this.state.location}
+                        toggleApplyModalActive={this.toggleApplyModalActive}
+                        toggleModalActive={this.toggleModalActive}
+                        applyModalActive={this.state.applyModalActive}
                     />
                     <h4 className="mt-4 mb-4">Job Search and Apply Preferences</h4>
                     <p className="mb-4">View and update the criteria that is used to asses whether a particular job application warrants applying for on your behalf.<br/>
