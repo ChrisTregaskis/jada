@@ -108,6 +108,7 @@ class SetTotalJobsCredentialsModal extends React.Component {
             alert('successfully updated credentials')
             this.props.toggleCredentialsModal();
             this.props.toggleModalActive();
+            this.props.setUserTotalJobsEmailState();
         }
     }
 

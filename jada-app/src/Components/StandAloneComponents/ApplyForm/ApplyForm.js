@@ -3,11 +3,68 @@ import './applyForm.css';
 import ButtonMain from "../../Buttons/ButtonMain/ButtonMain";
 
 class ApplyForm extends React.Component {
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            errorMessage: ''
+        }
+    }
+
+    handleSubmit = async (e) => {
+        e.preventDefault();
+        let jobTitle = this.props.jobTitle
+        let location = this.props.location
+        let radius = e.target.childNodes[2].value
+
+        let preferencesSet = await this.props.checkPreferencesSet();
+        if (!preferencesSet.preferences_complete) {
+            this.setState({ errorMessage: preferencesSet.message })
+            setTimeout(() => {
+                this.setState({ errorMessage: '' })
+            }, 5000)
+            return
+        }
+        let applyPackage = {
+            "job_title": jobTitle,
+            "location": location,
+            "radius": radius
+        }
+
+        let processedApply = await this.processApply(applyPackage)
+
+        this.props.resetJTAndLocation();
+    }
+
+    processApply = async (applyPackage) => {
+        // navigate to website and log in route
+            // expected package: {
+                // 	"email": "chris.tregaskis.work@gmail.com",
+                // 	"encPass": "ce5431ac4b132fe974ee7b6e3d251f"
+                // }
+
+        // enter search with apply package
+            // expected package: {
+                // 	"job_title": "   Junior Software *)£@Engineer",
+                // 	"location": "  Bath   ",
+                // 	"radius": 20
+                // }
+
+        // process search results
+            // expected package: {
+                // 	"user_id": "5f102d3ce9647c31b2f1e92b"
+                // }
+
+        // log out
+            // just requires authentication
+
+        // return success true or false
+    }
 
     render() {
         return (
             <div className="applyBox col-12">
-                <form autoComplete="on" onSubmit={this.props.handleApply}>
+                <form autoComplete="on" onSubmit={this.handleSubmit}>
                     <div className="floating-label">
                         <input placeholder="Job Title" type="text" name="jobTitle" id="jobTitle"
                                onChange={(e) => this.props.handleChange(e, 'jobTitle')}
@@ -36,6 +93,7 @@ class ApplyForm extends React.Component {
                         />
                     </div>
                 </form>
+                <p className="errMsg text-danger text-center">{this.state.errorMessage}</p>
             </div>
         );
     }

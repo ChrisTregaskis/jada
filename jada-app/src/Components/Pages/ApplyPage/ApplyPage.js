@@ -57,14 +57,42 @@ class ApplyPage extends React.Component {
 
     setStateUserPreferences = async () => {
         let userPreferences = await this.fetchUserPreferences();
+        let jobType;
+        let salaryMin;
+        let salaryMax;
+        let sessionLim;
+        let desiredKW = userPreferences.dkw;
+        let undesiredKW = userPreferences.udkw;
+        let interestedKW = userPreferences.ikw;
+
+        if (userPreferences.job_type === undefined) {
+            jobType = 'FULL_TIME'
+        } else {
+            jobType = userPreferences.job_type
+        }
+
+        if (userPreferences.salary === undefined) {
+            salaryMin = 0
+            salaryMax = 0
+        } else {
+            salaryMin = userPreferences.salary.permanent_minimum
+            salaryMax = userPreferences.salary.permanent_maximum
+        }
+
+        if (userPreferences.session_limit === undefined) {
+            sessionLim = 30
+        } else {
+            sessionLim = userPreferences.session_limit
+        }
+
         this.setState({
-            jobType: userPreferences.job_type,
-            salary_perm_min: userPreferences.salary.permanent_minimum,
-            salary_perm_max: userPreferences.salary.permanent_maximum,
-            session_limit: userPreferences.session_limit,
-            desiredKeyWords: userPreferences.dkw,
-            undesiredKeyWords: userPreferences.udkw,
-            interestedKeyWords: userPreferences.ikw
+            jobType: jobType,
+            salary_perm_min: salaryMin,
+            salary_perm_max: salaryMax,
+            session_limit: sessionLim,
+            desiredKeyWords: desiredKW,
+            undesiredKeyWords: undesiredKW,
+            interestedKeyWords: interestedKW
         });
     }
 
@@ -77,12 +105,75 @@ class ApplyPage extends React.Component {
         })
     }
 
+    checkPreferencesSet = async () => {
+        let userData = await this.fetchData();
+
+        if (userData === undefined) {
+            return {
+                preferences_complete: false,
+                message: 'No preferences set, please update below.'
+            }
+        } else if (userData.totalJobs_email === undefined) {
+            return {
+                preferences_complete: false,
+                message: 'Total jobs email not set, please update below.'
+            }
+        } else if (userData.preferences.salary === undefined) {
+            return {
+                preferences_complete: false,
+                message: 'Salary preferences not set, please update below x.'
+            }
+        } else if (userData.preferences.session_limit === undefined) {
+            return {
+                preferences_complete: false,
+                message: 'Session limit not set, please update below.'
+            }
+        } else if (userData.preferences.dkw < 1) {
+            return {
+                preferences_complete: false,
+                message: 'At least 1 desired key word should be set, please update below.'
+            }
+        } else if (userData.preferences.udkw < 1) {
+            return {
+                preferences_complete: false,
+                message: 'At least 1 undesired key word should be set, please update below.'
+            }
+        } else if (userData.preferences.ikw < 1) {
+            return {
+                preferences_complete: false,
+                message: 'At least 1 interested key word should be set, please update below.'
+            }
+        }
+
+        if (userData.salary) {
+            if (userData.salary.permanent_minimum === undefined ||
+                userData.salary.permanent_maximum === undefined) {
+                return {
+                    preferences_complete: false,
+                    message: 'Salary preferences not set, please update below y.'
+                }
+            }
+        }
+
+        return {
+            preferences_complete: true
+        }
+
+    }
+
     toggleCredentialsModalActive = () => {
         this.setState({ setCredentialsModalActive: !this.state.setCredentialsModalActive })
     }
 
     togglePreferencesModalActive = () => {
         this.setState({ setPreferencesModalActive: !this.state.setPreferencesModalActive })
+    }
+
+    resetJTAndLocation = () => {
+        this.setState({
+            jobTitle: '',
+            location: ''
+        })
     }
 
     setUserTotalJobsEmailState = async () => {
@@ -133,15 +224,6 @@ class ApplyPage extends React.Component {
         this.setState(updatedData)
     }
 
-    handleApply = (e) => {
-        e.preventDefault();
-        console.log('handling apply...')
-        this.setState({
-            jobTitle: '',
-            location: ''
-        })
-    }
-
     render() {
         return(
             <div className="container">
@@ -153,8 +235,9 @@ class ApplyPage extends React.Component {
                     <h4 className="mt-4 mb-4">Apply To Jobs</h4>
                     <p className="mb-4">Enter desired job title, location and radius and click the apply button. JADA will log into your totalJobs account, run the job search, and process all the results, applying where the application meets your preferences.</p>
                     <ApplyForm
-                        handleApply={this.handleApply}
+                        checkPreferencesSet={this.checkPreferencesSet}
                         handleChange={this.handleChange}
+                        resetJTAndLocation={this.resetJTAndLocation}
                         jobTitle={this.state.jobTitle}
                         location={this.state.location}
                     />
@@ -162,6 +245,7 @@ class ApplyPage extends React.Component {
                     <p className="mb-4">View and update the criteria that is used to asses whether a particular job application warrants applying for on your behalf.<br/>
                         Please navigate to your total jobs account to update the CV and generic cover letter.</p>
                     <SetTotalJobsCredentialsModal
+                        setUserTotalJobsEmailState={this.setUserTotalJobsEmailState}
                         tJUserEmail={this.state.tJUserEmail}
                         setCredentialsModalActive={this.state.setCredentialsModalActive}
                         toggleCredentialsModal={this.toggleCredentialsModalActive}
