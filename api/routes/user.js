@@ -8,8 +8,10 @@ const deleteUserController = require('../controllers/users/deleteUserController'
 const setTJLogInController = require('../controllers/users/setTJLogInController');
 const setPreferencesController = require('../controllers/users/setPreferencesController');
 const deletePreferencesController = require('../controllers/users/deletePreferenceController');
+const getUserTJCredentialsController = require('../controllers/users/getUserTJCredentialsController');
 
 router.get('/:userId', checkAuth, getUserByIdController.get_user_by_id);
+router.get('/tj/:userId', checkAuth, getUserTJCredentialsController.get_tJ_credentials);
 router.post('/signup', userSignUpController.users_sign_up);
 router.post('/login', userLogInController.users_login);
 router.delete('/:userId', checkAuth, deleteUserController.delete_user);
