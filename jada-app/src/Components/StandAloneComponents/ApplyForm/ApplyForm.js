@@ -19,7 +19,7 @@ class ApplyForm extends React.Component {
     componentDidUpdate(prevProps, prevState, snapshot) {
         if (prevState.confirmedApply !== this.state.confirmedApply) {
             if (this.state.confirmedApply) {
-                this.processApply().then((data) => console.log(data.success));
+                this.processApply().then((data) => console.log(data));
             }
         }
     }
@@ -48,7 +48,7 @@ class ApplyForm extends React.Component {
         let applyPackage = {
             "job_title": jobTitle,
             "location": location,
-            "radius": radius
+            "radius": parseInt(radius)
         }
 
         this.setState({ applyPackage: applyPackage })
@@ -57,29 +57,33 @@ class ApplyForm extends React.Component {
 
     processApply = async () => {
         let loggedIn = await this.logInToTJAccount();
+        if (!loggedIn.success) { return loggedIn }
 
-        // enter search with apply package
-            // expected package: {
-                // 	"job_title": "   Junior Software *)£@Engineer",
-                // 	"location": "  Bath   ",
-                // 	"radius": 20
-                // }
+        let enteredSearch = await this.enterSearch();
+        if (!enteredSearch.success) { return enteredSearch }
 
-        // process search results
-            // expected package: {
-                // 	"user_id": "5f102d3ce9647c31b2f1e92b"
-                // }
+        let processedResults = await this.processSearchResults();
+        if (!processedResults.success) { return processedResults }
 
-        // log out
-            // just requires authentication
+        let loggedOut = await this.logOutTJAccount();
+        if (!loggedOut.success) { return loggedOut }
 
-        // populate session overview (in alert for now cause long ting)
-        alert('Apply Process Complete')
-        this.toggleConfirmedApply()
+        alert(`
+            Success: ${processedResults.success}
+            Total results: ${processedResults.total_results}
+            Search Parameters
+                - Job title: ${processedResults.search_params.job_title}
+                - Location: ${processedResults.search_params.location}
+                - Radius: ${processedResults.search_params.radius}
+            Total processed: ${processedResults.session_report.total_processed}
+            Newly processed: ${processedResults.session_report.newly_processed}
+            Successfully applied: ${processedResults.session_report.successfully_applied}
+        `)
+        await this.toggleConfirmedApply()
 
         return {
             success: true,
-            message: 'test passed'
+            message: 'successfully processed apply'
         }
     }
 
@@ -91,7 +95,10 @@ class ApplyForm extends React.Component {
             setTimeout(() => {
                 this.setState({ errorMessage: '' })
             }, 10000)
-            return
+            return {
+                success: false,
+                message: 'password missing'
+            }
         }
 
         let e = userData.credentials.tJ_email
@@ -108,9 +115,56 @@ class ApplyForm extends React.Component {
             setTimeout(() => {
                 this.setState({ errorMessage: '' })
             }, 10000)
-            return false
+            return {
+                success: false,
+                message: 'log in failed'
+            }
         } else if (logInRes.success) {
-            return true
+            return {
+                success: true,
+                message: 'successfully logged into total jobs account'
+            }
+        }
+    }
+
+    enterSearch = async () => {
+        let url = `http://localhost:8080/sessions/runJobSearch`;
+        let searchParams = this.state.applyPackage;
+        try {
+            let searchEntered = await this.fetchRequestPOST(url, searchParams);
+            return searchEntered
+        } catch (err) {
+            return {
+                success: false,
+                message: err
+            }
+        }
+    }
+
+    processSearchResults = async () => {
+        let url = `http://localhost:8080/sessions/processSearchResults`;
+        let body = { "user_id": this.state.userId }
+        try {
+            let processedResults = await this.fetchRequestPOST(url, body)
+            return processedResults
+        } catch (err) {
+            return {
+                success: false,
+                message: err
+            }
+        }
+    }
+
+    logOutTJAccount = async () => {
+        let url = `http://localhost:8080/sessions/totalJobsLogOut`;
+        try {
+            let loggedOut = await this.fetchRequestPOST(url, {})
+            return loggedOut
+        } catch (err) {
+            return {
+                success: false,
+                message: err
+            }
         }
     }
 
