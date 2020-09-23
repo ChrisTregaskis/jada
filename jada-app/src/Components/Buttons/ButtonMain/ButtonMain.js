@@ -17,7 +17,7 @@ class ButtonMain extends React.Component {
     }
 
     render() {
-        let cssClass = this.state.cssClass;
+        let cssClass = this.state.cssClass + ' defaultClearBtn';
         return (
             <div className={cssClass}>
                 <div onClick={this.handleClick} className='buttonMain'>

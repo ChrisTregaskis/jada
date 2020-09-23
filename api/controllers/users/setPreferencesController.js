@@ -99,7 +99,6 @@ exports.set_user_preferences = async (req, res, next) => {
 
     if (reqSalary !== undefined) {
         if (!(validate_type(reqSalary, 'object')) ||
-            !(validate_type(reqSalary.permanent_preferred, 'number')) ||
             !(validate_type(reqSalary.permanent_minimum, 'number')) ||
             !(validate_type(reqSalary.permanent_maximum, 'number'))) {
             await res.status(400).json({
@@ -107,7 +106,6 @@ exports.set_user_preferences = async (req, res, next) => {
                 message: 'Set salary types incorrect. Salary must be object containing set preferences where the values are numbers.',
                 example: {
                     salary: {
-                        permanent_preferred: 12345,
                         permanent_minimum: 12345,
                         permanent_maximum: 12345
                     }
@@ -128,55 +126,47 @@ exports.set_user_preferences = async (req, res, next) => {
 
     }
 
-    let dkw = [];
+    let dkw;
     if (reqDkw !== undefined) {
-        if (!(validate_type(reqDkw, 'object'))) {
+        if (!(validate_type(reqDkw, 'string'))) {
             await res.status(400).json({
                 success: false,
-                message: 'Desired key words is an incorrect data type, expecting an array'
+                message: 'Desired key words is an incorrect data type, expecting a string'
             })
             return
         }
-
-        reqDkw.forEach(i => {
-            let kw = sanitize_string(i.toUpperCase());
-            dkw.push(kw);
-        })
+        dkw = sanitize_string(reqDkw.toUpperCase())
     }
 
-    let udkw = [];
+    let udkw;
     if (reqUdkw !== undefined) {
-        if (!(validate_type(reqUdkw, 'object'))) {
+        if (!(validate_type(reqUdkw, 'string'))) {
             await res.status(400).json({
                 success: false,
-                message: 'Undesired key words is an incorrect data type, expecting an array'
+                message: 'Undesired key words is an incorrect data type, expecting an string'
             })
             return
         }
-
-        reqUdkw.forEach(i => {
-            let kw = sanitize_string(i.toUpperCase());
-            udkw.push(kw);
-        })
+        udkw = sanitize_string(reqUdkw.toUpperCase())
     }
 
-    let ikw = [];
+    let ikw;
     if (reqIkw !== undefined) {
-        if (!(validate_type(reqIkw, 'object'))) {
+        if (!(validate_type(reqIkw, 'string'))) {
             await res.status(400).json({
                 success: false,
-                message: 'Interested key words is an incorrect data type, expecting an array'
+                message: 'Interested key words is an incorrect data type, expecting an string'
             })
             return
         }
-
-        reqIkw.forEach(i => {
-            let kw = sanitize_string(i.toUpperCase());
-            ikw.push(kw);
-        })
+        ikw = sanitize_string(reqIkw.toUpperCase())
     }
 
     try {
+        let userData = await User.findById(id);
+        let currentDKW = userData.preferences.dkw;
+        let currentUDKW = userData.preferences.udkw;
+        let currentIKW = userData.preferences.ikw
         let updatedPreferences = 0;
         let emailUpdated = false;
         let jobTitleUpdated = false;
@@ -267,35 +257,41 @@ exports.set_user_preferences = async (req, res, next) => {
         }
 
        if (reqDkw !== undefined) {
-           let updateDkw = await User.update(
-               { _id: id },
-               { $set: { "preferences.dkw": dkw }}
-           )
-           if (updateDkw.nModified === 1 ) {
-               updatedPreferences++
-               dkwUpdated = true
-           }
+            if (!currentDKW.includes(dkw)) {
+                let updateDkw = await User.update(
+                    { _id: id },
+                    { $push: { "preferences.dkw": dkw }}
+                )
+                if (updateDkw.nModified === 1) {
+                    updatedPreferences++
+                    dkwUpdated = true
+                }
+            }
        }
 
         if (reqUdkw !== undefined) {
-            let updateUdkw = await User.update(
-                { _id: id },
-                { $set: { "preferences.udkw": udkw }}
-            )
-            if (updateUdkw.nModified === 1 ) {
-                updatedPreferences++
-                udkwUpdated = true
+            if (!currentUDKW.includes(udkw)) {
+                let updateUdkw = await User.update(
+                    { _id: id },
+                    { $push: { "preferences.udkw": udkw }}
+                )
+                if (updateUdkw.nModified === 1) {
+                    updatedPreferences++
+                    udkwUpdated = true
+                }
             }
         }
 
         if (reqIkw !== undefined) {
-            let updatedIkw = await User.update(
-                { _id: id },
-                { $set: { "preferences.ikw": ikw }}
-            )
-            if (updatedIkw.nModified === 1 ) {
-                updatedPreferences++
-                ikwUpdated = true
+            if (!currentIKW.includes(ikw)) {
+                let updatedIkw = await User.update(
+                    { _id: id },
+                    { $push: { "preferences.ikw": ikw }}
+                )
+                if (updatedIkw.nModified === 1) {
+                    updatedPreferences++
+                    ikwUpdated = true
+                }
             }
         }
 
@@ -336,3 +332,4 @@ exports.set_user_preferences = async (req, res, next) => {
     }
 
 }
+

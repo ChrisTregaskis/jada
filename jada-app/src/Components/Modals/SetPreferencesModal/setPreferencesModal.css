@@ -1,0 +1,19 @@
+.setPreferencesBox {
+    width: 750px;
+    height: 500px;
+    border: 2px solid  #e67e22;
+    padding: 15px;
+    border-radius: 4px;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #FFFFFF;
+    z-index: 5;
+}
+
+.setPreferencesBoxBtns {
+    width: 100%;
+    display: flex;
+    justify-content: space-evenly;
+}

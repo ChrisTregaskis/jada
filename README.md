@@ -1,7 +1,7 @@
 # JADA
 Job Application Digital Assistant
 
-You can check out an example of JADA running here: https://vimeo.com/438840301
+You can check out an example of the initial proof of concept running for myself here: https://vimeo.com/438840301
 
 I've been told getting your first dev job, on top of projects one could show, is a numbers game. After spending over 120 hours, countless applications and missing coding due to spending the majority of my time applying to code (the irony) I started to wonder if I could use my new skills to build something that would automate this all.
 If you've ever been looking for work for longer than a month, you'd certainly appreciate how taxing it can be mentally not getting any replies from applications, or just getting automated responses. I started loosing lots of confidence, increasingly doubting my self-worth and this affected relationships around me. This project was also birthed to counter the lifeless feeling of interacting with the recruitment industry.
@@ -25,6 +25,6 @@ And so, here I set out to build a system I call JADA... (Job Applications Digita
 
 The API structure is set up using Node.js, MongoDB and Mongoose among a few other packages. Its using the Model, Controller, Route pattern and is simple to follow.
 
-For ease I've got a `run_jada.js` file and a `jada_functions.js` file. I have repurposed Selenium in order to automatically drive the browser and run JADA logic. 
+The `run_jada.js` and `jada_functions.js` files were the initial 'proof of concept' test for myself. I have repurposed Selenium in order to automatically drive the browser and run JADA logic. 
 
 You are very welcome to purose the code ;-) 
