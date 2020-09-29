@@ -2,6 +2,7 @@ import React from "react";
 import './applyForm.css';
 import ButtonMain from "../../Buttons/ButtonMain/ButtonMain";
 import ConfirmApplyModal from "../../Modals/ConfirmApplyModal/ConfirmApplyModal";
+import ProcessingApplyModal from "../../Modals/ProcessingApply/ProcessingApplyModal";
 
 class ApplyForm extends React.Component {
     constructor(props) {
@@ -12,20 +13,66 @@ class ApplyForm extends React.Component {
             bearerToken: localStorage.getItem('bearerToken'),
             errorMessage: '',
             confirmedApply: false,
-            applyPackage: {}
+            applyPackage: {},
+            processingApply: false,
+            loggedIn: false,
+            enteredSearch: false,
+            processedResults: false,
+            loggedOut: false,
+            processedApplyResponse: {}
         }
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
         if (prevState.confirmedApply !== this.state.confirmedApply) {
             if (this.state.confirmedApply) {
-                this.processApply().then((data) => console.log(data));
+                this.processApply()
+                    .then((data) => {
+                        this.setState({
+                            processedApplyResponse: {
+                                success: data.success,
+                                message: data.message
+                            }
+                        })
+                    })
+                    .then(() => {
+                        let res = this.state.processedApplyResponse
+                        if (!res.success) {
+                            alert(`
+                            Error: Process incomplete
+                            Message: ${res.message}
+                            `)
+                        }
+                    })
+                    .then(() => {
+                        window.location.replace('http://localhost:3000/dashboard')
+                    });
             }
         }
     }
 
     toggleConfirmedApply = () => {
         this.setState({ confirmedApply: !this.state.confirmedApply })
+    }
+
+    toggleProcessingApply = () => {
+        this.setState({ processingApply: !this.state.processingApply })
+    }
+
+    toggleStateLoggedIn = () => {
+        this.setState({ loggedIn: !this.state.loggedIn })
+    }
+
+    toggleStateEnteredSearch = () => {
+        this.setState({ enteredSearch: !this.state.enteredSearch })
+    }
+
+    toggleStateProcessedResults = () => {
+        this.setState({ processedResults: !this.state.processedResults })
+    }
+
+    toggleStateLoggedOut = () => {
+        this.setState({ loggedOut: !this.state.loggedOut })
     }
 
     handleSubmit = async (e) => {
@@ -56,17 +103,41 @@ class ApplyForm extends React.Component {
     }
 
     processApply = async () => {
+        this.toggleConfirmedApply();
+        this.toggleProcessingApply();
+
         let loggedIn = await this.logInToTJAccount();
-        if (!loggedIn.success) { return loggedIn }
+        console.log(`log in success: ${loggedIn.success}`)
+        if (!loggedIn.success) {
+            return loggedIn
+        } else {
+            this.toggleStateLoggedIn();
+        }
+
 
         let enteredSearch = await this.enterSearch();
-        if (!enteredSearch.success) { return enteredSearch }
+        console.log(`enter search success: ${enteredSearch.success}`)
+        if (!enteredSearch.success) {
+            return enteredSearch
+        } else {
+            this.toggleStateEnteredSearch();
+        }
 
         let processedResults = await this.processSearchResults();
-        if (!processedResults.success) { return processedResults }
+        console.log(`process results success: ${processedResults.success}`)
+        if (!processedResults.success) {
+            return processedResults
+        } else {
+            this.toggleStateProcessedResults()
+        }
 
         let loggedOut = await this.logOutTJAccount();
-        if (!loggedOut.success) { return loggedOut }
+        console.log(`log out success: ${loggedOut.success}`)
+        if (!loggedOut.success) {
+            return loggedOut
+        } else {
+            this.toggleStateLoggedOut()
+        }
 
         alert(`
             Success: ${processedResults.success}
@@ -79,7 +150,6 @@ class ApplyForm extends React.Component {
             Newly processed: ${processedResults.session_report.newly_processed}
             Successfully applied: ${processedResults.session_report.successfully_applied}
         `)
-        await this.toggleConfirmedApply()
 
         return {
             success: true,
@@ -197,6 +267,14 @@ class ApplyForm extends React.Component {
     render() {
         return (
             <div className="applyBox col-12">
+                <ProcessingApplyModal
+                    processingApply={this.state.processingApply}
+                    loggedIn={this.state.loggedIn}
+                    enteredSearch={this.state.enteredSearch}
+                    processedResults={this.state.processedResults}
+                    loggedOut={this.state.loggedOut}
+
+                />
                 <ConfirmApplyModal
                     toggleApplyModalActive={this.props.toggleApplyModalActive}
                     toggleModalActive={this.props.toggleModalActive}
