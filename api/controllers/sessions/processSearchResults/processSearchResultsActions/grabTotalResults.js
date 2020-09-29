@@ -7,11 +7,18 @@ exports.grab_total_results = async () => {
         totalResults = await driver.findElements({ css: '.page-title span' });
         if (totalResults.length > 0) {
             totalResults = await driver.findElement({ css: '.page-title span' });
-            return await totalResults.getText();
+            let tRes = await totalResults.getText();
+            return {
+                success: true,
+                total_results: tRes
+            }
         }
     } catch (err) {
         console.log(err)
-        return false
+        return {
+            success: false,
+            error: err
+        }
     }
 
 }
