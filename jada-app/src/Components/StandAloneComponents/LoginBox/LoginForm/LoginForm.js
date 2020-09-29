@@ -35,7 +35,7 @@ class LoginForm extends React.Component {
                     <div className="floating-label">
                         <input placeholder="Email" type="text" name="email" id="email"
                                onChange={(e) => this.props.handleChange(e, 'email')}
-                               autoComplete="off" value={this.props.email} required/>
+                               autoComplete="on" value={this.props.email} required/>
                         <label htmlFor="email">Email:</label>
                     </div>
                     <div className="floating-label">
