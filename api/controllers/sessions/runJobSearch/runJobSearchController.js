@@ -48,7 +48,7 @@ exports.enter_search = async (req, res, next) => {
         console.log(err)
         await res.status(500).json({
             success: false,
-            message: 'system error'
+            message: 'system error check url valid when running search'
         })
     }
 
@@ -70,7 +70,7 @@ exports.enter_search = async (req, res, next) => {
         console.log(err)
         await res.status(500).json({
             success: false,
-            message: 'system error'
+            message: 'System error running job search.'
         })
     }
 
