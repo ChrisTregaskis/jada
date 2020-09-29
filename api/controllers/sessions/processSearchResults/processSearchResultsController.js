@@ -22,23 +22,31 @@ exports.process_results = async (req, res, next) => {
     }
 
     const loggedIn = await check_logged_in();
+    console.log('line:25 loggedIn')
+    console.log(loggedIn)
     if (!(loggedIn)) {
         return await res.status(500).json(failed_res(500,'System error, user not logged into totalJobs'));
     }
 
     let totalResults = await grab_total_results();
-    if (!(totalResults)) {
+    console.log('line:32 totalResults')
+    console.log(totalResults)
+    if (!totalResults.success) {
         return await res.status(500).json(failed_res(500, 'System error, total results not found'));
     } else {
-        totalResults = parseInt(totalResults)
+        totalResults = parseInt(totalResults.total_results)
     }
 
     let searchParams = await grab_search_params();
+    console.log('line:41 searchParams')
+    console.log(searchParams)
     if (!(searchParams.success)) {
         return await res.status(500).json(failed_res(500, searchParams.message));
     }
 
     const processed_results = await process_results(userId);
+    console.log('line:48 processedResults')
+    console.log(processed_results)
     if (!(processed_results.success)) {
         return await res.status(500).json(failed_res(500, processed_results.message))
     }
