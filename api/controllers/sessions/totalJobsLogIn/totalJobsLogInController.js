@@ -46,7 +46,7 @@ exports.totalJobs_logIn = async (req, res, next) => {
             console.log(err)
             await res.status(500).json({
                 success: false,
-                message: 'system error'
+                message: 'System error logging into total jobs.'
             })
         }
     }
