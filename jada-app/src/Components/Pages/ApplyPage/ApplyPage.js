@@ -271,6 +271,7 @@ class ApplyPage extends React.Component {
                     </div>
                     <SetPreferencesModal
                         setPreferencesModalActive={this.state.setPreferencesModalActive}
+                        setStateUserPreferences={this.setStateUserPreferences}
                         togglePreferencesModalActive={this.togglePreferencesModalActive}
                         toggleModalActive={this.toggleModalActive}
                         handleChange={this.handleChange}
