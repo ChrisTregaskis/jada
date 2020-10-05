@@ -36,11 +36,22 @@ class SetPreferencesModal extends React.Component {
 
     handleSubmit = async (e) => {
         e.preventDefault();
+        let perMin = parseInt(this.props.salary_perm_min);
+        let perMax = parseInt(this.props.salary_perm_max);
+
+        if (perMin > perMax) {
+            this.setState({ errorMessage: 'Minimum salary can not be more than maximum salary.' })
+            setTimeout(() => {
+                this.setState({ errorMessage: '' })
+            }, 5000)
+            return
+        }
+
         let updatePackage = {
             "job_type": this.props.jobType,
             "salary": {
-                permanent_minimum: parseInt(this.props.salary_perm_min),
-                permanent_maximum: parseInt(this.props.salary_perm_max)
+                permanent_minimum: perMin,
+                permanent_maximum: perMax
 
             },
             "session_limit": parseInt(this.props.session_limit)
@@ -79,6 +90,7 @@ class SetPreferencesModal extends React.Component {
     closeModal = () => {
         this.props.togglePreferencesModalActive();
         this.props.toggleModalActive();
+        this.props.setStateUserPreferences();
     }
 
     render() {
